@@ -4,7 +4,7 @@
     <div class="flex flex-col items-center text-center max-w-md px-6">
       <img src="/assets/images/logo_light.png" alt="Logo" class="w-48 mb-8" />
       <p class="text-2xl font-semibold mb-8">Easy. <span class="text-yellow-400">Fast.</span> Online.</p>
-      <p class="roboto text-secondary-90">
+      <p class="text-secondary-90">
         Your one stop solution for getting in touch with your local tattoo artists,
         get inspirations, calculate costs.
       </p>
