@@ -2,7 +2,7 @@
   <div class="min-h-screen flex gap-4">
     <AuthSideContent />
 
-    <div class="flex-1 px-12 pt-[6.25rem] pb-[3.75rem] card bg-white rounded-3xl w-full">
+    <div class="flex-1 px-12 pt-[6.25rem] pb-[3.75rem] card bg-white text-black rounded-3xl w-full">
       <div>
         <p class="text-lg text-secondary-100 font-bold">Welcome back to Tattoomii</p>
         <h2 class="text-4xl font-bold mb-8">Sign in to your account</h2>
@@ -24,7 +24,7 @@
           </div>
 
           <button type="submit"
-            class="btn bg-primary-yellow rounded-full w-full font-semibold text-medium border-0">Sign In</button>
+            class="btn bg-primary-yellow text-black rounded-full w-full font-semibold text-medium border-0">Sign In</button>
         </form>
 
         <p class="text-center">

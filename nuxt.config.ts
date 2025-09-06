@@ -11,9 +11,7 @@ export default defineNuxtConfig({
       baseURL: 'https://tattoomii-f43c06650d05.herokuapp.com',
     }
   },
-  modules: [
-    '@nuxtjs/color-mode',
-  ],
+  modules: ['@nuxtjs/color-mode', '@nuxtjs/leaflet'],
   colorMode: {
     classSuffix: '',
     dataValue: 'theme',
