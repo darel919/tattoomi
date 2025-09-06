@@ -3,10 +3,9 @@
     <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
       <div v-for="person in item" :key="person.id" class="bg-base-100 rounded-2xl shadow-md overflow-hidden">
         <div class="h-44 bg-base-200 relative">
-          <!-- <img v-if="person.image" :src="person.image" alt="photo" class="w-full h-full object-cover" />
-          <div v-else class="w-full h-full bg-gradient-to-br from-base-300 to-base-200 flex items-end p-4">
-            <div class="w-16 h-16 rounded-full bg-base-100/40 backdrop-blur-sm border border-base-200/30"></div>
-          </div> -->
+          <img v-if="person.image" :src="person.image" alt="photo" class="w-full h-full object-cover" />
+          <!-- FAILOVER ELEMENT IF NO IMAGE IS PRESENT ON PROP VALUE! DELETE ON PROD! -->
+          <img v-else src="~/assets/images/sample_card.png" title="This is a sample photo." alt="photo" class="w-full h-full object-cover" />
         </div>
 
         <div class="p-4">
@@ -33,14 +32,28 @@
           </div>
 
           <div class="mb-3 flex flex-wrap gap-2">
-            <span v-for="cat in (person.category || []).slice(0,3)" :key="cat.cat_id" class="text-xs px-2 py-1 bg-base-200 text-base-content rounded-full">{{ cat.cat_name }}</span>
+            <span v-for="cat in (person.category || []).slice(0,3)" :key="cat.cat_id" class="text-xs px-4 py-1 bg-base-200 text-base-content rounded-full">{{ cat.cat_name }}</span>
           </div>
 
           <ul class="text-sm text-base-content/70 space-y-1">
-            <li class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.585 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>{{ formatLangs(person.lang) }}</li>
-            <li class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 1.567-3 3.5S10.343 15 12 15s3-1.567 3-3.5S13.657 8 12 8z"/></svg>{{ person.years_experience }} yrs experience</li>
-            <li class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M6 2a1 1 0 00-1 1v1H5a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3h-.001V3a1 1 0 00-1-1H6zm1 5h6v2H7V7z"/></svg>{{ waitingLabel(person.waitingTime) }}</li>
-            <li class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h14a1 1 0 011 1v3a2 2 0 01-2 2H4a2 2 0 01-2-2v-3z"/></svg><span class="tracking-wide">{{ priceSymbols(person.price) }}</span></li>
+            <li class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user h-4 w-4 mr-2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              {{ formatLangs(person.lang) }}
+            </li>
+            <li class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase-icon lucide-briefcase h-4 w-4 mr-2"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
+              {{ person.years_experience }} yrs experience
+            </li>
+            <li class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock2-icon lucide-clock-2 h-4 w-4 mr-2"><path d="M12 6v6l4-2"/><circle cx="12" cy="12" r="10"/></svg>
+              {{ waitingLabel(person.waitingTime) }}
+            </li>
+            <li class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-dollar-sign-icon lucide-circle-dollar-sign h-4 w-4 mr-2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+              <span class="tracking-wide">
+                {{ priceSymbols(person.price) }}
+              </span>
+            </li>
           </ul>
         </div>
       </div>
