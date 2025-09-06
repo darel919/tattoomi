@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="my-8">
     <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
       <div v-for="person in item" :key="person.id" class="bg-base-100 rounded-2xl shadow-md overflow-hidden">
         <div class="h-44 bg-base-200 relative group" tabindex="0">
