@@ -2,7 +2,7 @@
   <div class="mx-8">
     <section class="mb-8">
       <p>All Artists</p>
-      <h1 class="text-3xl">Find the perfect Tattoo Artist for your idea</h1>
+      <h1 class="text-3xl font-bold">Find the perfect Tattoo Artist for your idea</h1>
     </section>
     <section class="my-8">
       <LandingPageCard :item="mockupData" />

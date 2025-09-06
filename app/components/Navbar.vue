@@ -22,7 +22,7 @@
                             <strong>Register as Artist</strong>
                         </NuxtLink>
                         <div class="relative">
-                          <NuxtLink class="button bg-hero text-black px-4 py-2 rounded-full text-sm" to="/login">
+                          <NuxtLink class="button bg-hero font-bold text-black px-4 py-2 rounded-full text-sm" to="/login">
                               Log in / Register
                           </NuxtLink>
                           <div class="absolute right-0 top-full mt-8">

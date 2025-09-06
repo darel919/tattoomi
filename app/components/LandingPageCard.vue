@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
-      <div v-for="person in item" :key="person.id" class="bg-base-100 rounded-2xl shadow-md overflow-hidden">
+      <div v-for="person in item" :key="person.id" class="bg-base-200 rounded-2xl shadow-md overflow-hidden">
         <div class="h-44 bg-base-200 relative">
           <img v-if="person.image" :src="person.image" alt="photo" class="w-full h-full object-cover" />
           <!-- FAILOVER ELEMENT IF NO IMAGE IS PRESENT ON PROP VALUE! DELETE ON PROD! -->
