@@ -1,19 +1,24 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./app/**/*.{js,vue,ts}",
-    "./nuxt.config.{js,ts}"
-  ],
+  content: ["./app/**/*.{js,vue,ts}", "./nuxt.config.{js,ts}"],
   theme: {
     extend: {
       colors: {
-        hero: '#FBBF13',
+        hero: "#FBBF13",
       },
       fontFamily: {
-        sans: ["Grift", "ui-sans-serif", "system-ui", "-apple-system", "\"Segoe UI\"", "Roboto", "\"Helvetica Neue\"", "Arial"],
+        sans: [
+          "Grift",
+          "ui-sans-serif",
+          "system-ui",
+          "-apple-system",
+          '"Segoe UI"',
+          "Roboto",
+          '"Helvetica Neue"',
+          "Arial",
+        ],
         grift: ["Grift"],
       },
     },
   },
-  plugins: [],
-}
+};
