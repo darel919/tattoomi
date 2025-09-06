@@ -1,23 +1,33 @@
-/* @font-face {
-  font-family: 'Roboto';
-  src: url('../fonts/Grift-Bold.woff') format('woff');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-} */
-
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: light --default;
+  root: ":root";
+  include: ;
+  exclude: ;
+  prefix: ;
+  logs: true;
+}
 @custom-variant dark (&:where(.dark, .dark *));
 @theme {
-  --color-hero: #FBBF13;
+  --color-hero: #fbbf13;
+  --color-primary-yellow: #fbbf13;
+  --color-secondary-90: #314158;
+  --color-secondary-100: #45556c;
+  --color-secondary-200: #62748e;
+  --color-secondary-250: #90a1b9;
+  --color-secondary-300: #cad5e2;
+  --color-secondary-400: #e2e8f0;
+  --color-dark-100: #0f172b;
+  --color-dark-200: #171415;
 }
 
 body {
-  font-family: 'Roboto', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial;
 }
 
-html, body {
+html,
+body {
   transition: background-color 0.5s ease, color 0.5s ease;
   -webkit-transition: background-color 0.5s ease, color 0.5s ease;
 }
