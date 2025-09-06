@@ -17,7 +17,7 @@
                 <div class="flex flex-col">
                     <h3 class="footer-title mb-2">Company</h3>
                     <NuxtLink class="link link-hover" to="/">About us</NuxtLink>
-                    <NuxtLink class="link link-hover" to="/">FAQs</NuxtLink>
+                    <NuxtLink class="link link-hover" to="/faq">FAQs</NuxtLink>
                     <NuxtLink class="link link-hover" to="/contact">Contact Us</NuxtLink>
                 </div>
 

@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-const viewMode = ref('map');
+const viewMode = ref('list');
 const mockupData = [
   { id: 1, name: 'Stephen C', verified: true, hygiene_cert: true, location: 'San Francisco', rating: 4.9, lang: [{lang_id: 1, lang_name: 'German'}, {lang_id: 2, lang_name: 'English'}], years_experience: 2.5, waitingTime: 14, price: 3, category: [{cat_id: 1, cat_name: 'Ornamental'}, {cat_id: 2, cat_name: 'Heavy Blackwork'}, {cat_id: 3, cat_name: 'Comic'}, {cat_id: 4, cat_name: 'Tribal'}, {cat_id: 5, cat_name: 'Watercolor'}] },
   { id: 2, name: 'Anna K', verified: true, hygiene_cert: true, location: 'Los Angeles', rating: 4.8, lang: [{lang_id: 1, lang_name: 'Spanish'}, {lang_id: 2, lang_name: 'English'}], years_experience: 3, waitingTime: 10, price: 4, category: [{cat_id: 1, cat_name: 'Portrait'}, {cat_id: 2, cat_name: 'Minimalist'}, {cat_id: 3, cat_name: 'Dotwork'}, {cat_id: 4, cat_name: 'Fineline'}, {cat_id: 5, cat_name: 'Geometric'}] },
