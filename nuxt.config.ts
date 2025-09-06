@@ -11,6 +11,15 @@ export default defineNuxtConfig({
       baseURL: 'https://tattoomii-f43c06650d05.herokuapp.com',
     }
   },
+  modules: [
+    '@nuxtjs/color-mode',
+  ],
+  colorMode: {
+    classSuffix: '',
+    dataValue: 'theme',
+    fallback: 'light',
+    preference: 'light'
+  },
   vite: {
     plugins: [
       tailwindcss(),
