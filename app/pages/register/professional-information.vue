@@ -11,37 +11,82 @@
             <InputOutline v-model="form.websiteLink" label="Website Link"
               placeholder="Paste your website link (optional)" type="text" :icon="IconsGlobe" />
             <InputOutline v-model="form.location" label="Location" placeholder="Select city you are resident artist in"
-              type="select" :icon="IconsMapPinHouse" :options="[{
-                label: 'Zurich',
-                value: 'Zurich',
-              }, {
-                label: 'Bern',
-                value: 'Bern',
-              }]" />
+              type="select" :icon="IconsMapPinHouse" :options="[
+                {
+                  label: 'Zurich',
+                  value: 'Zurich',
+                },
+                {
+                  label: 'Bern',
+                  value: 'Bern',
+                },
+                {
+                  label: 'Basel',
+                  value: 'Basel',
+                },
+                {
+                  label: 'Luzern',
+                  value: 'Luzern',
+                },
+                {
+                  label: 'Winterthur',
+                  value: 'Winterthur',
+                },
+              ]" />
             <InputOutline v-model="form.language" label="Language" placeholder="Select language(s) you speak"
-              type="select" :icon="IconsLanguages" :options="[{
-                label: 'English',
-                value: 'English',
-              }, {
-                label: 'Spanish',
-                value: 'Spanish',
-              }]" />
+              type="select" :icon="IconsLanguages" :options="[
+                {
+                  label: 'German',
+                  value: 'German',
+                },
+                {
+                  label: 'English',
+                  value: 'English',
+                },
+                {
+                  label: 'Italian',
+                  value: 'Italian',
+                },
+                {
+                  label: 'French',
+                  value: 'French',
+                },
+                {
+                  label: 'Portuguese',
+                  value: 'Portuguese',
+                },
+                {
+                  label: 'Spanish',
+                  value: 'Spanish',
+                },
+              ]" multiple />
             <div class="flex gap-5">
-              <InputOutline v-model="form.language" label="Sex" placeholder="Your Sex" type="select"
-                :icon="IconsLanguages" :options="[{
-                  label: 'Male',
-                  value: 'Male',
-                }, {
-                  label: 'Female',
-                  value: 'Female',
-                }]" />
+              <InputOutline v-model="form.sex" label="Sex" placeholder="Your Sex" type="select" :icon="IconsLanguages"
+                :options="[
+                  {
+                    label: 'Male',
+                    value: 'Male',
+                  },
+                  {
+                    label: 'Female',
+                    value: 'Female',
+                  },
+                  {
+                    label: 'Non-Binary',
+                    value: 'Non-Binary',
+                  },
+                  {
+                    label: 'Other',
+                    value: 'Other',
+                  },
+                ]" />
               <InputOutline v-model="form.birthday" label="Birthday" placeholder="Your Birthday" type="date"
                 :icon="IconsCake" />
             </div>
             <div class="flex items-end gap-1.5">
               <InputOutline v-model="form.rate" label="Rate" placeholder="Set your minimum rate" type="number"
                 :icon="IconsCake" />
-              <div class="w-[12.5rem]">
+              <div class="w-[18.75rem]">
                 <InputOutline v-model="form.currency" placeholder="Currency" type="select" :icon="IconsCurrency"
                   :options="[{
                     label: 'USD',
