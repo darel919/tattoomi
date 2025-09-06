@@ -2,7 +2,7 @@
   <div class="min-h-screen flex gap-4">
     <RegisterStepContent :current-step="4" />
 
-    <div class="flex-1 px-12 pt-[6.25rem] pb-[3.75rem] card bg-white rounded-3xl w-full flex items-center">
+    <div class="flex-1 px-12 pt-[6.25rem] pb-[3.75rem] card bg-white text-black rounded-3xl w-full flex items-center">
       <div class="flex flex-col items-center max-w-[30rem]">
         <div class="mb-10 text-primary-yellow">
           <IconsCircleCheck />
@@ -17,7 +17,7 @@
           months in advance. <br><br>
           In the meantime you can finish setting up your profile.
         </p>
-        <button type="submit" class="btn bg-primary-yellow rounded-full w-full font-semibold border-0 mb-8"
+        <button type="submit" class="btn bg-primary-yellow text-black rounded-full w-full font-semibold border-0 mb-8"
           @click="handleSubmit">
           Continue to Artist’s Dashboard
         </button>

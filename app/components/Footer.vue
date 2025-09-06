@@ -3,7 +3,7 @@
         <section class="flex flex-row justify-between w-full">
             <section class="flex flex-col items-start">
                 <img src="/assets/images/logo_light.png" alt="Logo" class="w-56 mb-4"/>
-                <p class="max-w-64 text-sm">We love all of you, thank you for being here!</p>
+                <p class="max-w-64 text-sm">We love all of you, thank you for being here! 🫶</p>
             </section>
             <section class="flex flex-row gap-16">
                 <div class="flex flex-col">
@@ -11,7 +11,7 @@
                     <NuxtLink class="link link-hover" to="/blog">Blog</NuxtLink>
                     <NuxtLink class="link link-hover" to="/">Price Calculator</NuxtLink>
                     <NuxtLink class="link link-hover" to="/">Artist Finder</NuxtLink>
-                    <NuxtLink class="link link-hover" to="/">Styleguide</NuxtLink>
+                    <NuxtLink class="link link-hover" to="/styleguide">Style Guide</NuxtLink>
                 </div>
 
                 <div class="flex flex-col">

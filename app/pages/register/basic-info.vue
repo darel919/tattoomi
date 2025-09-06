@@ -2,7 +2,7 @@
   <div class="min-h-screen flex gap-4">
     <RegisterStepContent :current-step="2" />
 
-    <div class="flex-1 px-12 pt-[6.25rem] pb-[3.75rem] card bg-white rounded-3xl w-full">
+    <div class="flex-1 px-12 pt-[6.25rem] pb-[3.75rem] card bg-white text-black rounded-3xl w-full">
       <div class="flex flex-col items-center">
         <p class="text-xl text-secondary-100 font-semibold">Let’s Set up</p>
         <h2 class="text-3xl font-bold mb-8">Your Artist Profile</h2>
@@ -25,7 +25,7 @@
               @click="handleBack">
               Back
             </button>
-            <button type="submit" class="btn bg-primary-yellow rounded-full flex-grow font-semibold border-0">
+            <button type="submit" class="btn bg-primary-yellow text-black rounded-full flex-grow font-semibold border-0">
               Next
             </button>
           </div>

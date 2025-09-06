@@ -134,10 +134,14 @@
     </div>
   </div>
     <teleport to="body">
-      <div v-if="tooltip.show" :style="tooltip.style" class="fixed z-50 max-w-xs">
-        <div id="artist-tooltip" role="tooltip" class="bg-black text-white text-sm rounded px-3 py-2 shadow-lg">{{ tooltip.text }}</div>
-      </div>
+      <transition name="fade">
+        <div v-if="tooltip.show" :style="tooltip.style" class="fixed z-50 max-w-xs">
+          <div id="artist-tooltip" role="tooltip" class="bg-black text-white text-sm rounded px-3 py-2 shadow-lg">{{ tooltip.text }}</div>
+        </div>
+      </transition>
     </teleport>
+
+
 </template>
 
 <script setup>
@@ -295,3 +299,17 @@ function priceSymbols(n = 0) {
   return '$'.repeat(Math.max(0, Math.floor(n || 0)))
 }
 </script>
+
+<style scoped>
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+  .fade-enter-from, .fade-leave-to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  .fade-enter-to, .fade-leave-from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>

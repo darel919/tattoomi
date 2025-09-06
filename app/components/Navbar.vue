@@ -46,14 +46,11 @@
 <script setup>
 const route = useRoute()
 const colorMode = useColorMode()
-
-// Derive theme directly from colorMode.preference (ThemeInit sets this on load)
 const effectiveTheme = computed(() => {
     if (!colorMode || !colorMode.preference) return 'light'
     return colorMode.preference === 'dark' ? 'dark' : 'light'
 })
 
-// Avoid showing wrong logo during initial hydration: only render logo after preference exists
 const isThemeReady = computed(() => {
     return !!(colorMode && (colorMode.preference === 'dark' || colorMode.preference === 'light'))
 })
