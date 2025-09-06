@@ -39,33 +39,34 @@
                 <div>
                   <section class="flex items-center gap-1 my-1">
                     <div class="text-sm font-semibold text-base-content mr-1">{{ person.name }}</div>
-                    <div v-if="person.verified" class="relative">
-                      <div
-                        class="inline-flex items-center"
-                        tabindex="0"
-                        @mouseenter="openTooltip($event, 'This artist has been verified by Tattoomii team.')"
-                        @mouseleave="closeTooltip"
-                        @focus="openTooltip($event, 'This artist has been verified by Tattoomii team.')"
-                        @blur="closeTooltip"
-                        aria-describedby="artist-tooltip"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check-icon lucide-badge-check w-5 h-5"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+                    <section class="mt-1 gap-1 flex flex-row items-center">
+                      <div v-if="person.verified">
+                        <div
+                          class="inline-flex items-center"
+                          tabindex="0"
+                          @mouseenter="openTooltip($event, 'This artist has been verified by Tattoomii team.')"
+                          @mouseleave="closeTooltip"
+                          @focus="openTooltip($event, 'This artist has been verified by Tattoomii team.')"
+                          @blur="closeTooltip"
+                          aria-describedby="artist-tooltip"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#0291F0" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check-icon lucide-badge-check w-6 h-6"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+                        </div>
                       </div>
-                    </div>
-                    <div v-if="person.hygiene_cert" class="relative">
-                      <div
-                        class="inline-flex items-center"
-                        tabindex="0"
-                        @mouseenter="openTooltip($event, 'This artist has uploaded a hygiene certificate')"
-                        @mouseleave="closeTooltip"
-                        @focus="openTooltip($event, 'This artist has uploaded a hygiene certificate')"
-                        @blur="closeTooltip"
-                        aria-describedby="artist-tooltip"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-plus-icon lucide-shield-plus w-5 h-5"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M9 12h6"/><path d="M12 9v6"/></svg>
+                      <div v-if="person.hygiene_cert">
+                        <div
+                          class="inline-flex items-center"
+                          tabindex="0"
+                          @mouseenter="openTooltip($event, 'This artist has uploaded a hygiene certificate')"
+                          @mouseleave="closeTooltip"
+                          @focus="openTooltip($event, 'This artist has uploaded a hygiene certificate')"
+                          @blur="closeTooltip"
+                          aria-describedby="artist-tooltip"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-plus-icon lucide-shield-plus w-5 h-5"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M9 12h6"/><path d="M12 9v6"/></svg>
+                        </div>
                       </div>
-                    </div>
-                  
+                    </section>
                   </section>
                   
                   <div class="text-xs text-base-content/60 flex items-center mt-0.5">
@@ -81,8 +82,31 @@
             </div>
           </div>
 
-          <div class="mb-3 flex flex-wrap gap-2">
-            <span v-for="cat in (person.category || []).slice(0,3)" :key="cat.cat_id" class="text-xs px-4 py-1 bg-base-200 text-base-content rounded-full">{{ cat.cat_name }}</span>
+          <div class="mb-3 flex flex-wrap gap-2 items-center" ref="categoriesContainer">
+            <template v-for="(cat, idx) in person.category || []" :key="cat.cat_id">
+              <span
+                v-if="isCategoryVisible(person.id, idx)"
+                class="text-xs px-4 py-1 bg-base-200 text-base-content rounded-full"
+              >
+                {{ cat.cat_name }}
+              </span>
+            </template>
+            <button
+              v-if="hiddenCount(person.id) > 0"
+              type="button"
+              class="text-xs px-3 py-1 bg-base-200 text-base-content rounded-full border border-base-300"
+              @mouseenter="openHiddenCatsTooltip($event, person)"
+              @mouseleave="closeTooltip"
+              @focus="openHiddenCatsTooltip($event, person)"
+              @blur="closeTooltip"
+              aria-haspopup="true"
+              aria-expanded="tooltip.show"
+            >
+              +{{ hiddenCount(person.id) }}
+            </button>
+            <div ref="measureRoot" class="invisible absolute left-0 top-0 pointer-events-none" aria-hidden="true">
+              <span v-for="cat in (person.category || [])" :key="`m-${cat.cat_id}`" class="text-xs px-4 py-1 bg-base-200 text-base-content rounded-full inline-block mr-2" ref="measureTags">{{ cat.cat_name }}</span>
+            </div>
           </div>
 
           <ul class="text-sm text-base-content/70 space-y-1">
@@ -133,6 +157,23 @@ const tooltip = ref({
   style: {}
 })
 
+const categoriesContainer = ref(null)
+const measureRoot = ref(null)
+const measureTags = ref([])
+const visibleCountMap = ref({})
+
+function isCategoryVisible(personId, idx) {
+  const c = visibleCountMap.value[personId]
+  if (!c) return idx < 0
+  return idx < c
+}
+
+function hiddenCount(personId) {
+  const total = (item.find(p => p.id === personId)?.category || []).length
+  const visible = visibleCountMap.value[personId] ?? total
+  return Math.max(0, total - visible)
+}
+
 function openTooltip(ev, text) {
   const target = ev.currentTarget
   if (!target) return
@@ -147,7 +188,8 @@ function openTooltip(ev, text) {
     style: {
       left: `${x}px`,
       top: `${y}px`,
-      transform: 'translate(-50%, 0)'
+      transform: 'translate(-50%, 0)',
+      whiteSpace: 'pre-line'
     }
   }
 }
@@ -159,6 +201,85 @@ function closeTooltip() {
 function initials(name = '') {
   return String(name).split(' ').map(s => s[0] || '').slice(0, 2).join('').toUpperCase()
 }
+
+function openHiddenCatsTooltip(ev, person) {
+  const hidden = (person.category || []).slice((visibleCountMap.value[person.id] || 0)).map(c => `• ${c.cat_name}`).join('\n')
+  openTooltip(ev, hidden || 'No hidden categories')
+}
+
+function computeVisibleCounts() {
+  const containers = Array.isArray(categoriesContainer.value) ? categoriesContainer.value : [categoriesContainer.value].filter(Boolean)
+
+  item.forEach((person, idx) => {
+    const container = containers[idx]
+    if (!container) {
+      const card = Array.from(document.querySelectorAll('.p-4')).find(el => el.textContent.includes(person.name))
+      if (!card) return
+      container = card.querySelector('.mb-3.flex')
+      if (!container) return
+    }
+
+    const availableWidth = container.clientWidth
+    const tags = person.category || []
+    let used = 0
+    let visible = 0
+    const plusNPill = document.createElement('span')
+    plusNPill.className = 'text-xs px-3 py-1 bg-base-200 text-base-content rounded-full inline-block mr-2'
+    plusNPill.style.display = 'inline-block'
+    plusNPill.textContent = `+${Math.max(1, tags.length - 1)}`
+    const tempRoot = document.createElement('div')
+    tempRoot.style.position = 'absolute'
+    tempRoot.style.visibility = 'hidden'
+    tempRoot.style.height = 'auto'
+    tempRoot.style.whiteSpace = 'nowrap'
+    document.body.appendChild(tempRoot)
+
+    tempRoot.appendChild(plusNPill)
+
+    tags.forEach((t) => {
+      const span = document.createElement('span')
+      span.className = 'text-xs px-4 py-1 bg-base-200 text-base-content rounded-full inline-block mr-2'
+      span.style.display = 'inline-block'
+      span.textContent = t.cat_name
+      tempRoot.appendChild(span)
+      const w = span.getBoundingClientRect().width
+      const gap = 8
+      if (used + w + gap <= availableWidth) {
+        used += w + gap
+        visible += 1
+      }
+    })
+    
+    const plusNWidth = plusNPill.getBoundingClientRect().width + 8
+    if (visible < tags.length && used + plusNWidth > availableWidth) {
+
+      while (visible > 0 && used + plusNWidth > availableWidth) {
+        const last = tempRoot.children[tempRoot.children.length - 1]
+        if (!last) break
+        const lastW = last.getBoundingClientRect().width + 8
+        used -= lastW
+        visible -= 1
+        tempRoot.removeChild(last)
+      }
+    }
+
+    document.body.removeChild(tempRoot)
+    visibleCountMap.value = { ...visibleCountMap.value, [person.id]: Math.max(0, visible) }
+  })
+}
+
+onMounted(() => {
+  setTimeout(() => computeVisibleCounts(), 50)
+  window.addEventListener('resize', computeVisibleCounts)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', computeVisibleCounts)
+})
+
+watch(() => item, () => {
+  setTimeout(() => computeVisibleCounts(), 50)
+}, { deep: true })
 
 function formatLangs(langs = []) {
   return (langs || []).map(l => l.lang_name).join(', ')
