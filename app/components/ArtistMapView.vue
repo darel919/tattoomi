@@ -1,6 +1,6 @@
 <template>
     <ClientOnly>
-        <div class="h-[70vh] w-full rounded-xl -mt-8 mb-8 overflow-hidden">
+        <div class="h-[70vh] w-full rounded-xl -mt-10 mb-8 overflow-hidden">
             <LMap ref="map" :useGlobalLeaflet="false" @ready="onMapReady">
                 <LTileLayer
                     :key="isDark"

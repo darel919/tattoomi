@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-12">
+  <div class="mx-12 my-8">
     <section v-if="viewMode === 'list'" class="mb-16">
       <p>All Artists</p>
       <h1 class="text-3xl font-bold">Find the perfect Tattoo Artist for your idea</h1>

@@ -1,6 +1,6 @@
 <template>
     <!-- THIS NAVBAR IS NOT RESPONSIVE! (yet). minimum width should be atleast 1024px. -->
-    <nav class="navbar py-8 px-12 flex flex-col">
+    <nav class="navbar pt-8 px-12 -mb-2 flex flex-col">
         <section class="relative flex flex-row justify-between w-full items-center">
             <div class="navbar-branding-start w-40">
                 <NuxtLink to="/">
@@ -40,6 +40,7 @@
                 <NavbarFields />
             </div>
         </section>
+        <div class="border-b border-gray-300 dark:border-gray-700 w-full"></div>
     </nav>
 </template>
 
@@ -49,10 +50,6 @@ const colorMode = useColorMode()
 const effectiveTheme = computed(() => {
     if (!colorMode || !colorMode.preference) return 'light'
     return colorMode.preference === 'dark' ? 'dark' : 'light'
-})
-
-const isThemeReady = computed(() => {
-    return !!(colorMode && (colorMode.preference === 'dark' || colorMode.preference === 'light'))
 })
 
 const navItems = [

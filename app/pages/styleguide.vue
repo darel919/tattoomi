@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-base-200">
     <main class="max-w-7xl mx-12 py-6">
-      <div class="mt-8 mb-16">
+      <div class="mt-2 mb-16">
         <p class="text-xl font-grift text-base-content mb-2">Explore different tattoo styles</p>
         <h1 class="text-4xl font-grift font-bold text-based-content">Tattoo Style Guide</h1>
       </div>
