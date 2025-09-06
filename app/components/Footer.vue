@@ -1,5 +1,5 @@
 <template>
-<footer class="footer p-16 bg-black text-base-content">
+<footer class="footer p-16 bg-black text-white">
     <section class="flex flex-row justify-between w-full">
         <section class="flex flex-col items-start">
             <img src="/assets/images/logo_light.png" alt="Logo" class="w-48 mb-4"/>
@@ -8,24 +8,24 @@
         <section class="flex flex-row gap-16">
             <div class="flex flex-col">
                 <h3 class="footer-title mb-2">Explore</h3>
-                <a class="link link-hover">Blog</a>
-                <a class="link link-hover">Price Calculator</a>
-                <a class="link link-hover">Artist Finder</a>
-                <a class="link link-hover">Styleguide</a>
+                <NuxtLink class="link link-hover" to="/">Blog</NuxtLink>
+                <NuxtLink class="link link-hover" to="/">Price Calculator</NuxtLink>
+                <NuxtLink class="link link-hover" to="/">Artist Finder</NuxtLink>
+                <NuxtLink class="link link-hover" to="/">Styleguide</NuxtLink>
             </div>
 
             <div class="flex flex-col">
                 <h3 class="footer-title mb-2">Company</h3>
-                <a class="link link-hover">About us</a>
-                <a class="link link-hover">FAQs</a>
-                <a class="link link-hover" href="/contact">Contact Us</a>
+                <NuxtLink class="link link-hover" to="/">About us</NuxtLink>
+                <NuxtLink class="link link-hover" to="/">FAQs</NuxtLink>
+                <NuxtLink class="link link-hover" to="/contact">Contact Us</NuxtLink>
             </div>
 
             <div class="flex flex-col">
                 <h3 class="footer-title mb-2">Legal</h3>
-                <a class="link link-hover" href="/tos">Terms and Conditions</a>
-                <a class="link link-hover" href="/privacypolicy">Privacy Policy</a>
-                <a class="link link-hover">Cookie Settings</a>
+                <NuxtLink class="link link-hover" to="/tos">Terms and Conditions</NuxtLink>
+                <NuxtLink class="link link-hover" to="/privacypolicy">Privacy Policy</NuxtLink>
+                <NuxtLink class="link link-hover" to="/">Cookie Settings</NuxtLink>
             </div>
         </section>
 
