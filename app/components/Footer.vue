@@ -8,7 +8,7 @@
             <section class="flex flex-row gap-16">
                 <div class="flex flex-col">
                     <h3 class="footer-title mb-2">Explore</h3>
-                    <NuxtLink class="link link-hover" to="/">Blog</NuxtLink>
+                    <NuxtLink class="link link-hover" to="/blog">Blog</NuxtLink>
                     <NuxtLink class="link link-hover" to="/">Price Calculator</NuxtLink>
                     <NuxtLink class="link link-hover" to="/">Artist Finder</NuxtLink>
                     <NuxtLink class="link link-hover" to="/">Styleguide</NuxtLink>
