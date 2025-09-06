@@ -9,6 +9,10 @@ module.exports = {
       colors: {
         hero: '#FBBF13',
       },
+      fontFamily: {
+        sans: ["Grift", "ui-sans-serif", "system-ui", "-apple-system", "\"Segoe UI\"", "Roboto", "\"Helvetica Neue\"", "Arial"],
+        grift: ["Grift"],
+      },
     },
   },
   plugins: [],
