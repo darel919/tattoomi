@@ -20,13 +20,13 @@
               <path d="M17.66 6.34l1.41-1.41" />
             </g>
           </svg>
-  </i>
-  <i class="sun changer" :class="{ change: isDark }" aria-hidden>
-          <!-- sun SVG -->
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="currentColor" />
-          </svg>
-  </i>
+      </i>
+      <i class="sun changer" :class="{ change: isDark }" aria-hidden>
+        <!-- sun SVG -->
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="currentColor" />
+        </svg>
+      </i>
       </span>
     </div>
   </div>
@@ -125,7 +125,6 @@ span i {
 #shape {
   clip-path: circle(0% at 50% 50%);
   position: absolute;
-  background: #1f1f1f;
   width: 100%;
   height: 100%;
   z-index: -1;
@@ -142,7 +141,6 @@ span i {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: #1f1f1f;
   clip-path: circle(100% at 50% 50%);
   z-index: 1;
 }
