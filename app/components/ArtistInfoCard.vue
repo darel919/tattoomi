@@ -2,10 +2,10 @@
   <div class="my-8">
     <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
       <div v-for="person in item" :key="person.id" class="bg-base-100 rounded-2xl shadow-md overflow-hidden">
-        <div class="h-44 bg-base-200 relative group" tabindex="0">
-          <img v-if="person.image" :src="person.image" alt="photo" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 group-focus-within:scale-105" />
+        <div class="h-44 bg-base-200 relative group rounded-t-2xl overflow-hidden" tabindex="0">
+          <img v-if="person.image" :src="person.image" alt="photo" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 group-focus-within:scale-105 block transform-gpu will-change-transform" />
           <!-- FAILOVER ELEMENT IF NO IMAGE IS PRESENT ON PROP VALUE! DELETE ON PROD! -->
-          <img v-else src="~/assets/images/sample_card.png" title="This is a sample photo." alt="photo" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 group-focus-within:scale-105" />
+          <img v-else src="~/assets/images/sample_card.png" title="This is a sample photo." alt="photo" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 group-focus-within:scale-105 block transform-gpu will-change-transform" />
           <div class="absolute inset-0 flex items-center justify-center flex-col gap-3 pointer-events-none">
             <div aria-hidden="true" class="absolute inset-0 z-0 bg-black/50 pointer-events-none transition-opacity duration-200 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"></div>
             <button

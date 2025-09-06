@@ -1,6 +1,6 @@
 <template>
-  <div class="mx-8">
-    <section v-if="viewMode === 'list'" class="mb-8">
+  <div class="mx-12">
+    <section v-if="viewMode === 'list'" class="mb-16">
       <p>All Artists</p>
       <h1 class="text-3xl font-bold">Find the perfect Tattoo Artist for your idea</h1>
     </section>
@@ -32,5 +32,9 @@ const mockupData = [
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+
+useHead({
+  title: 'Home | tattooMii',
+})
 
 </script>

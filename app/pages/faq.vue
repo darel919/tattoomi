@@ -119,8 +119,11 @@
 </template>
 
 <script setup>
-const activeTab = ref('')
+const activeTab = ref('lover')
 onMounted(() => {
     activeTab.value = 'lover'
+})
+useHead({
+  title: 'Frequently Asked Questions | tattooMii',
 })
 </script>

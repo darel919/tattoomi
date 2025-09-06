@@ -1,6 +1,6 @@
 <template>
     <!-- THIS NAVBAR IS NOT RESPONSIVE! (yet). minimum width should be atleast 1024px. -->
-    <nav class="navbar py-8 px-8 flex flex-col">
+    <nav class="navbar py-8 px-12 flex flex-col">
         <section class="relative flex flex-row justify-between w-full items-center">
             <div class="navbar-branding-start w-40">
                 <NuxtLink to="/">

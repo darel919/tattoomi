@@ -101,3 +101,9 @@
         </section>
     </div>
 </template>
+
+<script setup>
+useHead({
+  title: 'Privacy Policy | tattooMii',
+})
+</script>

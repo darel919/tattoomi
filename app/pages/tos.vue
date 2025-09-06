@@ -71,3 +71,9 @@
         </section>
     </div>
 </template>
+
+<script setup>
+useHead({
+  title: 'Terms of Service | tattooMii',
+})
+</script>

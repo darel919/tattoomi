@@ -1,17 +1,13 @@
 <template>
   <div class="min-h-screen bg-base-200">
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-0 py-5">
-      <!-- Header Section -->
-      <div class="mb-16">
+    <main class="max-w-7xl mx-12 py-6">
+      <div class="mt-8 mb-16">
         <p class="text-xl font-grift text-base-content mb-2">Explore different tattoo styles</p>
         <h1 class="text-4xl font-grift font-bold text-based-content">Tattoo Style Guide</h1>
       </div>
 
-      <!-- Style Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4" style="gap: 15.572px;">
         <div v-for="style in tattooStyles" :key="style.id" class="bg-base-100 overflow-hidden hover:shadow-xl transition-shadow duration-300" style="padding: 18.299px; border-radius: 6.156px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -2px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 8.305px;">
-          <!-- Image -->
           <div class="bg-gray-100 overflow-hidden" style="width: 265.792px; height: 265.792px; max-width: 100%; aspect-ratio: 1;">
             <img
               :src="style.image"
@@ -20,9 +16,7 @@
             />
           </div>
 
-          <!-- Content -->
           <div class="w-full" style="display: flex; flex-direction: column; gap: 8.305px;">
-            <!-- Title and Help Icon -->
             <div class="flex items-center justify-between" style="width: 100%;">
               <h3 class="font-grift text-base-content font-bold" style="font-size: 18px; line-height: 28px;">{{ style.name }}</h3>
               <button class="transition-colors" style="color: #45556C;">
@@ -39,10 +33,8 @@
               </button>
             </div>
 
-            <!-- Description -->
             <p class="font-roboto text-base-content" style="width: 100%; font-size: 14px; font-weight: 400; line-height: 20px;">{{ style.description }}</p>
 
-            <!-- Action Buttons -->
             <div class="flex items-flex-start" style="gap: 4.153px;">
               <button class="flex items-center transition-colors hover:bg-yellow-400" style="padding: 8px 12px; gap: 6px; border-radius: 24.622px; background: #FBBF13; color: #314158; font-family: Roboto; font-size: 14px; font-weight: 500; line-height: 20px;">
                 Add to calculator
@@ -62,9 +54,8 @@
 </template>
 
 <script setup>
-// Page metadata
 useHead({
-  title: 'Tattoo Style Guide | TattooMii',
+  title: 'Tattoo Style Guide | tattooMii',
   meta: [
     { name: 'description', content: 'Explore different tattoo styles including Fineline, Oldschool, Microrealistic, Watercolor, Linework, Anime, Tribal, and Blackwork.' }
   ]

@@ -246,3 +246,8 @@
   </div>
 </template>
    
+<script setup>
+useHead({
+  title: 'Blog | tattooMii',
+})
+</script>
