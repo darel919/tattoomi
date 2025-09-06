@@ -18,13 +18,13 @@
                 <h3 class="footer-title mb-2">Company</h3>
                 <a class="link link-hover">About us</a>
                 <a class="link link-hover">FAQs</a>
-                <a class="link link-hover">Contact Us</a>
+                <a class="link link-hover" href="/contact">Contact Us</a>
             </div>
 
             <div class="flex flex-col">
                 <h3 class="footer-title mb-2">Legal</h3>
-                <a class="link link-hover">Terms and Conditions</a>
-                <a class="link link-hover">Privacy Policy</a>
+                <a class="link link-hover" href="/tos">Terms and Conditions</a>
+                <a class="link link-hover" href="/privacypolicy">Privacy Policy</a>
                 <a class="link link-hover">Cookie Settings</a>
             </div>
         </section>
