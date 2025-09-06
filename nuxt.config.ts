@@ -5,6 +5,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
+  runtimeConfig: {
+    public: {
+      // THIS SHOULD BE REMOVED ON PROD!
+      baseURL: 'https://tattoomii-f43c06650d05.herokuapp.com',
+    }
+  },
   vite: {
     plugins: [
       tailwindcss(),
