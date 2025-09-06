@@ -11,7 +11,7 @@ module.exports = {
         hero: '#FBBF13',
       },
       fontFamily: {
-        sans: ["Grift", "ui-sans-serif", "system-ui", "-apple-system", "\"Segoe UI\"", "Roboto", "\"Helvetica Neue\"", "Arial"],
+        sans: ["Roboto", "ui-sans-serif", "system-ui", "-apple-system", "\"Segoe UI\"", "Roboto", "\"Helvetica Neue\"", "Arial"],
         grift: ["Grift"],
       },
     },
