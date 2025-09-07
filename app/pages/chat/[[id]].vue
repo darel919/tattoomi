@@ -69,4 +69,7 @@ onMounted(() => {
 const onSelectRoom = (roomId) => {
   router.push(`/chat/${roomId}`)
 }
+useHead({
+  title: 'Chat Inbox | tattooMii',
+})
 </script>

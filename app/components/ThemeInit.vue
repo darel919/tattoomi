@@ -16,7 +16,7 @@ onMounted(() => {
   }
 
   const applyVisuals = (pref) => {
-    const bgColor = pref === 'dark' ? 'white' : '#003'
+    const bgColor = pref === 'dark' ? '#003' : 'white'
     document.documentElement.style.setProperty('--bg', bgColor)
     if (pref === 'dark') {
       document.documentElement.classList.add('dark')
