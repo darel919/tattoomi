@@ -9,6 +9,7 @@
   --color-secondary-200: #62748e;
   --color-secondary-250: #90a1b9;
   --color-secondary-300: #cad5e2;
+  --color-secondary-350: #d9d9d9;
   --color-secondary-400: #e2e8f0;
   --color-dark-100: #0f172b;
   --color-dark-200: #171415;
@@ -75,4 +76,8 @@ body {
   margin-bottom: 0 !important;
   background: var(--color-primary-yellow) !important;
   color: black !important;
+}
+
+.divider {
+  margin: 0 !important;
 }

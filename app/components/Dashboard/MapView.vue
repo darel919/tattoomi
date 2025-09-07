@@ -1,21 +1,18 @@
 <template>
     <ClientOnly>
         <div v-if="location?.lat && location?.lng" class="card bg-base-100 shadow-xl">
-             <div class="px-4 py-4">
+            <div class="px-4 py-4">
                 <p v-if="address" class="text-sm">📍 {{ address }}</p>
                 <p v-else-if="isLoadingAddress" class="text-sm">Loading address...</p>
-            </div>    
+            </div>
             <div class="h-[400px] w-full rounded-xl overflow-hidden">
                 <LMap ref="map" :useGlobalLeaflet="false" @ready="onMapReady">
-                    <LTileLayer
-                        :key="isDark"
-                        :url="isDark 
-                            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-                            : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'"
-                        :attribution="isDark 
+                    <LTileLayer :key="isDark" :url="isDark
+                        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                        : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'"
+                        :attribution="isDark
                             ? `&copy; <a href='https://carto.com/attributions'>CARTO</a> &copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>`
-                            : `&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors`"
-                        layer-type="base"
+                            : `&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors`" layer-type="base"
                         :name="isDark ? 'Dark Map' : 'Light Map'">
                     </LTileLayer>
                     <LMarker :lat-lng="[location.lat, location.lng]">
@@ -79,7 +76,7 @@ const updateTheme = () => {
 watch(colorMode, updateTheme, { immediate: true })
 
 onMounted(() => {
-    if(!props.location) return console.warn('[DashboardMapView] Component is mounted, but "location" prop data is not defined. "location" is required for DashboardMapView!')
+    if (!props.location) return console.warn('[DashboardMapView] Component is mounted, but "location" prop data is not defined. "location" is required for DashboardMapView!')
     updateTheme()
     getAddress(props.location.lat, props.location.lng)
 })

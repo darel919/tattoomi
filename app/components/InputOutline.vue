@@ -6,13 +6,16 @@
 
 
     <label class="border border-secondary-300 rounded-md py-2 px-3 flex items-center gap-2">
-      <div class="w-4 h-4">
-        <component v-if="icon" :is="icon" />
+      <div class="w-4 h-4" v-if="icon">
+        <component :is="icon" />
       </div>
       <Multiselect v-if="type === 'select'" v-bind="$attrs" :placeholder="placeholder" :model-value="modelValue"
         @update:modelValue="emit('update:modelValue', $event)" :options="options" track-by="value" label="label"
         :searchable="false" :show-labels="false">
       </Multiselect>
+      <textarea v-else-if="type === 'textarea'" v-bind="$attrs" :type="type" :placeholder="placeholder"
+        class="grow roboto outline-none" :value="modelValue" @input="emit('update:modelValue', $event.target.value)"
+        rows="3"></textarea>
       <input v-else v-bind="$attrs" :type="type" :placeholder="placeholder" class="grow roboto outline-none"
         :value="modelValue" @input="emit('update:modelValue', $event.target.value)" />
     </label>
@@ -20,7 +23,6 @@
 </template>
 
 <script setup>
-import { Teleport } from 'vue';
 import Multiselect from 'vue-multiselect';
 
 const props = defineProps({

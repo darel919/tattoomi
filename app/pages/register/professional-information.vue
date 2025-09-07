@@ -85,7 +85,7 @@
             </div>
             <div class="flex items-end gap-1.5">
               <InputOutline v-model="form.rate" label="Rate" placeholder="Set your minimum rate" type="number"
-                :icon="IconsCake" />
+                :icon="IconsCoins" />
               <div class="w-[18.75rem]">
                 <InputOutline v-model="form.currency" placeholder="Currency" type="select" :icon="IconsCurrency"
                   :options="[{
@@ -115,7 +115,8 @@
               @click="handleBack">
               Back
             </button>
-            <button type="submit" class="btn bg-primary-yellow text-black rounded-full flex-grow font-semibold border-0">
+            <button type="submit"
+              class="btn bg-primary-yellow text-black rounded-full flex-grow font-semibold border-0">
               Verify Profile
             </button>
           </div>

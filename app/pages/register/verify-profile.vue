@@ -36,6 +36,6 @@ definePageMeta({
 });
 
 function handleSubmit() {
-  // router.push('/register/basic-info');
+  router.push('/artist/dashboard');
 }
 </script>
