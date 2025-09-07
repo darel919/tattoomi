@@ -1,7 +1,7 @@
 <template>
   <div class="my-8">
-    <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
-      <div v-for="person in item" :key="person.id" class="bg-base-100 rounded-2xl shadow-md overflow-hidden">
+    <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(375px, 1fr));">
+      <div v-for="person in item" :key="person.id" class="bg-base-100 rounded-2xl shadow-lg overflow-hidden">
         <div class="h-44 bg-base-200 relative group rounded-t-2xl overflow-hidden" tabindex="0">
           <img v-if="person.image" :src="person.image" alt="photo" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 group-focus-within:scale-105 block transform-gpu will-change-transform" />
           <!-- FAILOVER ELEMENT IF NO IMAGE IS PRESENT ON PROP VALUE! DELETE ON PROD! -->
@@ -145,6 +145,22 @@
 </template>
 
 <script setup>
+/**
+ * ArtistInfoCard component displays a grid of artist information cards.
+ * Each card shows artist details including name, verification status, rating, location,
+ * categories, languages, experience, waiting time, and pricing.
+ * Supports hover effects, tooltips, and responsive category display.
+ */
+
+/**
+ * Props for the ArtistInfoCard component.
+ * @typedef {Object} ArtistInfoCardProps
+ * @property {Array} item - Array of artist objects to display in the cards.
+ */
+
+/**
+ * @type {ArtistInfoCardProps}
+ */
 const props = defineProps({
   item: {
     type: Array,
@@ -166,18 +182,34 @@ const measureRoot = ref(null)
 const measureTags = ref([])
 const visibleCountMap = ref({})
 
+/**
+ * Checks if a category is visible for a given person and index.
+ * @param {string|number} personId - The ID of the person.
+ * @param {number} idx - The index of the category.
+ * @returns {boolean} True if the category is visible, false otherwise.
+ */
 function isCategoryVisible(personId, idx) {
   const c = visibleCountMap.value[personId]
   if (!c) return idx < 0
   return idx < c
 }
 
+/**
+ * Calculates the number of hidden categories for a person.
+ * @param {string|number} personId - The ID of the person.
+ * @returns {number} The count of hidden categories.
+ */
 function hiddenCount(personId) {
   const total = (item.find(p => p.id === personId)?.category || []).length
   const visible = visibleCountMap.value[personId] ?? total
   return Math.max(0, total - visible)
 }
 
+/**
+ * Opens a tooltip at the specified event position with given text.
+ * @param {Event} ev - The mouse or focus event.
+ * @param {string} text - The text to display in the tooltip.
+ */
 function openTooltip(ev, text) {
   const target = ev.currentTarget
   if (!target) return
@@ -198,19 +230,35 @@ function openTooltip(ev, text) {
   }
 }
 
+/**
+ * Closes the currently open tooltip.
+ */
 function closeTooltip() {
   tooltip.value.show = false
 }
 
+/**
+ * Generates initials from a person's name.
+ * @param {string} name - The full name of the person.
+ * @returns {string} The uppercase initials (up to 2 characters).
+ */
 function initials(name = '') {
   return String(name).split(' ').map(s => s[0] || '').slice(0, 2).join('').toUpperCase()
 }
 
+/**
+ * Opens a tooltip showing hidden categories for a person.
+ * @param {Event} ev - The mouse or focus event.
+ * @param {Object} person - The person object containing categories.
+ */
 function openHiddenCatsTooltip(ev, person) {
   const hidden = (person.category || []).slice((visibleCountMap.value[person.id] || 0)).map(c => `• ${c.cat_name}`).join('\n')
   openTooltip(ev, hidden || 'No hidden categories')
 }
 
+/**
+ * Computes the number of visible categories for each person based on container width.
+ */
 function computeVisibleCounts() {
   const containers = Array.isArray(categoriesContainer.value) ? categoriesContainer.value : [categoriesContainer.value].filter(Boolean)
 
@@ -285,16 +333,31 @@ watch(() => item, () => {
   setTimeout(() => computeVisibleCounts(), 50)
 }, { deep: true })
 
+/**
+ * Formats a list of languages into a comma-separated string.
+ * @param {Array} langs - Array of language objects with lang_name property.
+ * @returns {string} Comma-separated list of language names.
+ */
 function formatLangs(langs = []) {
   return (langs || []).map(l => l.lang_name).join(', ')
 }
 
+/**
+ * Generates a waiting time label based on days.
+ * @param {number} days - Number of days for waiting time.
+ * @returns {string} Formatted waiting time label.
+ */
 function waitingLabel(days = 0) {
   const weeks = Math.max(1, Math.round((days || 0) / 7))
   if (weeks === 1) return '1 week wait'
   return `${weeks}-${weeks + 1} weeks wait`
 }
 
+/**
+ * Generates price symbols based on a numeric value.
+ * @param {number} n - The price level number.
+ * @returns {string} String of dollar signs representing the price.
+ */
 function priceSymbols(n = 0) {
   return '$'.repeat(Math.max(0, Math.floor(n || 0)))
 }
