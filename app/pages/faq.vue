@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-center">
+    <div class="min-h-screen flex justify-center">
         <section class="w-full max-w-3xl mx-auto p-6 bg-white/0">
             <header class="text-center mb-8">
                 <h1 class="text-3xl font-semibold">Frequently Asked Questions (FAQs)</h1>

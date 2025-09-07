@@ -1,6 +1,6 @@
 <template>
-    <div class="card shadow-sm overflow-hidden rounded-2xl">
-        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="card shadow-sm overflow-hidden rounded-2xl h-full flex flex-col">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
             <div class="flex items-center justify-between">
                 <h3 class="text-3xl font-semibold">Inbox</h3>
             </div>
@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <div class="max-h-96 overflow-auto">
+        <div class="h-full overflow-auto">
             <section
                 v-for="(chat, index) in filtered"
                 :key="chat.id"

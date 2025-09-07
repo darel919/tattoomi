@@ -1,6 +1,6 @@
 <template>
-    <section class="space-y-4 p-4">
-    <header class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800 mb-8">
+    <section class="space-y-4 p-4 h-full flex flex-col">
+    <header class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800 mb-8 flex-shrink-0">
         <section class="flex-row flex gap-3">
             <div v-if="data.recipient?.avatar" class="avatar">
                 <div class="w-12 rounded-full overflow-hidden">
@@ -23,7 +23,7 @@
             </button>
         </section>
     </header>
-        <div class="flex flex-col gap-3 ">
+        <div class="flex flex-col gap-3 flex-1 overflow-y-auto">
             <div v-for="msg in data.messages" :key="msg.msg_id">
                 <div :class="['chat', isSent(msg) ? 'chat-end' : 'chat-start']">
                     <div class="chat-header mb-1">

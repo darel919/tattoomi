@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-xs rounded-2xl mx-auto shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+    <div class="max-w-xs rounded-2xl mx-auto shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden h-full">
         <div class="p-6 text-center relative">
             <div class="mx-auto w-20 h-20 rounded-full ring-4 ring-white overflow-hidden">
                 <img :src="artist.avatar" :alt="artist.name" class="w-full h-full object-cover" />

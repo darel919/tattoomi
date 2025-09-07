@@ -1,15 +1,15 @@
 <template>
-  <div class="min-h-screen px-10 py-6">
-    <div class="grid grid-cols-1 md:grid-cols-[360px_1fr_320px] gap-4">
-      <aside class="w-full md:w-auto">
+  <div class="h-[70vh] px-10 my-10">
+    <div class="flex flex-col md:flex-row gap-4 h-full">
+      <aside class="w-full md:w-[360px] md:flex-shrink-0 h-full md:h-full">
         <ChatRoomSelect :data="roomDatas" :selectedId="id" @select="onSelectRoom" />
       </aside>
 
-      <section class="w-full bg-base-100 shadow-sm rounded-2xl">
+      <section class="flex-1 bg-base-100 shadow-sm rounded-2xl h-full">
         <ChatWindow :data="currentRoomData" />
       </section>
 
-      <aside class="hidden md:block w-full md:w-80">
+      <aside class="hidden md:block w-full md:w-[320px] md:flex-shrink-0 h-full">
         <ChatArtistDetails :data="currentArtistData" />
       </aside>
     </div>
