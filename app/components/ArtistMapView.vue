@@ -45,7 +45,7 @@ onMounted(() => {
 const onMapReady = (mapInstance) => {
     map.value = mapInstance
     mapInstance.setView(
-        [47.2228, 8.3228], // latitude, longitude
+        [47.2228, 8.3228], // CURRENTLY HARDCODED lat, lng VALUE OF ZURICH. DO NOT PASS THIS INTO PROD!
         17
     )
     updateTheme()
