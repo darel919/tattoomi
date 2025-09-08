@@ -94,7 +94,7 @@
                   }]" />
               </div>
             </div>
-            <InputOutline v-model="form.budget" placeholder="Select  budget range" type="select" :icon="IconsCalculator"
+            <InputOutline v-model="form.budget" placeholder="Select budget range" type="select" :icon="IconsCalculator"
               :options="[
                 {
                   label: 'Small (up to CHF 1200 for a one-day session)',

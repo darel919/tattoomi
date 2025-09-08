@@ -4,10 +4,9 @@
       {{ label }}
     </div>
 
-
     <label class="border border-secondary-300 rounded-md py-2 px-3 flex items-center gap-2">
       <div class="w-4 h-4" v-if="icon">
-        <component :is="icon" />
+        <component :is="icon" :size="18" />
       </div>
       <Multiselect v-if="type === 'select'" v-bind="$attrs" :placeholder="placeholder" :model-value="modelValue"
         @update:modelValue="emit('update:modelValue', $event)" :options="options" track-by="value" label="label"
@@ -26,7 +25,7 @@
 import Multiselect from 'vue-multiselect';
 
 const props = defineProps({
-  label: { type: String, required: true },
+  label: { type: String, default: null },
   placeholder: { type: String, default: '' },
   type: { type: String, default: 'text' },
   modelValue: { type: [String, Number], default: '' },

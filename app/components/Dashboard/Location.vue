@@ -1,16 +1,16 @@
 <template>
   <div>
-    <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-3">
       <div class="flex justify-between items-center">
-        <h4 class="text-2xl font-semibold">About</h4>
-        <button v-if="!props.readonly" onclick="modal_edit_profile_bio.show()"
+        <h4 class="text-2xl font-semibold">Location</h4>
+        <button v-if="!props.readonly" onclick="modal_edit_map_view.show()"
           class="btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
           <Pencil :size="20" />
         </button>
       </div>
-      <p class="text-secondary-100">Write down your professional description here...</p>
+      <DashboardMapView :location="{ lat: 37.7749, lng: -122.4194 }" />
     </div>
-    <ModalEditProfileBio />
+    <EditMapView />
   </div>
 </template>
 

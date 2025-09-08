@@ -127,6 +127,18 @@
         </svg>
       </a>
     </section>
+    <!-- ARTIST ACTION -->
+    <section v-if="!props.readonly">
+      <div class="flex gap-6 w-full">
+        <NuxtLink to="/artist/1" class="btn border border-primary-yellow rounded-full flex-grow font-semibold">
+          See Public View
+        </NuxtLink>
+        <button type="button" class="btn bg-primary-yellow text-black rounded-full flex-grow font-semibold border-0">
+          Profile Settings
+        </button>
+      </div>
+      <div class="divider before:bg-secondary-400 after:bg-secondary-400 py-8"></div>
+    </section>
     <!-- ARTIST DETAILS -->
     <section>
       <div class="w-full bg-base-100 p-3 rounded-lg">
@@ -144,7 +156,11 @@
               <div class="h-px bg-base-200 mt-2"></div>
             </div>
             <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ props.data.years_experience
-              }} Years</div>
+            }} Years</div>
+            <button v-if="!props.readonly" onclick="modal_edit_profile_experience.show()"
+              class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
+              <Pencil :size="20" />
+            </button>
           </li>
 
           <li class="flex items-center">
@@ -161,7 +177,11 @@
               <div class="h-px bg-base-200 mt-2"></div>
             </div>
             <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{props.data.lang.map(l =>
-              l.lang_name).join(', ') }}</div>
+              l.lang_name).join(', ')}}</div>
+            <button v-if="!props.readonly" onclick="modal_edit_profile_language.show()"
+              class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
+              <Pencil :size="20" />
+            </button>
           </li>
 
           <li class="flex items-center">
@@ -177,7 +197,11 @@
               <div class="h-px bg-base-200 mt-2"></div>
             </div>
             <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ '$'.repeat(props.data.price)
-              }}</div>
+            }}</div>
+            <button v-if="!props.readonly" onclick="modal_edit_profile_rate.show()"
+              class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
+              <Pencil :size="20" />
+            </button>
           </li>
 
           <li class="flex items-center">
@@ -194,6 +218,10 @@
             </div>
             <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ props.data.waitingTime }}
               days</div>
+            <button v-if="!props.readonly" onclick="modal_edit_profile_waiting_time.show()"
+              class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
+              <Pencil :size="20" />
+            </button>
           </li>
 
           <li class="flex items-center">
@@ -213,14 +241,25 @@
               <span v-for="cat in props.data.category" :key="cat.cat_id" class="badge badge-sm badge-outline mr-1">{{
                 cat.cat_name }}</span>
             </div>
+            <button v-if="!props.readonly" onclick="modal_edit_profile_art_style.show()"
+              class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
+              <Pencil :size="20" />
+            </button>
           </li>
         </ul>
       </div>
     </section>
+    <ModalEditProfileArtStyle />
+    <ModalEditProfileExperience />
+    <ModalEditProfileLanguage />
+    <ModalEditProfileWaitingTime />
+    <ModalEditProfileRate />
   </section>
 </template>
 
 <script setup>
+import { Pencil } from 'lucide-vue-next';
+
 /**
  * @typedef {Object} ArtistData
  * @property {number} [id] - The artist's unique identifier
@@ -281,7 +320,8 @@ const props = defineProps({
   data: {
     type: Object,
     required: true
-  }
+  },
+  readonly: { type: Boolean, default: false },
 })
 onMounted(() => {
   if (!props.data) return console.warn('[DashboardArtistInfo] ArtistInfo component mounted but has invalid data prop. We require data prop!');

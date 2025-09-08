@@ -24,7 +24,8 @@
           </div>
 
           <button type="submit"
-            class="btn bg-primary-yellow text-black rounded-full w-full font-semibold text-medium border-0">Sign In</button>
+            class="btn bg-primary-yellow text-black rounded-full w-full font-semibold text-medium border-0">Sign
+            In</button>
         </form>
 
         <p class="text-center">

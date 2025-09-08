@@ -11,6 +11,7 @@
   --color-secondary-300: #cad5e2;
   --color-secondary-350: #d9d9d9;
   --color-secondary-400: #e2e8f0;
+  --color-secondary-500: #f8f8f8;
   --color-dark-100: #0f172b;
   --color-dark-200: #171415;
 }
@@ -80,4 +81,8 @@ body {
 
 .divider {
   margin: 0 !important;
+}
+
+.scrollbar-style-1 {
+  scrollbar-color: #050505 #e0e0e0; /* thumb color | track color */
 }
