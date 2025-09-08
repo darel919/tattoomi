@@ -17,11 +17,12 @@ export const useMyAuthStore = defineStore('auth', {
         })
         if (response.token) {
           this.token = response.token
-          this.user = response.data
+          this.fetchUser()
           this.isAuthenticated = true
           if (process.client) {
             localStorage.setItem('authToken', response.token)
           }
+          
         }
         return response
       } catch (error) {
@@ -47,7 +48,6 @@ export const useMyAuthStore = defineStore('auth', {
           }
         })
         this.user = response.data
-        console.log("Fetched user:", this.user)
         return response
       } catch (error) {
         this.user = null
@@ -81,6 +81,7 @@ export const useMyAuthStore = defineStore('auth', {
         })
         if (response.token) {
           this.token = response.token
+          this.fetchUser()
           this.isAuthenticated = true
           if (process.client) {
             localStorage.setItem('authToken', response.token)
