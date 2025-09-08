@@ -9,14 +9,14 @@
                 <div class="flex flex-col">
                     <h3 class="footer-title mb-2">Explore</h3>
                     <NuxtLink class="link link-hover text-sm" to="/blog">Blog</NuxtLink>
-                    <NuxtLink class="link link-hover text-sm" to="/">Price Calculator</NuxtLink>
+                    <NuxtLink class="link link-hover text-sm" to="/pricecalculator">Price Calculator</NuxtLink>
                     <NuxtLink class="link link-hover text-sm" to="/">Artist Finder</NuxtLink>
                     <NuxtLink class="link link-hover text-sm" to="/styleguide">Style Guide</NuxtLink>
                 </div>
 
                 <div class="flex flex-col">
                     <h3 class="footer-title mb-2">Company</h3>
-                    <NuxtLink class="link link-hover text-sm" to="/">About us</NuxtLink>
+                    <NuxtLink class="link link-hover text-sm" to="/aboutus">About us</NuxtLink>
                     <NuxtLink class="link link-hover text-sm" to="/faq">FAQs</NuxtLink>
                     <NuxtLink class="link link-hover text-sm" to="/contact">Contact Us</NuxtLink>
                 </div>

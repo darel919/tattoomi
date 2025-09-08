@@ -383,14 +383,14 @@ function priceSymbols(n = 0) {
     width: 100%;
   }
 
-  @media (min-width: 376px) {
+  @media (min-width: 349px) {
     .artist-grid {
-      grid-template-columns: repeat(auto-fit, 375px);
+      grid-template-columns: repeat(auto-fit, 350px);
       justify-content: start;
       justify-items: center;
     }
     .artist-grid > * {
-      max-width: 375px;
+      max-width: 350px;
       width: 100%;
       box-sizing: border-box;
       justify-self: center;

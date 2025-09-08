@@ -63,10 +63,10 @@ async function handleSubmit(e) {
     // await navigateTo('/artist/dashboard')
     await navigateTo('/')
   } catch (error) {
-    if (error.response && error.response.status === 400) {
+    if (error.response && error.response.status !== 200) {
       const message = error.response._data?.message || 'Login failed'
       errorMessage.value = message
-      toast('error', message)
+      toast('error', `Failed to login: ${message}`)
     } else {
       const message = 'An error occurred. Please try again.'
       errorMessage.value = message

@@ -1,25 +1,25 @@
 <template>
     <section class="space-y-4 p-4 h-full flex flex-col">
     <header class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800 mb-8 flex-shrink-0">
-        <section class="flex-row flex gap-3">
+        <section class="flex-row flex gap-3 mr-2">
             <div v-if="data.recipient?.avatar" class="avatar">
-                <div class="w-12 rounded-full overflow-hidden">
+                <div class="w-12 h-12 rounded-full overflow-hidden">
                     <img :src="data.recipient.avatar" :alt="data.recipient.name" />
                 </div>
             </div>
             <div>
-                <div class="font-medium">{{ data.recipient?.name ?? 'Recipient' }}</div>
+                <div class="font-medium truncate">{{ data.recipient?.name ?? 'Recipient' }}</div>
                 <div class="text-sm text-muted-foreground">Room #{{ data.room_id }}</div>
             </div>
         </section>
         <section class="items-center flex flex-row gap-4">
             <button class="border-1 border-hero flex flex-row items-center rounded-full px-3 py-1">
                 <Mail class="mr-2" :size="16" />
-                <p>Send via Mail</p>
+                <p class="text-sm truncate">Send via Mail</p>
             </button>
              <button class="border-1 border-hero flex flex-row items-center rounded-full px-3 py-1">
                 <Video class="mr-2" :size="16" />
-                <p>Schedule a Call</p>
+                <p class="text-sm truncate">Schedule a Call</p>
             </button>
         </section>
     </header>

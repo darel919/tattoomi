@@ -10,15 +10,17 @@
                     </ClientOnly>
                 </NuxtLink>
             </div>
-            <div class="navbar-navigation gap-8 flex flex-row font-bold absolute left-1/2 transform -translate-x-1/2">
-                <NuxtLink v-for="item in navItems" :key="item.path" :to="item.path"
-                    :class="getNavLinkClasses(item.path)">
-                    {{ item.name }}
-                </NuxtLink>
+            <div class="navbar-navigation mt-1 flex flex-row font-bold absolute left-1/2 transform -translate-x-1/2 items-center">
+                <template v-for="(item, index) in navItems" :key="item.path">
+                    <NuxtLink :to="item.path" :class="getNavLinkClasses(item.path)">
+                        {{ item.name }}
+                    </NuxtLink>
+                    <span v-if="index < navItems.length - 1" class="mx-4 h-5 w-px bg-gray-300 dark:bg-gray-600"></span>
+                </template>
             </div>
             <div class="navbar-action-end relative">
                 <ClientOnly>
-                    <div class="buttons gap-6 flex items-center">
+                    <div class="buttons gap-4 flex items-center">
                         <template v-if="auth?.isAuthenticated">
                             <ClientOnly>
                                 <MessageCircle @click="navigateTo('/chat/1')"/>
@@ -30,11 +32,11 @@
                                                 {{ avatarInitials }}
                                             </div>
                                         </div>
-                                        <div class="text-sm font-semibold">{{ displayName }}</div>
+                                        <div class="text-xs font-bold">{{ displayName }}</div>
                                     </button>
 
                                     <transition name="fade">
-                                        <div v-if="isOpen" :class="auth.role === 'artist' ? 'absolute right-0 mt-3 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-hero p-4 z-50 overflow-hidden' : 'absolute right-0 mt-3 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-hero p-4 z-50 overflow-hidden'">
+                                        <div v-if="isOpen" :class="auth.role === 'artist' ? 'absolute right-0 mt-3 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-1 border-hero p-4 z-50 overflow-hidden' : 'absolute right-0 mt-3 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-1 border-hero p-4 z-50 overflow-hidden'">
                                             <!-- Artist dropdown -->
                                             <template v-if="auth.role === 'artist'">
                                                 <div class="flex items-center gap-3 mb-4">
@@ -96,7 +98,7 @@
                                                                 </li>
                                                             </section>
                                                             <section class="py-3 border-b border-gray-200 dark:border-gray-700">
-                                                                <li class="py-2">About</li>
+                                                                <NuxtLink to="/aboutus" @click.native="closeDropdown"><li class="py-2">About</li></NuxtLink>
                                                                 <li class="py-2">Help</li>
                                                             </section>
                                                             <li class="mt-6 flex items-center gap-2" @click="doLogout" role="button">
@@ -115,12 +117,15 @@
                             <NuxtLink class="button is-primary text-sm" to="/register">
                                 <strong>Register as Artist</strong>
                             </NuxtLink>
+
+                            <!-- divider between register and login -->
+                            <span class="h-6 w-px bg-gray-300 dark:bg-gray-600" aria-hidden="true"></span>
+
                             <div class="relative">
                                 <NuxtLink class="button bg-hero font-bold text-black px-4 py-2 rounded-full text-sm"
                                     to="/login">
-                                    Log in / Register
+                                    Login / Register
                                 </NuxtLink>
-                                
                             </div>
                         </template>
                         <div class="absolute right-0 top-full mt-8 z-2">

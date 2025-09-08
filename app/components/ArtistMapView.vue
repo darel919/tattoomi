@@ -1,6 +1,6 @@
 <template>
     <ClientOnly>
-        <div class="h-[70vh] w-full rounded-xl -mt-10 mb-8 overflow-hidden">
+        <div class="h-[70vh] w-full rounded-xl -mt-10 mb-8 overflow-hidden z-0">
             <LMap ref="map" :useGlobalLeaflet="false" @ready="onMapReady">
                 <LTileLayer
                     :key="isDark"
@@ -48,6 +48,7 @@ const onMapReady = (mapInstance) => {
         [47.2228, 8.3228], // CURRENTLY HARDCODED lat, lng VALUE OF ZURICH. DO NOT PASS THIS INTO PROD!
         17
     )
+    mapInstance.getContainer().style.zIndex = '0'
     updateTheme()
 }
 </script>

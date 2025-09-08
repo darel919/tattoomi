@@ -8,7 +8,7 @@
         <section class="flex flex-row items-center w-full px-4 py-2">
             <div class="flex items-center gap-4 flex-1 min-w-0">
               <CircleX v-if="toast.status === 'error'" :size="24"/>
-              <p class="text-2xl truncate min-w-0">{{ toast.message }}</p>
+              <p class="text-xl truncate min-w-0">{{ toast.message }}</p>
             </div>
             <div class="ml-8 -mr-8 flex-shrink-0">
               <button
