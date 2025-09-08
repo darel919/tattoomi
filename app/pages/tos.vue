@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-center">
+    <div class="flex justify-center mt-12">
         <section class="w-full max-w-3xl mx-auto p-4 bg-white/0">
             <header class="text-center mb-16">
                 <h1 class="text-3xl font-semibold">Tattoomii - General Terms and Conditions (AGB)</h1>

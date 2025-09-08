@@ -13,7 +13,7 @@
           Sign In with Google
         </button>
 
-        <div class="divider before:bg-secondary-400 after:bg-secondary-400 mb-8">or</div>
+        <div class="divider before:bg-secondary-400 after:bg-secondary-400 py-8">or</div>
 
         <form class="mb-10" @submit="handleSubmit">
           <div class="flex flex-col gap-5 mb-8">
@@ -44,12 +44,33 @@ definePageMeta({
   layout: 'auth',
 })
 
+const authStore = useMyAuthStore()
+const { toast } = useToast()
+
 const form = reactive({
   email: '',
   password: '',
 })
 
-function handleSubmit(e) {
+const errorMessage = ref('')
+
+async function handleSubmit(e) {
   e.preventDefault();
+  errorMessage.value = ''
+  try {
+    await authStore.login(form.email, form.password)
+    // await navigateTo('/artist/dashboard')
+    await navigateTo('/')
+  } catch (error) {
+    if (error.response && error.response.status === 400) {
+      const message = error.response._data?.message || 'Login failed'
+      errorMessage.value = message
+      toast('error', message)
+    } else {
+      const message = 'An error occurred. Please try again.'
+      errorMessage.value = message
+      toast('error', message)
+    }
+  }
 }
 </script>

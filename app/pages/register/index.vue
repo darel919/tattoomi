@@ -22,14 +22,16 @@
           Sign Up with Google
         </button>
 
-        <div class="divider before:bg-secondary-400 after:bg-secondary-400 mb-8">or</div>
+        <div class="divider before:bg-secondary-400 after:bg-secondary-400 py-8">or</div>
 
         <form class="mb-10" @submit.prevent="handleSubmit">
           <div class="flex flex-col gap-5 mb-8">
+            <InputOutline v-if="form.role === 'user'" v-model="form.fullName" label="Full Name" placeholder="Enter your full name" type="text"
+              :icon="IconsUserRound" required />
+            <InputOutline v-if="form.role === 'artist'" v-model="form.phoneNumber" label="Phone Number" placeholder="Enter your phone number" type="tel"
+              :icon="IconsPhone" required />
             <InputOutline v-model="form.email" label="Email Address" placeholder="Enter your email address" type="email"
               :icon="IconsMail" required />
-            <InputOutline v-model="form.phone" label="Phone Number" placeholder="Enter your phone number" type="tel"
-              :icon="IconsPhone" required />
             <InputOutline v-model="form.password" label="Password" placeholder="Minimum 8 Characters" type="password"
               :icon="IconsLock" required minlength="8" />
           </div>
@@ -49,28 +51,63 @@
 
 <script setup>
 import IconsMail from '@/components/Icons/Mail.vue';
-import IconsPhone from '@/components/Icons/Phone.vue';
 import IconsLock from '@/components/Icons/Lock.vue';
+import IconsUserRound from '@/components/Icons/UserRound.vue';
+import IconsPhone from '@/components/Icons/Phone.vue';
 import { useRouter } from 'vue-router';
-
+import { useMyAuthStore } from '@/stores/auth';
+import { useToast } from '@/composables/useToast';
 const router = useRouter();
+const authStore = useMyAuthStore()
+const { toast } = useToast()
 
 definePageMeta({
   layout: 'auth',
 })
 
 const form = reactive({
+  fullName: '',
+  phoneNumber: '',
   email: '',
-  phone: '',
   password: '',
   role: 'user',
 })
 
-function handleSubmit() {
-  if (form.role == 'user') {
-    router.push('/');
-  } else {
-    router.push('/register/email-verification');
+const errorMessage = ref('')
+
+async function handleSubmit() {
+  if (form.role === 'user') {
+    errorMessage.value = ''
+    try {
+      await authStore.register(form.email, form.password, form.fullName)
+      await navigateTo('/')
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        const message = error.response._data?.message || 'Registration failed'
+        errorMessage.value = message
+        toast('error', message)
+      } else {
+        const message = 'An error occurred. Please try again.'
+        errorMessage.value = message
+        toast('error', message)
+      }
+    }
+  } else if (form.role === 'artist') {
+    errorMessage.value = ''
+    try {
+      await authStore.registerArtist(form.email, form.password, form.phoneNumber)
+      router.push('/register/email-verification');
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        const message = error.response._data?.message || 'Registration failed'
+        errorMessage.value = message
+        toast('error', message)
+      } else {
+        const message = 'An error occurred. Please try again.'
+        errorMessage.value = message
+        toast('error', message)
+      }
+    }
   }
 }
 

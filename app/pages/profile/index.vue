@@ -8,13 +8,13 @@
             <div class="flex items-center gap-4 w-full mb-4">
               <div class="avatar">
                 <div class="w-20 rounded-full">
-                  <img :src="`${profileMockData.avatarUrl}`" alt="avatar" />
+                  <img :src="profileData?.avatarUrl || 'https://img.daisyui.com/images/profile/demo/yellingcat@192.webp'" alt="avatar" />
                 </div>
               </div>
               <div class="flex-1">
-                <h3 class="text-lg font-semibold">{{profileMockData.name}}</h3>
+                <h3 class="text-lg font-semibold">{{ profileData?.name || 'Loading...' }}</h3>
                 <p class="text-sm text-gray-500 flex items-center gap-2">
-                  <MapPin class="w-4 h-4" />{{profileMockData.location}}</p>
+                  <MapPin class="w-4 h-4" />{{ profileData?.location || 'Location not set' }}</p>
               </div>
             </div>
 
@@ -61,7 +61,8 @@
               <article
                 v-for="item in requestsMockData"
                 :key="item.id"
-                class="rounded-lg shadow-xl p-6 flex flex-col gap-4"
+                class="rounded-lg shadow-xl p-6 flex flex-col gap-4 cursor-pointer"
+                @click="goToRequestDetail(item)"
               >
                 <!-- Content -->
                 <div>
@@ -74,7 +75,7 @@
                 <div>
                   <button
                     class="px-4 py-2 border border-hero text-black dark:text-white rounded-full hover:bg-hero hover:text-white"
-                    @click="openChat(item)"
+                    @click.stop="openChat(item)"
                   >
                     <p class="text-lg">Open in Chat</p>
                   </button>
@@ -97,9 +98,21 @@
 <script setup>
 import { useRouter, useRoute } from 'vue-router';
 import { MapPin } from 'lucide-vue-next';
+import { useMyAuthStore } from '~/stores/auth';
 
 const router = useRouter();
 const route = useRoute();
+const authStore = useMyAuthStore();
+
+const profileData = computed(() => {
+  if (!authStore.user) return null;
+  return {
+    name: authStore.user.fullName || authStore.user.name || 'User',
+    location: authStore.user.location || 'Location not set',
+    avatarUrl: authStore.user.nickPhotoSrc || 'https://img.daisyui.com/images/profile/demo/yellingcat@192.webp',
+  };
+});
+
 const likedArtistMockData = [
   { id: 1, name: 'Stephen C', verified: true, hygiene_cert: true, location: 'San Francisco', rating: 4.9, lang: [{lang_id: 1, lang_name: 'German'}, {lang_id: 2, lang_name: 'English'}], years_experience: 2.5, waitingTime: 14, price: 3, category: [{cat_id: 1, cat_name: 'Ornamental'}, {cat_id: 2, cat_name: 'Heavy Blackwork'}, {cat_id: 3, cat_name: 'Comic'}, {cat_id: 4, cat_name: 'Tribal'}, {cat_id: 5, cat_name: 'Watercolor'}] },
   { id: 2, name: 'Anna K', verified: true, hygiene_cert: true, location: 'Los Angeles', rating: 4.8, lang: [{lang_id: 1, lang_name: 'Spanish'}, {lang_id: 2, lang_name: 'English'}], years_experience: 3, waitingTime: 10, price: 4, category: [{cat_id: 1, cat_name: 'Portrait'}, {cat_id: 2, cat_name: 'Minimalist'}, {cat_id: 3, cat_name: 'Dotwork'}, {cat_id: 4, cat_name: 'Fineline'}, {cat_id: 5, cat_name: 'Geometric'}] },
@@ -129,12 +142,6 @@ const requestsMockData = [
     timestamp: 1757243483
   }
 ]
-const profileMockData = {
-  name: 'Jeremy Clarkson',
-  location: 'San Francisco',
-  avatarUrl: 'https://img.daisyui.com/images/profile/demo/yellingcat@192.webp',
-};
-
 const tabs = [
   { id: 'wishlist', label: 'Wishlist' },
   { id: 'requests', label: 'Requests' },
@@ -168,6 +175,12 @@ function openChat(item) {
     return;
   }
   router.push({ path: '/chat' }).catch(() => {});
+}
+
+function goToRequestDetail(item) {
+  if (!item || !item.id) return;
+  const id = String(item.id);
+  router.push({ path: `/request/detail/${id}` }).catch(() => {});
 }
 
 onMounted(() => {

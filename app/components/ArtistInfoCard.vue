@@ -1,6 +1,6 @@
 <template>
   <div class="my-8">
-    <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(375px, 1fr));">
+    <div class="artist-grid gap-6">
       <div v-for="person in item" :key="person.id" class="bg-base-100 rounded-2xl shadow-lg overflow-hidden">
         <div class="h-44 bg-base-200 relative group rounded-t-2xl overflow-hidden" tabindex="0">
           <img v-if="person.image" :src="person.image" alt="photo" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 group-focus-within:scale-105 block transform-gpu will-change-transform" />
@@ -132,7 +132,6 @@
         </div>
       </div>
     </div>
-  </div>
     <teleport to="body">
       <transition name="fade">
         <div v-if="tooltip.show" :style="tooltip.style" class="fixed z-50 max-w-xs">
@@ -140,6 +139,7 @@
         </div>
       </transition>
     </teleport>
+  </div>
 
 
 </template>
@@ -374,5 +374,26 @@ function priceSymbols(n = 0) {
   .fade-enter-to, .fade-leave-from {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  .artist-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-content: start;
+    width: 100%;
+  }
+
+  @media (min-width: 376px) {
+    .artist-grid {
+      grid-template-columns: repeat(auto-fit, 375px);
+      justify-content: start;
+      justify-items: center;
+    }
+    .artist-grid > * {
+      max-width: 375px;
+      width: 100%;
+      box-sizing: border-box;
+      justify-self: center;
+    }
   }
 </style>

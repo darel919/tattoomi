@@ -50,20 +50,17 @@ onMounted(() => {
 })
 
 const toggleTheme = () => {
-  // Toggle only between light and dark
   const next = isDark.value ? 'light' : 'dark'
   if (colorMode) colorMode.preference = next
   isDark.value = next === 'dark'
 }
 
 const onToggle = () => {
-  // Mirror the simple click behavior from the original example (toggle classes) while keeping theme preference in sync
   toggleTheme()
 }
 
 // Keep in sync if colorMode.value changes
 if (colorMode) {
-  // keep in sync when colorMode value changes
   watch(() => colorMode.value, (v) => {
     isDark.value = colorMode.preference === 'dark'
   })

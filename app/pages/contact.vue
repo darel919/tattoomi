@@ -1,5 +1,5 @@
 <template>
-    <section class="py-12">
+    <section class="my-16 mx-8">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
                 <div>
