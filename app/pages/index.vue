@@ -7,7 +7,7 @@
     <section class="mt-7 mb-16 relative">
       <div class="border border-secondary-400 rounded-2xl px-5 py-2 shadow-md flex gap-4 justify-between items-center">
         <div class="flex flex-col justify-center items-center gap-4">
-          <div class="grow bg-base-200 border border-secondary-400 rounded-2xl px-2 py-2">
+          <div class="grow bg-base-200 rounded-2xl px-2 py-2">
             <div ref="specialityGrid" class="grid grid-cols-8 w-full gap-4 overflow-hidden speciality-grid"
               :class="{ 'collapsed': modeSpeciality == 'less' }">
               <button @click="handleToggleSelectedSpesiciality(speciality)"
