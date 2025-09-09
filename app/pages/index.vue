@@ -5,11 +5,11 @@
       <h1 class="text-3xl font-bold">Find the perfect Tattoo Artist for your idea</h1>
     </section>
     <section class="mt-7 mb-16 relative">
-      <div class="border border-secondary-400 rounded-2xl p-5 shadow-md flex gap-4 justify-between items-center">
+      <div class="border border-secondary-400 rounded-2xl px-5 py-2 shadow-md flex gap-4 justify-between items-center">
         <div class="flex flex-col justify-center items-center gap-4">
-          <div class="grow border border-secondary-400 rounded-2xl px-2 py-4">
-            <div class="grid grid-cols-8 w-full gap-4 overflow-hidden"
-              :class="{ 'max-h-[70px]': modeSpeciality == 'less' }">
+          <div class="grow bg-base-200 border border-secondary-400 rounded-2xl px-2 py-2">
+            <div ref="specialityGrid" class="grid grid-cols-8 w-full gap-4 overflow-hidden speciality-grid"
+              :class="{ 'collapsed': modeSpeciality == 'less' }">
               <button @click="handleToggleSelectedSpesiciality(speciality)"
                 class="flex flex-col items-center gap-1 text-secondary-90 dark:text-white px-2 py-1.5 cursor-pointer"
                 :class="{ 'border border-primary-yellow rounded-2xl bg-primary-yellow/10': selectedSpecialities.includes(speciality.id) }"
@@ -19,18 +19,18 @@
               </button>
             </div>
           </div>
-          <button @click="handleToggleModeSpeciality" type="button"
-            class="btn border border-secondary-90 rounded-full font-medium px-2.5 py-1.5 text-sm flex justify-center items-center gap-1.5"
-            :class="{ 'hidden': modeSpeciality == 'less' }">
-            <ArrowUp :size="20" />
-            view less
-          </button>
+          <!-- removed duplicate button; single toggle below -->
         </div>
         <button @click="handleToggleModeSpeciality" type="button"
-          class="btn border border-secondary-90 rounded-full font-medium px-2.5 py-1.5 text-sm flex justify-center items-center gap-1.5"
-          :class="{ 'hidden': modeSpeciality == 'more' }">
-          <ArrowDown :size="20" />
-          view more
+          class="btn border border-secondary-90 rounded-full font-medium px-2.5 py-1.5 text-sm flex justify-center items-center gap-1.5">
+          <template v-if="modeSpeciality === 'more'">
+            <ArrowUp :size="20" />
+            view less
+          </template>
+          <template v-else>
+            <ArrowDown :size="20" />
+            view more
+          </template>
         </button>
         <button @click="handleToggleFilter" type="button"
           class="btn border border-secondary-90 rounded-full font-medium px-2.5 py-1.5 text-sm flex justify-center items-center gap-1.5">
@@ -178,6 +178,8 @@ import CustomIconSavespace from "@/components/CustomIcon/Savespace";
 import CustomIconCoverups from "@/components/CustomIcon/Coverups";
 import CustomIconWheelchair from "@/components/CustomIcon/Wheelchair";
 
+import { nextTick } from 'vue'
+
 const modeSpeciality = ref('less');
 const selectedSpecialities = reactive([]);
 const specialities = [
@@ -261,11 +263,41 @@ const handleToggleSelectedSpesiciality = (speciality) => {
   }
 }
 
-const handleToggleModeSpeciality = () => {
-  if (modeSpeciality.value == 'less') {
-    modeSpeciality.value = 'more';
+const specialityGrid = ref(null)
+
+const handleToggleModeSpeciality = async () => {
+  const el = specialityGrid.value
+  const collapsedHeight = 70
+  if (!el) {
+    modeSpeciality.value = modeSpeciality.value === 'less' ? 'more' : 'less'
+    return
+  }
+
+  // Ensure DOM updated
+  await nextTick()
+
+  // Measure full height
+  const fullHeight = el.scrollHeight
+
+  // Prepare transition
+  el.style.transition = 'height 350ms ease-in-out'
+
+  if (modeSpeciality.value === 'less') {
+    // expand from collapsed to full
+    el.style.height = `${collapsedHeight}px`
+    // force reflow
+    el.getBoundingClientRect()
+    el.style.height = `${fullHeight}px`
+    modeSpeciality.value = 'more'
+    // clear inline height after transition so content can flow naturally
+    setTimeout(() => { el.style.height = '' }, 360)
   } else {
-    modeSpeciality.value = 'less';
+    // collapse from full to collapsed
+    el.style.height = `${el.scrollHeight}px`
+    el.getBoundingClientRect()
+    el.style.height = `${collapsedHeight}px`
+    modeSpeciality.value = 'less'
+    setTimeout(() => { el.style.height = '' }, 360)
   }
 }
 
@@ -307,5 +339,16 @@ useHead({
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+}
+/* Smooth expand/collapse for specialties */
+.speciality-grid {
+  transition: height 350ms ease-in-out, opacity 200ms ease-in-out;
+  height: auto;
+  opacity: 1;
+  overflow: hidden;
+}
+.speciality-grid.collapsed {
+  opacity: 0.95;
+  height: 70px;
 }
 </style>
