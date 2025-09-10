@@ -65,7 +65,7 @@
     <section class="flex flex-row items-center gap-3 mt-4 mb-6">
       <div class="stat">
         <div class="stat-title">Years of Experience</div>
-        <div class="stat-value text-2xl">{{ new Date().getFullYear() - props.data.startYear }}</div>
+        <div class="stat-value text-2xl">{{ props.data.startYear ? new Date().getFullYear() - props.data.startYear : 'N/A' }}</div>
       </div>
     </section>
     <!-- ARTIST CONTACT -->
@@ -78,7 +78,7 @@
     <!-- ARTIST ACTION -->
     <section v-if="!props.readonly">
       <div class="flex gap-6 w-full">
-        <NuxtLink to="/artist/1" class="btn border border-primary-yellow rounded-full flex-grow font-semibold">
+        <NuxtLink :to="`/artist/${props.data.artistId}`" class="btn border border-primary-yellow rounded-full flex-grow font-semibold">
           See Public View
         </NuxtLink>
         <button type="button" class="btn bg-primary-yellow text-black rounded-full flex-grow font-semibold border-0">

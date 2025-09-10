@@ -11,8 +11,8 @@
         <ChatRoomSelect :data="roomDatas" :selectedId="id" @select="onSelectRoom" />
       </aside>
 
-      <section v-if="id && currentRoomData" class="flex-1 bg-base-100 shadow-sm rounded-2xl h-full">
-        <ChatWindow :key="`chat-${id}-${currentRoomData.messages?.length || 0}`" :data="currentRoomData" :on-send-message="(content) => sendMessage(id, content)" />
+      <section class="flex-1 bg-base-100 shadow-sm rounded-2xl h-full">
+        <ChatWindow :key="`chat-${id || 'empty'}-${currentRoomData?.messages?.length || 0}`" :data="currentRoomData" :on-send-message="(content) => sendMessage(id, content)" />
       </section>
 
       <aside v-if="id && currentRoomData" class="hidden md:block w-full md:w-[320px] md:flex-shrink-0 h-full">
