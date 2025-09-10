@@ -2,18 +2,18 @@
   <section v-if="props.data">
     <section class="flex flex-row items-center">
       <!-- ARTIST AVATAR  -->
-      <div v-if="props.data.artistAvatar" class="avatar mr-4">
+      <div v-if="props.data.profileImage" class="avatar mr-4">
         <div class="w-24 rounded-full">
-          <img :src="`${props.data.artistAvatar}`" />
+          <img :src="`${props.data.profileImage}`" />
         </div>
       </div>
       <!-- ARTIST NAME AND RATE -->
       <section>
         <!-- NAME -->
         <section class="flex flex-row items-center mb-2">
-          <h2 class="text-2xl font-bold mr-2">Stephen A.</h2>
+          <h2 class="text-2xl font-bold mr-2">{{ props.data.fullName || 'Artist Name' }}</h2>
           <section class="flex flex-row items-center">
-            <div class="tooltip" data-tip="This artist has been verified by Tattoomii team.">
+            <div v-if="props.data.isVerified" class="tooltip" data-tip="This artist has been verified by Tattoomii team.">
               <button type="button" class="btn btn-ghost p-0 w-6 h-6 flex items-center justify-center"
                 aria-label="Verified artist">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#0291F0" stroke="#fff"
@@ -40,7 +40,7 @@
           </section>
         </section>
         <!-- LOCATION -->
-        <section v-if="props.data.location" class="flex flex-row items-center gap-2 mt-1">
+        <section v-if="props.data.studio" class="flex flex-row items-center gap-2 mt-1">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
             class="lucide lucide-map-pin-icon lucide-map-pin">
@@ -48,83 +48,31 @@
               d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
             <circle cx="12" cy="10" r="3" />
           </svg>
-          <p class="text-gray-600">{{ props.data.location }}</p>
+          <p class="text-gray-600">{{ `${props.data.studio.city}, ${props.data.studio.state}` }}</p>
         </section>
         <!-- RATING -->
-        <section v-if="props.data.rating" class="flex flex-row items-center gap-2 mt-1">
+        <section v-if="props.data.isVerified !== undefined" class="flex flex-row items-center gap-2 mt-1">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="lucide lucide-star-icon lucide-star">
-            <path
-              d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+            class="lucide lucide-star">
+            <polygon points="12,2 15,8 22,9 17,14 18,21 12,18 6,21 7,14 2,9 9,8" />
           </svg>
-          <p class="text-gray-600">{{ props.data.rating }}/5 (14 ratings)</p>
+          <p class="text-gray-600">{{ props.data.isVerified ? 'Verified Artist' : 'Unverified' }}</p>
         </section>
       </section>
     </section>
     <!-- ARTIST FOLLOWER COUNT -->
-    <section v-if="props.data.followerCount" class="flex flex-row items-center gap-3 mt-4 mb-6">
-      <div class="avatar-group -space-x-3">
-        <div class="avatar">
-          <div class="w-7">
-            <img src="https://img.daisyui.com/images/profile/demo/batperson@192.webp" />
-          </div>
-        </div>
-        <div class="avatar">
-          <div class="w-7">
-            <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
-          </div>
-        </div>
-        <div class="avatar">
-          <div class="w-7">
-            <img src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp" />
-          </div>
-        </div>
-        <div class="avatar avatar-placeholder">
-          <div class="bg-neutral text-neutral-content w-7">
-            <span class="text-xs mt-1">+99</span>
-          </div>
-        </div>
+    <section class="flex flex-row items-center gap-3 mt-4 mb-6">
+      <div class="stat">
+        <div class="stat-title">Years of Experience</div>
+        <div class="stat-value text-2xl">{{ new Date().getFullYear() - props.data.startYear }}</div>
       </div>
-      <p>{{ props.data.followerCount }} followers</p>
-      <button class="rounded-full border-hero border-2 p-1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#FBBF13" stroke="none"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
-          <path
-            d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
-        </svg>
-      </button>
     </section>
     <!-- ARTIST CONTACT -->
-    <section v-if="props.data.contact" class="flex gap-3 pb-4">
-      <a v-if="props.data.contact.instagram" :href="`https://instagram.com/${props.data.contact.instagram}`"
-        target="_blank" class="p-2 rounded-full border-hero hover:bg-hero border-2 transition-colors">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-        </svg>
-      </a>
-      <a v-if="props.data.contact.facebook" :href="`https://facebook.com/${props.data.contact.facebook}`"
-        target="_blank" class="p-2 rounded-full border-hero hover:bg-hero border-2 transition-colors">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.99 3.659 9.119 8.444 9.95v-7.05H8.54v-2.9h1.904V9.41c0-1.88 1.12-2.91 2.85-2.91.827 0 1.694.148 1.694.148v1.865h-1.05c-1.035 0-1.356.642-1.356 1.3v1.56h2.31l-.37 2.9h-1.94V22C18.341 21.119 22 16.99 22 12z" />
-        </svg>
-      </a>
-      <a v-if="props.data.contact.twitter" :href="`https://x.com/${props.data.contact.twitter}`" target="_blank"
-        class="p-2 rounded-full border-hero hover:bg-hero border-2 transition-colors">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-        </svg>
-      </a>
-      <a v-if="props.data.contact.tel" :href="`tel:${props.data.contact.tel}`" target="_blank"
-        class="p-2 rounded-full border-hero hover:bg-hero border-2 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone-icon lucide-phone w-4 h-4">
-          <path
-            d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
-        </svg>
+    <section class="flex gap-3 pb-4">
+      <a v-if="props.data.phoneNumber" :href="`tel:${props.data.phoneNumber}`" target="_blank"
+        class="btn btn-circle btn-outline border-primary-yellow hover:bg-primary-yellow">
+        <Phone :size="20" />
       </a>
     </section>
     <!-- ARTIST ACTION -->
@@ -155,8 +103,8 @@
               <div class="text-sm font-medium">Years' experiences</div>
               <div class="h-px bg-base-200 mt-2"></div>
             </div>
-            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ props.data.years_experience
-            }} Years</div>
+            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ new Date().getFullYear() - props.data.startYear }} years
+            </div>
             <button v-if="!props.readonly" onclick="modal_edit_profile_experience.show()"
               class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
               <Pencil :size="20" />
@@ -176,29 +124,8 @@
               <div class="text-sm font-medium">Language</div>
               <div class="h-px bg-base-200 mt-2"></div>
             </div>
-            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{props.data.lang.map(l =>
-              l.lang_name).join(', ')}}</div>
+            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{props.data.spokenLanguage?.join(', ') || 'Not specified'}}</div>
             <button v-if="!props.readonly" onclick="modal_edit_profile_language.show()"
-              class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
-              <Pencil :size="20" />
-            </button>
-          </li>
-
-          <li class="flex items-center">
-            <div class="w-10 -mt-2 flex items-center justify-center text-gray-500">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 1v22" />
-                <path d="M17 5H9a4 4 0 0 0 0 8h6a4 4 0 0 1 0 8H7" />
-              </svg>
-            </div>
-            <div class="flex-1 pl-3 flex flex-col justify-center">
-              <div class="text-sm font-medium">Rate</div>
-              <div class="h-px bg-base-200 mt-2"></div>
-            </div>
-            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ '$'.repeat(props.data.price)
-            }}</div>
-            <button v-if="!props.readonly" onclick="modal_edit_profile_rate.show()"
               class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
               <Pencil :size="20" />
             </button>
@@ -213,10 +140,30 @@
               </svg>
             </div>
             <div class="flex-1 pl-3 flex flex-col justify-center">
+              <div class="text-sm font-medium">Rate</div>
+              <div class="h-px bg-base-200 mt-2"></div>
+            </div>
+            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">${{ props.data.rate }}
+            </div>
+            <button v-if="!props.readonly" onclick="modal_edit_profile_rate.show()"
+              class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
+              <Pencil :size="20" />
+            </button>
+          </li>
+
+          <li class="flex items-center">
+            <div class="w-10 -mt-2 flex items-center justify-center text-gray-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1v22" />
+                <path d="M17 5H9a4 4 0 0 0 0 8h6a4 4 0 0 1 0 8H7" />
+              </svg>
+            </div>
+            <div class="flex-1 pl-3 flex flex-col justify-center">
               <div class="text-sm font-medium">Avg. Waiting Time</div>
               <div class="h-px bg-base-200 mt-2"></div>
             </div>
-            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ props.data.waitingTime }}
+            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ props.data.waitTime }}
               days</div>
             <button v-if="!props.readonly" onclick="modal_edit_profile_waiting_time.show()"
               class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
@@ -238,8 +185,8 @@
               <div class="h-px bg-base-200 mt-2"></div>
             </div>
             <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">
-              <span v-for="cat in props.data.category" :key="cat.cat_id" class="badge badge-sm badge-outline mr-1">{{
-                cat.cat_name }}</span>
+              <span v-for="style in props.data.specialties" :key="style" class="badge badge-sm badge-outline mr-1">{{
+                style }}</span>
             </div>
             <button v-if="!props.readonly" onclick="modal_edit_profile_art_style.show()"
               class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
@@ -258,7 +205,7 @@
 </template>
 
 <script setup>
-import { Pencil } from 'lucide-vue-next';
+import { Pencil, Phone } from 'lucide-vue-next';
 
 /**
  * @typedef {Object} ArtistData

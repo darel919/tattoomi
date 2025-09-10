@@ -4,7 +4,7 @@ export const useMyAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
     token: null,
-    role: 'user',
+    role: null,
     isAuthenticated: false,
   }),
   actions: {
@@ -48,9 +48,11 @@ export const useMyAuthStore = defineStore('auth', {
           }
         })
         this.user = response.data
+        this.role = response.data.role
         return response
       } catch (error) {
         this.user = null
+        this.role = null
         this.isAuthenticated = false
         throw error
       }

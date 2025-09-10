@@ -7,7 +7,12 @@
         <Pencil :size="20" />
       </button>
     </div>
-    <p class="text-secondary-100">
+    <div v-if="props.specialties.length > 0" class="flex flex-wrap gap-2">
+      <span v-for="specialty in props.specialties" :key="specialty" class="badge badge-outline badge-primary">
+        {{ specialty }}
+      </span>
+    </div>
+    <p v-else class="text-secondary-100">
       Showcase your specialty here, <span class="text-primary-yellow">Add a specialty</span>
     </p>
     <ModalEditSpeciality />
@@ -17,6 +22,7 @@
 <script setup>
 import { Pencil } from 'lucide-vue-next';
 const props = defineProps({
+  specialties: { type: Array, default: () => [] },
   readonly: { type: Boolean, default: false },
 })
 </script>

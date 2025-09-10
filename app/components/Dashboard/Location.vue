@@ -8,7 +8,7 @@
           <Pencil :size="20" />
         </button>
       </div>
-      <DashboardMapView :location="{ lat: 37.7749, lng: -122.4194 }" />
+      <DashboardMapView :location="{ lat: props.studio.latitude || 37.7749, lng: props.studio.longitude || -122.4194 }" />
     </div>
     <EditMapView />
   </div>
@@ -17,6 +17,7 @@
 <script setup>
 import { Pencil } from 'lucide-vue-next';
 const props = defineProps({
+  studio: { type: Object, default: () => ({}) },
   readonly: { type: Boolean, default: false },
 })
 </script>

@@ -8,7 +8,12 @@
           <Pencil :size="20" />
         </button>
       </div>
-      <p class="text-secondary-100">Upload a short video to let your customers know about you...</p>
+      <div v-if="props.videoUrl" class="w-full">
+        <video :src="props.videoUrl" controls class="w-full rounded-lg">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <p v-else class="text-secondary-100">Upload a short video to let your customers know about you...</p>
     </div>
     <ModalEditVideoIntro />
   </div>
@@ -17,6 +22,7 @@
 <script setup>
 import { Pencil } from 'lucide-vue-next';
 const props = defineProps({
+  videoUrl: { type: String, default: '' },
   readonly: { type: Boolean, default: false },
 })
 </script>

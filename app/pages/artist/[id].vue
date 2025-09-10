@@ -1,21 +1,21 @@
 <template>
-    <div class="p-6">
-        <DashboardPortfolio :readonly="true" />
+    <div class="mx-12 my-8 min-h-screen">
+        <DashboardPortfolio :readonly="true" :data="portfolioData" />
         <div class="flex gap-10">
             <div class="grow flex flex-col gap-10">
                 <DashboardArtistInfo :data="artistInfo" :readonly="true" />
                 <div class="divider before:bg-secondary-400 after:bg-secondary-400"></div>
-                <DashboardIntroductionVideo :readonly="true" />
+                <DashboardIntroductionVideo :readonly="true" :videoUrl="introductionVideoData" />
                 <div class="divider before:bg-secondary-400 after:bg-secondary-400"></div>
-                <DashboardProfileBio :readonly="true" />
+                <DashboardProfileBio :readonly="true" :bio="bioData" />
                 <div class="divider before:bg-secondary-400 after:bg-secondary-400"></div>
-                <DashboardSpeciality :readonly="true" />
+                <DashboardSpeciality :readonly="true" :specialties="specialityData" />
                 <div class="divider before:bg-secondary-400 after:bg-secondary-400"></div>
-                <DashboardStudio :readonly="true" />
+                <DashboardStudio :readonly="true" :studio="studioData" />
                 <div class="divider before:bg-secondary-400 after:bg-secondary-400"></div>
-                <DashboardWontDo :readonly="true" />
+                <DashboardWontDo :readonly="true" :bannedPlacements="wontDoData" />
                 <div class="divider before:bg-secondary-400 after:bg-secondary-400"></div>
-                <DashboardCertificateDiploma :readonly="true" />
+                <DashboardCertificateDiploma :readonly="true" :diplomas="diplomasData" />
             </div>
             <div class="max-w-[25rem]">
                 <div class="card bg-secondary-500 border-secondary-400 shadow-md w-full mb-8">
@@ -60,7 +60,7 @@
         <div class="divider before:bg-secondary-400 after:bg-secondary-400 py-10"></div>
         <div class="flex flex-col gap-10">
             <DashboardCustomerReview />
-            <DashboardLocation :readonly="true" />
+            <DashboardLocation :readonly="true" :studio="studioData" />
         </div>
     </div>
 </template>
@@ -68,33 +68,23 @@
 <script setup>
 import { Calculator } from 'lucide-vue-next';
 
-const artistInfo = {
-    id: 17792719862,
-    artistAvatar: "https://img.daisyui.com/images/profile/demo/yellingcat@192.webp",
-    followerCount: 521,
-    verified: true,
-    hygiene_cert: true,
-    location: "San Francisco",
-    rating: 4.9,
-    years_experience: 2.5,
-    waitingTime: 14,
-    price: 3,
-    lang: [
-        { lang_id: 1, lang_name: "German" },
-        { lang_id: 2, lang_name: "English" },
-    ],
-    category: [
-        { cat_id: 1, cat_name: "Ornamental" },
-        { cat_id: 2, cat_name: "Heavy Blackwork" },
-        { cat_id: 3, cat_name: "Comic" },
-        { cat_id: 4, cat_name: "Tribal" },
-        { cat_id: 5, cat_name: "Watercolor" },
-    ],
-    contact: {
-        instagram: "tattoomii.official",
-        facebook: "tattoomii.official",
-        twitter: "tattoomii.official",
-        tel: "+62822000000",
-    },
-};
+const route = useRoute();
+const config = useRuntimeConfig();
+const { data: artistData } = await useAsyncData(`artist-${route.params.id}`, () =>
+  $fetch(`${config.public.baseURL}/api/artist/${route.params.id}`)
+);
+
+const artistInfo = computed(() => {
+    if (!artistData.value) return {};
+    return artistData.value.data;
+});
+
+// Other data mappings
+const portfolioData = computed(() => artistData.value?.works || []);
+const bioData = computed(() => artistData.value?.bio || '');
+const specialityData = computed(() => artistData.value?.specialties || []);
+const studioData = computed(() => artistData.value?.studio || {});
+const wontDoData = computed(() => artistData.value?.bannedPlacement || []);
+const diplomasData = computed(() => artistData.value?.diplomas || []);
+const introductionVideoData = computed(() => artistData.value?.introductionVideo || '');
 </script>

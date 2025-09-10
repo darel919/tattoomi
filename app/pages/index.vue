@@ -140,7 +140,19 @@
         </div>
       </Transition>
     </section>
-    <ArtistInfoCard v-if="viewMode === 'list'" :item="mockupData" />
+    <ArtistInfoCard v-if="!pending && viewMode === 'list'" :item="artists" :error="!!error" />
+    <div v-if="pending" class="artist-grid gap-6">
+      <div v-for="n in 4" :key="n" class="bg-base-100 rounded-2xl shadow-lg overflow-hidden animate-pulse">
+        <div class="h-44 bg-base-200 rounded-t-2xl"></div>
+        <div class="p-4">
+          <div class="w-12 h-12 rounded-full bg-base-300 mb-3"></div>
+          <div class="h-4 bg-base-300 rounded w-1/2 mb-2"></div>
+          <div class="h-3 bg-base-200 rounded w-1/3 mb-2"></div>
+          <div class="h-3 bg-base-200 rounded w-1/4 mb-2"></div>
+          <div class="h-3 bg-base-200 rounded w-1/2 mb-2"></div>
+        </div>
+      </div>
+    </div>
     <ArtistMapView v-if="viewMode === 'map'" />
     <section class="my-4">
       <button v-if="viewMode === 'list'" @click="viewMode = 'map'; scrollToTop()"
@@ -302,13 +314,16 @@ const handleToggleModeSpeciality = async () => {
 }
 
 const viewMode = ref('list');
-const mockupData = [
-  { id: 1, name: 'Stephen C', verified: true, hygiene_cert: true, location: 'San Francisco', rating: 4.9, lang: [{ lang_id: 1, lang_name: 'German' }, { lang_id: 2, lang_name: 'English' }], years_experience: 2.5, waitingTime: 14, price: 3, category: [{ cat_id: 1, cat_name: 'Ornamental' }, { cat_id: 2, cat_name: 'Heavy Blackwork' }, { cat_id: 3, cat_name: 'Comic' }, { cat_id: 4, cat_name: 'Tribal' }, { cat_id: 5, cat_name: 'Watercolor' }] },
-  { id: 2, name: 'Anna K', verified: true, hygiene_cert: true, location: 'Los Angeles', rating: 4.8, lang: [{ lang_id: 1, lang_name: 'Spanish' }, { lang_id: 2, lang_name: 'English' }], years_experience: 3, waitingTime: 10, price: 4, category: [{ cat_id: 1, cat_name: 'Portrait' }, { cat_id: 2, cat_name: 'Minimalist' }, { cat_id: 3, cat_name: 'Dotwork' }, { cat_id: 4, cat_name: 'Fineline' }, { cat_id: 5, cat_name: 'Geometric' }] },
-  { id: 3, name: 'Michael B', verified: true, hygiene_cert: true, location: 'New York', rating: 4.7, lang: [{ lang_id: 1, lang_name: 'French' }, { lang_id: 2, lang_name: 'English' }], years_experience: 5, waitingTime: 20, price: 5, category: [{ cat_id: 1, cat_name: 'Oldschool' }, { cat_id: 2, cat_name: 'Neotraditional' }, { cat_id: 3, cat_name: 'Realistic' }, { cat_id: 4, cat_name: 'Microrealistic' }, { cat_id: 5, cat_name: 'Fineline' }] },
-  { id: 4, name: 'Sofia L', verified: true, hygiene_cert: true, location: 'Miami', rating: 4.6, lang: [{ lang_id: 1, lang_name: 'Italian' }, { lang_id: 2, lang_name: 'English' }], years_experience: 4, waitingTime: 15, price: 3, category: [{ cat_id: 1, cat_name: 'Japanese' }, { cat_id: 2, cat_name: 'Geometric' }, { cat_id: 3, cat_name: 'Mandala' }, { cat_id: 4, cat_name: 'Botanical / Floral' }, { cat_id: 5, cat_name: 'Coverup' }] },
-  { id: 5, name: 'David R', verified: true, hygiene_cert: true, location: 'Chicago', rating: 4.5, lang: [{ lang_id: 1, lang_name: 'Portuguese' }, { lang_id: 2, lang_name: 'English' }], years_experience: 6, waitingTime: 25, price: 4, category: [{ cat_id: 1, cat_name: 'Blackwork' }, { cat_id: 2, cat_name: 'Dotwork' }, { cat_id: 3, cat_name: 'Surreal Blackwork' }, { cat_id: 4, cat_name: 'Etching (Engraving)' }, { cat_id: 5, cat_name: 'Abstract' }] }
-];
+const config = useRuntimeConfig()
+const { data: apiResponse, pending, error } = await useAsyncData('artists', () => $fetch(config.public.baseURL+'/api/artist/artistsFinder', {
+  method: 'POST',
+  body: {}
+}))
+
+const artists = computed(() => {
+  if (!apiResponse || !apiResponse.value || !apiResponse.value.data ) return []
+  return apiResponse.value.data
+})
 
 const filterIsOpen = ref(false);
 const budgets = ['Small', 'Medium', 'Large'];
@@ -350,5 +365,31 @@ useHead({
 .speciality-grid.collapsed {
   opacity: 0.95;
   height: 70px;
+}
+.artist-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: start;
+  width: 100%;
+}
+@media (min-width: 349px) {
+  .artist-grid {
+    grid-template-columns: repeat(auto-fit, 350px);
+    justify-content: start;
+    justify-items: center;
+  }
+  .artist-grid > * {
+    max-width: 350px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-self: center;
+  }
+}
+.animate-pulse {
+  animation: pulse 1.5s cubic-bezier(.4,0,.6,1) infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
 }
 </style>

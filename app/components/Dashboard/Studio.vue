@@ -9,7 +9,12 @@
         </button>
       </div>
       <div class="min-h-[13.75rem]">
-        <p class="text-secondary-100">
+        <div v-if="props.studio.name" class="space-y-4">
+          <h5 class="text-xl font-semibold">{{ props.studio.name }}</h5>
+          <p class="text-secondary-100">{{ props.studio.address }}</p>
+          <p class="text-secondary-100">{{ props.studio.city }}, {{ props.studio.state }}, {{ props.studio.country }}</p>
+        </div>
+        <p v-else class="text-secondary-100">
           Tell your customers about <span class="text-primary-yellow">your studio</span>
         </p>
       </div>
@@ -21,6 +26,7 @@
 <script setup>
 import { Pencil } from 'lucide-vue-next';
 const props = defineProps({
+  studio: { type: Object, default: () => ({}) },
   readonly: { type: Boolean, default: false },
 })
 </script>

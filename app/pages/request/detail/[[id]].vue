@@ -64,8 +64,29 @@ const mockupData = {
   img: "https://img.daisyui.com/images/profile/demo/yellingcat@192.webp",
 }
 const mockupArtistWishlist = [
-  { id: 1, name: 'Stephen C', verified: true, hygiene_cert: true, location: 'San Francisco', rating: 4.9, lang: [{lang_id: 1, lang_name: 'German'}, {lang_id: 2, lang_name: 'English'}], years_experience: 2.5, waitingTime: 14, price: 3, category: [{cat_id: 1, cat_name: 'Ornamental'}, {cat_id: 2, cat_name: 'Heavy Blackwork'}, {cat_id: 3, cat_name: 'Comic'}, {cat_id: 4, cat_name: 'Tribal'}, {cat_id: 5, cat_name: 'Watercolor'}] }
-]
+  {
+    artistId: "02015262-f9d7-40cd-8a4d-e5fcb09e5db4",
+    userId: "cb55d494-a95a-4986-a0e8-15905619fddd",
+    bio: "Passionate tattoo artist with 8+ years of experience specializing in realistic portraits and fine line work.",
+    specialties: ["Traditional", "Neo-Traditional", "Realism"],
+    profileImage: "https://images.unsplash.com/photo-1500000000?w=400&h=400&fit=crop&crop=face",
+    coverImage: "https://images.unsplash.com/photo-1600000000?w=800&h=400&fit=crop",
+    rate: "150",
+    waitTime: 7,
+    isVerified: true,
+    userEmail: "sarah.ink@gmail.com",
+    userFullName: "Stephen C",
+    studioName: "Ink Paradise Studio",
+    studioAddress: "123 Main Street, Suite 1",
+    studioCity: "San Francisco",
+    studioState: "CA",
+    studioCountry: "USA",
+    studioLatitude: "40.7128",
+    studioLongitude: "-74.0060",
+    styles: ["Dotwork", "Abstract", "Geometric"],
+    works: []
+  }
+];
 
 function formatToLongDate(isoString) {
   if (!isoString) return ''

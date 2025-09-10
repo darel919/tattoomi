@@ -8,8 +8,13 @@
           <Pencil :size="20" />
         </button>
       </div>
-      <p class="text-secondary-100">
-        Tell your customers if there are any parts you don’t want to tattoo
+      <div v-if="props.bannedPlacements.length > 0" class="flex flex-wrap gap-2">
+        <span v-for="placement in props.bannedPlacements" :key="placement" class="badge badge-outline badge-error">
+          {{ placement }}
+        </span>
+      </div>
+      <p v-else class="text-secondary-100">
+        Tell your customers if there are any parts you don't want to tattoo
       </p>
     </div>
     <ModalEditWontDo />
@@ -19,6 +24,7 @@
 <script setup>
 import { Pencil } from 'lucide-vue-next';
 const props = defineProps({
+  bannedPlacements: { type: Array, default: () => [] },
   readonly: { type: Boolean, default: false },
 })
 </script>
