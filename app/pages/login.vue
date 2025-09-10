@@ -63,15 +63,16 @@ async function handleSubmit(e) {
     // await navigateTo('/artist/dashboard')
     await navigateTo('/')
   } catch (error) {
-    if (error.response && error.response.status !== 200) {
-      const message = error.response._data?.message || 'Login failed'
-      errorMessage.value = message
-      toast('error', `Failed to login: ${message}`)
-    } else {
-      const message = 'An error occurred. Please try again.'
-      errorMessage.value = message
-      toast('error', message)
+    // Prefer the Error message thrown by the auth store (which uses backend `message`).
+    // Fallback to inspecting response body if available, otherwise use a generic message.
+    let message = 'An error occurred. Please try again.'
+    if (error && typeof error.message === 'string' && error.message.length > 0) {
+      message = 'Failed to login: '+ error.message
+    } else if (error && error.response && error.response._data && error.response._data.message) {
+      message = 'Failed to login: '+ error.response._data.message
     }
+    errorMessage.value = message
+    toast('error', message)
   }
 }
 </script>

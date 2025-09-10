@@ -11,7 +11,7 @@
       <section>
         <!-- NAME -->
         <section class="flex flex-row items-center mb-2">
-          <h2 class="text-2xl font-bold mr-2">{{ props.data.fullName || 'Artist Name' }}</h2>
+          <h2 v-if="props.data.fullName" class="text-2xl font-bold mr-2">{{ props.data.fullName}}</h2>
           <section class="flex flex-row items-center">
             <div v-if="props.data.isVerified" class="tooltip" data-tip="This artist has been verified by Tattoomii team.">
               <button type="button" class="btn btn-ghost p-0 w-6 h-6 flex items-center justify-center"

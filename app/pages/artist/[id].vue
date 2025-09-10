@@ -70,8 +70,9 @@ import { Calculator } from 'lucide-vue-next';
 
 const route = useRoute();
 const config = useRuntimeConfig();
-const { data: artistData } = await useAsyncData(`artist-${route.params.id}`, () =>
-  $fetch(`${config.public.baseURL}/api/artist/${route.params.id}`)
+const { data: artistData } = useAsyncData(
+    () => `artist-${route.params.id}`,
+    () => $fetch(`${config.public.baseURL}/api/artist/${route.params.id}`)
 );
 
 const artistInfo = computed(() => {

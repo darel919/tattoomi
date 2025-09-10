@@ -15,16 +15,23 @@ export const useMyAuthStore = defineStore('auth', {
           method: 'POST',
           body: { email, password }
         })
-        if (response.token) {
+        // If backend returns a token, treat login as successful
+        if (response && response.token) {
           this.token = response.token
+          // fetch user in background but don't await here to keep behavior similar
           this.fetchUser()
           this.isAuthenticated = true
           if (process.client) {
             localStorage.setItem('authToken', response.token)
           }
-          
+          return response
         }
-        return response
+
+        // No token -> treat as login failure. Use backend message if present.
+        this.isAuthenticated = false
+        console.warn('Login failed: no token in response', response)
+        const msg = response && response.message ? response.message : 'Login failed: missing token from server'
+        throw new Error(msg)
       } catch (error) {
         this.isAuthenticated = false
         throw error
@@ -81,15 +88,19 @@ export const useMyAuthStore = defineStore('auth', {
           method: 'POST',
           body: { email, password, fullName }
         })
-        if (response.token) {
+        if (response && response.token) {
           this.token = response.token
           this.fetchUser()
           this.isAuthenticated = true
           if (process.client) {
             localStorage.setItem('authToken', response.token)
           }
+          return response
         }
-        return response
+
+        this.isAuthenticated = false
+        const msg = response && response.message ? response.message : 'Registration failed: missing token from server'
+        throw new Error(msg)
       } catch (error) {
         this.isAuthenticated = false
         throw error
