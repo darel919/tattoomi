@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     public: {
       // THIS SHOULD BE REMOVED ON PROD!
       baseURL: 'https://tattoomii-f43c06650d05.herokuapp.com',
+      // baseURL: 'https://tattoomiibe.darelisme.my.id',
     }
   },
   modules: ['@nuxtjs/color-mode', '@nuxtjs/leaflet', '@pinia/nuxt'],

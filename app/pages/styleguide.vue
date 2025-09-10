@@ -39,7 +39,7 @@
               <button class="flex items-center transition-colors hover:bg-yellow-400" style="padding: 8px 12px; gap: 6px; border-radius: 24.622px; background: #FBBF13; color: #314158; font-family: Roboto; font-size: 14px; font-weight: 500; line-height: 20px;">
                 Add to calculator
               </button>
-              <button class="flex items-center transition-colors hover:bg-yellow-50" style="padding: 8px 12px; gap: 6px; border-radius: 24.622px; color: #FBBF13; font-family: Roboto; font-size: 14px; font-weight: 500; line-height: 20px;">
+              <button type="button" @click="openModal(style)" class="flex items-center transition-colors hover:bg-yellow-50" style="padding: 8px 12px; gap: 6px; border-radius: 24.622px; color: #FBBF13; font-family: Roboto; font-size: 14px; font-weight: 500; line-height: 20px;">
                 Learn more
                 <svg style="width: 20.763px; height: 20.763px;" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M4.38 10.8123H16.4919M16.4919 10.8123L10.4359 4.75635M16.4919 10.8123L10.4359 16.8682" stroke="#FBBF13" stroke-width="2.07632" stroke-linecap="round" stroke-linejoin="round"/>
@@ -50,6 +50,10 @@
         </div>
       </div>
     </main>
+
+  <!-- mount modal component -->
+  <StyleGuideDetailModal v-model="modalVisible" :styleData="selectedStyle" />
+
   </div>
 </template>
 
@@ -112,6 +116,17 @@ const tattooStyles = [
     image: 'https://api.builder.io/api/v1/image/assets/TEMP/cb200f08bd8a60e5b1da6eb089a4ed4925019d52?width=532'
   }
 ]
+import { ref } from 'vue'
+import StyleGuideDetailModal from '../components/StyleGuideDetailModal.vue'
+
+const modalVisible = ref(false)
+const selectedStyle = ref({})
+
+function openModal(style) {
+  console.log('[styleguide] openModal called, style:', style)
+  selectedStyle.value = style || {}
+  modalVisible.value = true
+}
 </script>
 
 <style scoped>
