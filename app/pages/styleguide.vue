@@ -1,12 +1,12 @@
 <template>
   <div class="min-h-screen bg-base-200">
     <main class="max-w-7xl mx-12 py-6">
-      <div class="mt-2 mb-16">
+      <div class="mt-2 mb-8">
         <p class="text-xl font-grift text-base-content mb-2">Explore different tattoo styles</p>
         <h1 class="text-4xl font-grift font-bold text-based-content">Tattoo Style Guide</h1>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4" style="gap: 15.572px;">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4" style="gap: 25px;">
         <div v-for="style in tattooStyles" :key="style.id" class="bg-base-100 overflow-hidden hover:shadow-xl transition-shadow duration-300" style="padding: 18.299px; border-radius: 6.156px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -2px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 8.305px;">
           <div class="bg-gray-100 overflow-hidden" style="width: 265.792px; height: 265.792px; max-width: 100%; aspect-ratio: 1;">
             <img
@@ -33,7 +33,7 @@
               </button>
             </div>
 
-            <p class="font-roboto text-base-content" style="width: 100%; font-size: 14px; font-weight: 400; line-height: 20px;">{{ style.description }}</p>
+            <p class="font-roboto text-base-content line-clamp-2" style="width: 100%; font-size: 14px; font-weight: 400; line-height: 20px;">{{ style.description }}</p>
 
             <div class="flex items-flex-start" style="gap: 4.153px;">
               <button class="flex items-center transition-colors hover:bg-yellow-400" style="padding: 8px 12px; gap: 6px; border-radius: 24.622px; background: #FBBF13; color: #314158; font-family: Roboto; font-size: 14px; font-weight: 500; line-height: 20px;">
@@ -65,57 +65,42 @@ useHead({
   ]
 })
 
-// Tattoo styles data
-const tattooStyles = [
-  {
-    id: 1,
-    name: 'Fineline',
-    description: 'Delicate, thin lines that create complex designs.',
-    image: 'https://api.builder.io/api/v1/image/assets/TEMP/fe349bc25f3f04d2d7d6b27eeb57d664513ba8c0?width=532'
-  },
-  {
-    id: 2,
-    name: 'Oldschool',
-    description: 'Delicate, thin lines that create complex designs.',
-    image: 'https://api.builder.io/api/v1/image/assets/TEMP/166bb2218b8428501ea34a5932d8ad73dd2a72d5?width=532'
-  },
-  {
-    id: 3,
-    name: 'Microrealistic',
-    description: 'Delicate, thin lines that create complex designs.',
-    image: 'https://api.builder.io/api/v1/image/assets/TEMP/76f3281e92720321d6a1cce545cf0a8c4aced509?width=532'
-  },
-  {
-    id: 4,
-    name: 'Watercolor',
-    description: 'Delicate, thin lines that create complex designs.',
-    image: 'https://api.builder.io/api/v1/image/assets/TEMP/5eae31c5f32e41ca9dff38d4c8dd8f1c613b335b?width=532'
-  },
-  {
-    id: 5,
-    name: 'Linework',
-    description: 'Delicate, thin lines that create complex designs.',
-    image: 'https://api.builder.io/api/v1/image/assets/TEMP/1d2318dbafcb366b964f3da0f53d9627bd86225c?width=532'
-  },
-  {
-    id: 6,
-    name: 'Anime',
-    description: 'Delicate, thin lines that create complex designs.',
-    image: 'https://api.builder.io/api/v1/image/assets/TEMP/18648ba33e5c4b0e5785976d74306a7e88a93a03?width=532'
-  },
-  {
-    id: 7,
-    name: 'Tribal',
-    description: 'Delicate, thin lines that create complex designs.',
-    image: 'https://api.builder.io/api/v1/image/assets/TEMP/0a87d9326db0a9e0801968fcddca17fa4eb80704?width=532'
-  },
-  {
-    id: 8,
-    name: 'Blackwork',
-    description: 'Delicate, thin lines that create complex designs.',
-    image: 'https://api.builder.io/api/v1/image/assets/TEMP/cb200f08bd8a60e5b1da6eb089a4ed4925019d52?width=532'
-  }
+// Tattoo styles (fetched from API). We'll map the API response to the template shape.
+const tattooStyles = ref([])
+
+// Fallback data in case the API request fails
+const fallbackStyles = [
+  { id: 1, name: 'Fineline', description: 'Delicate, thin lines that create complex designs.', image: 'https://api.builder.io/api/v1/image/assets/TEMP/fe349bc25f3f04d2d7d6b27eeb57d664513ba8c0?width=532' },
+  { id: 2, name: 'Oldschool', description: 'Bold lines and classic motifs.', image: 'https://api.builder.io/api/v1/image/assets/TEMP/166bb2218b8428501ea34a5932d8ad73dd2a72d5?width=532' },
+  { id: 3, name: 'Microrealistic', description: 'Highly detailed small-scale realism.', image: 'https://api.builder.io/api/v1/image/assets/TEMP/76f3281e92720321d6a1cce545cf0a8c4aced509?width=532' },
+  { id: 4, name: 'Watercolor', description: 'Painterly, color-focused tattoos.', image: 'https://api.builder.io/api/v1/image/assets/TEMP/5eae31c5f32e41ca9dff38d4c8dd8f1c613b335b?width=532' }
 ]
+
+// Fetch style guide from API on mounted
+onMounted(async () => {
+    try {
+    const config = useRuntimeConfig()
+    const res = await $fetch(config.public.baseURL + '/api/user/styleGuide', {
+      method: 'POST',
+      body: {}
+    })
+    if (res && res.styleGuide && Array.isArray(res.styleGuide)) {
+      tattooStyles.value = res.styleGuide.map((s, idx) => ({
+        id: s.styleId || idx,
+        name: s.styleName || `Style ${idx + 1}`,
+        description: s.styleDescription || '',
+        image: Array.isArray(s.referImages) && s.referImages.length ? s.referImages[0] : ''
+      }))
+      return
+    }
+  } catch (e) {
+    // fallback below
+    console.error('[styleguide] failed to fetch style guide', e)
+  }
+
+  // fallback if API fails or returns unexpected shape
+  tattooStyles.value = fallbackStyles
+})
 import { ref } from 'vue'
 import StyleGuideDetailModal from '../components/StyleGuideDetailModal.vue'
 
@@ -131,4 +116,11 @@ function openModal(style) {
 
 <style scoped>
 /* Additional styles if needed - using Tailwind classes primarily */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>
