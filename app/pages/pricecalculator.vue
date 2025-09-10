@@ -1,7 +1,6 @@
 <template>
-  <div class="min-h-screen mx-12 mt-8">
-    <h1 class="text-3xl font-bold mb-4">Price Calculator</h1>
-    <p>This is the Price Calculator page. Content coming soon.</p>
+  <div class="min-h-screen flex justify-center items-center bg-secondary-500">
+    <Calculator />
   </div>
 </template>
 
