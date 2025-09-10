@@ -23,7 +23,7 @@
                     <div class="buttons gap-4 flex items-center">
                         <template v-if="auth?.isAuthenticated">
                             <ClientOnly>
-                                <MessageCircle @click="navigateTo('/chat/1')"/>
+                                <MessageCircle @click="navigateTo('/chat')"/>
                                 <div class="relative" ref="dropdownRoot">
                                     <button @click="toggleDropdown" class="flex items-center gap-3 border-1 border-hero py-1 pl-1 pr-4 rounded-full focus:outline-none">
                                         <div class="w-8 h-8 rounded-full overflow-hidden">

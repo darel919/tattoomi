@@ -2,9 +2,9 @@
     <div class="max-w-xs rounded-2xl mx-auto shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden h-full">
         <div class="p-6 text-center relative">
             <div class="mx-auto w-20 h-20 rounded-full ring-4 ring-white overflow-hidden">
-                <img :src="artist.profileImage" :alt="artist.fullName" class="w-full h-full object-cover" />
+                <img :src="artist.avatar || 'https://img.daisyui.com/images/profile/demo/yellingcat@192.webp'" :alt="artist.name || 'Artist'" class="w-full h-full object-cover" />
             </div>
-            <h3 class="mt-3 text-lg font-semibold">{{ artist.fullName }}</h3>
+            <h3 class="mt-3 text-lg font-semibold">{{ artist.name || 'Artist' }}</h3>
         </div>
 
         <div class="border-t border-gray-100 dark:border-gray-800">
@@ -37,7 +37,7 @@
         </div>
 
         <div class="pt-4 pb-6 px-6">
-            <button @click="$emit('send-request', artist.artistId)" class="w-full inline-flex items-center justify-center gap-2 py-2 px-4 rounded-full border border-yellow-400 text-yellow-700 hover:bg-yellow-50">
+            <button @click="$emit('send-request', artist.artist_id || null)" class="w-full inline-flex items-center justify-center gap-2 py-2 px-4 rounded-full border border-yellow-400 text-yellow-700 hover:bg-yellow-50">
                 <span>Send Request</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -51,7 +51,7 @@
 const props = defineProps({
     data: {
         type: Object,
-        required: true,
+        default: null
     },
 })
 

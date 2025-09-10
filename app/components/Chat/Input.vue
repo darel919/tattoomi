@@ -48,6 +48,13 @@
 <script setup>
 import { SendHorizonal, Paperclip } from 'lucide-vue-next';
 
+const props = defineProps({
+  onSend: {
+    type: Function,
+    default: null
+  }
+})
+
 const value = ref('')
 const ta = ref(null)
 const attachedFile = ref(null)
@@ -81,9 +88,15 @@ function onInput() {
 
 async function onSend() {
   if (!value.value.trim()) return
+  const messageContent = value.value.trim()
   value.value = ''
   await nextTick()
   resize()
+  
+  // Call the sendMessage function passed as prop
+  if (props.onSend) {
+    await props.onSend(messageContent)
+  }
 }
 
 function insertNewline() {

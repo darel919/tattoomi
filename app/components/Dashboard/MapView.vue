@@ -61,8 +61,13 @@ const isDark = ref(false)
 
 const updateTheme = () => {
     isDark.value = colorMode.value === 'dark'
-    if (map.value) {
-        const mapEl = map.value.getContainer()
+    if (!map.value) return;
+    let mapInstance = map.value;
+    if (map.value.leafletObject) {
+        mapInstance = map.value.leafletObject;
+    }
+    if (mapInstance && typeof mapInstance.getContainer === 'function') {
+        const mapEl = mapInstance.getContainer()
         if (colorMode.value === 'dark') {
             mapEl.style.backgroundColor = '#242424'
             mapEl.style.color = '#fff'

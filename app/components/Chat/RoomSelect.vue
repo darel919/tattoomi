@@ -23,22 +23,23 @@
         <div class="h-full overflow-auto">
             <section
                 v-for="(chat, index) in filtered"
-                :key="chat.id"
-                :class="['flex flex-row items-center gap-4 p-3 cursor-pointer', selectedId == chat.id ? 'bg-blue-100 dark:text-black' : 'hover:bg-gray-100 hover:text-black']"
-                @click="selectRoom(chat.id)"
+                :key="chat.chatRoomId"
+                :class="['flex flex-row items-center gap-4 p-3 cursor-pointer', selectedId == chat.chatRoomId ? 'bg-blue-100 dark:text-black' : 'hover:bg-gray-100 hover:text-black']"
+                @click="selectRoom(chat.chatRoomId)"
             >
-                <section v-if="chat.recipient && chat.recipient.avatar" class="avatar">
+                <section v-if="chat.participant" class="avatar">
                     <div class="w-12 rounded-full">
-                        <img :src="chat.recipient.avatar" :alt="chat.recipient.name" />
+                        <img :src="chat.participant.avatar || 'https://img.daisyui.com/images/profile/demo/yellingcat@192.webp'" :alt="chat.participant.name" />
                     </div>
                 </section>
 
                 <section class="flex-1 flex flex-col items-start">
                     <div class="w-full flex items-center justify-between">
-                        <h2 v-if="chat.recipient" class="font-medium">{{ chat.recipient.name }}</h2>
+                        <h2 v-if="chat.participant" class="font-medium">{{ chat.participant.name }}</h2>
                         <span class="text-sm text-gray-500">{{ chatTime(chat) }}</span>
                     </div>
-                    <p v-if="chat.message" class="text-sm text-gray-600">{{ chat.message }}</p>
+                    <p v-if="chat.lastMessage" class="text-sm text-gray-600">{{ chat.lastMessage.content }}</p>
+                    <p v-if="chat.projectTitle" class="text-xs text-gray-500">{{ chat.projectTitle }}</p>
                 </section>
             </section>
             <section v-if="!filtered.length" class="p-4 text-center text-gray-500">
@@ -68,9 +69,9 @@ const timeAgoMap = reactive(new Map())
 
 watch(() => props.data, (newData) => {
     newData.forEach(chat => {
-        if (!timeAgoMap.has(chat.id)) {
-            const { timeAgo } = useTimeAgo(chat.timestamp)
-            timeAgoMap.set(chat.id, timeAgo)
+        if (!timeAgoMap.has(chat.chatRoomId)) {
+            const { timeAgo } = useTimeAgo(new Date(chat.lastMessage?.createdAt || chat.createdAt).getTime() / 1000)
+            timeAgoMap.set(chat.chatRoomId, timeAgo)
         }
     })
 }, { immediate: true })
@@ -79,14 +80,15 @@ const filtered = computed(() => {
     const q = query.value && query.value.trim().toLowerCase()
     if (!q) return props.data
     return props.data.filter((chat) => {
-        const name = chat.recipient && chat.recipient.name ? chat.recipient.name.toLowerCase() : ''
-        const message = chat.message ? chat.message.toLowerCase() : ''
-        return name.includes(q) || message.includes(q)
+        const name = chat.participant?.name ? chat.participant.name.toLowerCase() : ''
+        const projectTitle = chat.projectTitle ? chat.projectTitle.toLowerCase() : ''
+        const lastMessage = chat.lastMessage?.content ? chat.lastMessage.content.toLowerCase() : ''
+        return name.includes(q) || projectTitle.includes(q) || lastMessage.includes(q)
     })
 })
 
 function chatTime(chat) {
-    return timeAgoMap.get(chat.id)?.value ?? ''
+    return timeAgoMap.get(chat.chatRoomId)?.value ?? ''
 }
 
 function selectRoom(roomId) {

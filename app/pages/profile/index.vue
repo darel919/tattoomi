@@ -87,7 +87,15 @@
 
           <!-- Liked Artists content -->
           <div v-else-if="currentTab === 'likedArtist'">
-            <ArtistInfoCard :item="likedArtistMockData"/>
+            <div v-if="favoriteArtistsLoading" class="text-center py-8">
+              <div class="loading loading-spinner loading-lg"></div>
+              <p class="mt-4 text-gray-500">Loading your favorite artists...</p>
+            </div>
+            <div v-else-if="favoriteArtistsError" class="text-center py-8">
+              <p class="text-red-500">{{ favoriteArtistsError }}</p>
+              <button @click="refetchFavoriteArtists" class="btn btn-primary mt-4">Try Again</button>
+            </div>
+            <ArtistInfoCard v-else :item="favoriteArtists" :error="!!favoriteArtistsError" />
           </div>
         </div>
       </main>
@@ -104,6 +112,43 @@ const router = useRouter();
 const route = useRoute();
 const authStore = useMyAuthStore();
 
+// Favorite Artists logic
+const favoriteArtists = ref([])
+const favoriteArtistsLoading = ref(false)
+const favoriteArtistsError = ref(null)
+
+const refetchFavoriteArtists = async () => {
+  if (!authStore.isAuthenticated || !authStore.token) {
+    favoriteArtistsError.value = 'User not authenticated'
+    return
+  }
+
+  try {
+    favoriteArtistsLoading.value = true
+    favoriteArtistsError.value = null
+
+    const config = useRuntimeConfig()
+    const response = await $fetch(config.public.baseURL + '/api/customer/favoriteArtists/getFavoriteArtists', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${authStore.token}`
+      }
+    })
+
+    if (response && response.data) {
+      favoriteArtists.value = response.data
+    } else {
+      favoriteArtists.value = []
+    }
+  } catch (err) {
+    console.error('Error fetching favorite artists:', err)
+    favoriteArtistsError.value = err?.message || 'Failed to fetch favorite artists'
+    favoriteArtists.value = []
+  } finally {
+    favoriteArtistsLoading.value = false
+  }
+}
+
 const profileData = computed(() => {
   if (!authStore.user) return null;
   return {
@@ -113,83 +158,6 @@ const profileData = computed(() => {
   };
 });
 
-const likedArtistMockData = [
-  {
-    artistId: "02015262-f9d7-40cd-8a4d-e5fcb09e5db4",
-    userId: "cb55d494-a95a-4986-a0e8-15905619fddd",
-    bio: "Passionate tattoo artist with 8+ years of experience specializing in realistic portraits and fine line work.",
-    specialties: ["Traditional", "Neo-Traditional", "Realism"],
-    profileImage: "https://images.unsplash.com/photo-1500000000?w=400&h=400&fit=crop&crop=face",
-    coverImage: "https://images.unsplash.com/photo-1600000000?w=800&h=400&fit=crop",
-    rate: "150",
-    waitTime: 7,
-    isVerified: true,
-    userEmail: "sarah.ink@gmail.com",
-    userFullName: "Stephen C",
-    studioName: "Ink Paradise Studio",
-    studioAddress: "123 Main Street, Suite 1",
-    studioCity: "San Francisco",
-    studioState: "CA",
-    studioCountry: "USA",
-    studioLatitude: "40.7128",
-    studioLongitude: "-74.0060",
-    styles: ["Dotwork", "Abstract", "Geometric"],
-    works: [],
-    rating: 4.8,
-    lang: ["English", "Spanish"],
-    years_experience: 8
-  },
-  {
-    artistId: "5d225e55-00c0-4293-bfa8-bb58681c9c19",
-    userId: "f36ddc8f-fbe3-476c-a904-4c764a09030a",
-    bio: "Traditional tattoo specialist with a modern twist. I love creating bold, vibrant pieces that tell your story.",
-    specialties: ["Black and Grey", "Watercolor", "Geometric"],
-    profileImage: "https://images.unsplash.com/photo-1500000001?w=400&h=400&fit=crop&crop=face",
-    coverImage: "https://images.unsplash.com/photo-1600000001?w=800&h=400&fit=crop",
-    rate: "200",
-    waitTime: 14,
-    isVerified: true,
-    userEmail: "mike.tattoo@outlook.com",
-    userFullName: "Anna K",
-    studioName: "Thunder Tattoo Collective",
-    studioAddress: "246 Main Street, Suite 2",
-    studioCity: "Los Angeles",
-    studioState: "CA",
-    studioCountry: "USA",
-    studioLatitude: "34.0522",
-    studioLongitude: "-118.2437",
-    styles: ["Geometric", "Portrait", "Neo-Traditional", "Realism", "Black and Grey"],
-    works: [],
-    rating: 4.6,
-    lang: ["English"],
-    years_experience: 6
-  },
-  {
-    artistId: "2fdfd07d-1653-4998-bfbd-9022fac2fb7c",
-    userId: "27e33eb2-831f-47b8-a8f4-6451d8efc195",
-    bio: "Watercolor and abstract tattoo artist. I bring your wildest dreams to life with splashes of color and creativity.",
-    specialties: ["Minimalist", "Japanese", "Tribal"],
-    profileImage: "https://images.unsplash.com/photo-1500000002?w=400&h=400&fit=crop&crop=face",
-    coverImage: "https://images.unsplash.com/photo-1600000002?w=800&h=400&fit=crop",
-    rate: "250",
-    waitTime: 21,
-    isVerified: false,
-    userEmail: "emma.artworks@yahoo.com",
-    userFullName: "Michael B",
-    studioName: "Sacred Art Tattoo",
-    studioAddress: "369 Main Street, Suite 3",
-    studioCity: "New York",
-    studioState: "NY",
-    studioCountry: "USA",
-    studioLatitude: "41.8781",
-    studioLongitude: "-87.6298",
-    styles: ["Realism", "Fine Line"],
-    works: [],
-    rating: 4.7,
-    lang: ["English", "French"],
-    years_experience: 5
-  }
-];
 const wishlistMockData = [
   {
     id: 1,
@@ -257,7 +225,20 @@ function goToRequestDetail(item) {
 
 onMounted(() => {
   syncTabFromQuery();
-});
+  if (authStore.isAuthenticated) {
+    refetchFavoriteArtists()
+  }
+})
+
+// Watch for authentication changes
+watch(() => authStore.isAuthenticated, (isAuth) => {
+  if (isAuth) {
+    refetchFavoriteArtists()
+  } else {
+    favoriteArtists.value = []
+    favoriteArtistsError.value = null
+  }
+})
 
 useHead({
   title: 'Profile | tattooMii',

@@ -10,12 +10,15 @@
       </div>
       <DashboardMapView :location="{ lat: props.studio.latitude || 37.7749, lng: props.studio.longitude || -122.4194 }" />
     </div>
-    <EditMapView />
+    <ClientOnly>
+      <ModalEditMapView />
+    </ClientOnly>
   </div>
 </template>
 
 <script setup>
 import { Pencil } from 'lucide-vue-next';
+
 const props = defineProps({
   studio: { type: Object, default: () => ({}) },
   readonly: { type: Boolean, default: false },
