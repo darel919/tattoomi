@@ -1,5 +1,12 @@
 <template>
-    <div class="mx-12 my-8 min-h-screen">
+    <div v-if="error" class="mx-12 my-8 min-h-screen">
+        <ErrorState 
+            :title="errorTitle" 
+            :details="errorDetails" 
+            @retry="retryFetch"
+        />
+    </div>
+    <div v-else class="mx-12 my-8 min-h-screen">
         <DashboardPortfolio :readonly="true" :data="portfolioData" />
         <div class="flex gap-10">
             <div class="grow flex flex-col gap-10">
@@ -67,13 +74,32 @@
 
 <script setup>
 import { Calculator } from 'lucide-vue-next';
+import ErrorState from '~/components/ErrorState.vue';
 
 const route = useRoute();
 const config = useRuntimeConfig();
-const { data: artistData } = useAsyncData(
+const { data: artistData, error, refresh } = useAsyncData(
     () => `artist-${route.params.id}`,
     () => $fetch(`${config.public.baseURL}/api/artist/${route.params.id}`)
 );
+
+const retryFetch = () => {
+    refresh();
+};
+
+const errorTitle = computed(() => {
+    // if (error.value?.statusCode === 404) {
+    //     return 'Artist not found';
+    // }
+    return 'An error occurred';
+});
+
+const errorDetails = computed(() => {
+    if (error.value?.statusCode === 404) {
+        return error.value.data?.message || "The artist you're looking for doesn't exist.";
+    }
+    return 'Sorry, something went wrong. Please try again later.';
+});
 
 const artistInfo = computed(() => {
     if (!artistData.value) return {};
