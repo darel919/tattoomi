@@ -112,6 +112,10 @@ const router = useRouter();
 const route = useRoute();
 const authStore = useMyAuthStore();
 
+if (authStore.role === 'artist') {
+  router.push('/artist/dashboard')
+}
+
 // Favorite Artists logic
 const favoriteArtists = ref([])
 const favoriteArtistsLoading = ref(false)
@@ -228,6 +232,11 @@ onMounted(() => {
   if (authStore.isAuthenticated) {
     refetchFavoriteArtists()
   }
+  
+  // Redirect artists to their dashboard
+  if (authStore.role === 'artist') {
+    router.push('/artist/dashboard')
+  }
 })
 
 // Watch for authentication changes
@@ -237,6 +246,13 @@ watch(() => authStore.isAuthenticated, (isAuth) => {
   } else {
     favoriteArtists.value = []
     favoriteArtistsError.value = null
+  }
+})
+
+// Watch for role changes and redirect artists
+watch(() => authStore.role, (role) => {
+  if (role === 'artist') {
+    router.push('/artist/dashboard')
   }
 })
 

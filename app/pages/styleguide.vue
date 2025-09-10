@@ -61,9 +61,9 @@
               <p class="font-roboto text-base-content line-clamp-2" style="width: 100%; font-size: 14px; font-weight: 400; line-height: 20px;">{{ style.description }}</p>
 
               <div class="flex items-flex-start" style="gap: 4.153px;">
-                <button class="flex items-center transition-colors hover:bg-yellow-400" style="padding: 8px 12px; gap: 6px; border-radius: 24.622px; background: #FBBF13; color: #314158; font-family: Roboto; font-size: 14px; font-weight: 500; line-height: 20px;">
+                <NuxtLink to="/pricecalculator" class="flex items-center transition-colors hover:bg-yellow-400" style="padding: 8px 12px; gap: 6px; border-radius: 24.622px; background: #FBBF13; color: #314158; font-family: Roboto; font-size: 14px; font-weight: 500; line-height: 20px;">
                   Add to calculator
-                </button>
+                </NuxtLink>
                 <button type="button" @click="openModal(style)" class="flex items-center transition-colors hover:bg-yellow-50" style="padding: 8px 12px; gap: 6px; border-radius: 24.622px; color: #FBBF13; font-family: Roboto; font-size: 14px; font-weight: 500; line-height: 20px;">
                   Learn more
                   <svg style="width: 20.763px; height: 20.763px;" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">

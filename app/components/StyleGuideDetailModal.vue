@@ -21,8 +21,8 @@
                                 <li v-for="(f, i) in styleData.features || defaultFeatures" :key="i" style="margin-bottom:8px;font-size:14px;line-height:20px;">{{ f }}</li>
                             </ul>
                             <div style="max-width:360px;">
-                                <button class="w-full py-3 rounded-full bg-hero text-black font-semibold flex items-center justify-between px-4">Use for Calculator <span class="opacity-80">→</span></button>
-                                <button class="w-full mt-3 py-3 rounded-full border border-hero text-hero font-semibold flex items-center justify-between px-4">Discover artists with this style <span class="opacity-80">→</span></button>
+                                <NuxtLink to="/pricecalculator" class="w-full py-3 rounded-full bg-hero text-black font-semibold flex items-center justify-between px-4">Use for Calculator <span class="opacity-80">→</span></NuxtLink>
+                                <NuxtLink to="/" class="w-full mt-3 py-3 rounded-full border border-hero text-hero font-semibold flex items-center justify-between px-4">Discover artists with this style <span class="opacity-80">→</span></NuxtLink>
                             </div>
                         </div>
                     </div>

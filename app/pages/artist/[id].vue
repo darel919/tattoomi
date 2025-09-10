@@ -59,7 +59,7 @@
                             </div>
                         </div>
                     </div>
-                    <NuxtLink to="/artist/dashboard"
+                    <NuxtLink v-if="isOwner" to="/artist/dashboard"
                         class="w-full btn border border-primary-yellow text-secondary-100 rounded-full flex-grow font-semibold">
                         Edit your profile
                     </NuxtLink>
@@ -117,4 +117,30 @@ const studioData = computed(() => artistData.value?.studio || {});
 const wontDoData = computed(() => artistData.value?.bannedPlacement || []);
 const diplomasData = computed(() => artistData.value?.diplomas || []);
 const introductionVideoData = computed(() => artistData.value?.introductionVideo || '');
+
+// Ownership check: only show "Edit your profile" when the viewed artist id matches the current logged-in artist id
+import { useMyAuthStore } from '~/stores/auth';
+const authStore = useMyAuthStore();
+
+const isOwner = computed(() => {
+    if (!authStore.isAuthenticated || !authStore.user) return false;
+    const viewedId = String(route.params.id || '');
+
+    // Try a set of likely fields where the backend might include the artist id for the logged-in user
+    const candidates = [
+        authStore.user?.artistId,
+        authStore.user?.artist?.artistId,
+        authStore.user?.artist_id,
+        authStore.user?.artistId,
+        authStore.user?.userId,
+        authStore.user?.id,
+        authStore.user?.data?.artistId
+    ];
+
+    for (const c of candidates) {
+        if (c && String(c) === viewedId) return true;
+    }
+
+    return false;
+});
 </script>

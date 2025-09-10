@@ -32,7 +32,7 @@
           <div class="divider before:bg-secondary-400 after:bg-secondary-400"></div>
           <DashboardStudio :studio="dashboardData.studio || {}" />
           <div class="divider before:bg-secondary-400 after:bg-secondary-400"></div>
-        <DashboardWontDo :bannedPlacements="artistInfoFlat?.bannedPlacement ? [artistInfoFlat.bannedPlacement] : []" />
+        <DashboardWontDo :bannedPlacements="artistInfoFlat?.bannedPlacement || []" />
           <div class="divider before:bg-secondary-400 after:bg-secondary-400"></div>
           <DashboardCertificateDiploma :diplomas="[]" />
         </div>

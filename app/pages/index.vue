@@ -1,8 +1,8 @@
 <template>
   <div class="mx-12 my-8">
     <section v-if="viewMode === 'list'">
-      <p>All Artists</p>
-      <h1 class="text-3xl font-bold">Find the perfect Tattoo Artist for your idea</h1>
+      <p v-if="!isSearch">{{ isSearch ? `Search results for "${searchQuery}" (${searchType})` : 'All Artists' }}</p>
+      <h1 class="text-3xl font-bold">{{ searchQuery ? `Find the perfect Tattoo Artist for your idea` : 'Find the perfect Tattoo Artist for your idea' }}</h1>
     </section>
     <section class="mt-7 mb-16 relative">
       <div class="border border-secondary-400 rounded-2xl px-5 py-2 shadow-md flex gap-4 justify-between items-center">
@@ -153,9 +153,9 @@
         </div>
       </div>
     </div>
-    <ArtistMapView v-if="viewMode === 'map'" />
+    <ArtistMapView v-if="viewMode === 'map'" :artists="artists" :is-loading="pending" :error="error?.message" />
     <section class="my-4">
-      <button v-if="viewMode === 'list'" @click="viewMode = 'map'; scrollToTop()"
+      <button v-if="viewMode === 'list'" @click="switchToMapView"
         class="flex flex-row items-center gap-1 bg-hero text-black rounded-full px-6 py-4 mx-auto">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -167,7 +167,7 @@
         </svg>
         <p class="font-bold">Go to Map View</p>
       </button>
-      <button v-if="viewMode === 'map'" @click="viewMode = 'list'; scrollToTop()"
+      <button v-if="viewMode === 'map'" @click="switchToListView"
         class="flex flex-row items-center gap-1 bg-hero text-black rounded-full px-6 py-4 mx-auto">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -190,7 +190,8 @@ import CustomIconSavespace from "@/components/CustomIcon/Savespace";
 import CustomIconCoverups from "@/components/CustomIcon/Coverups";
 import CustomIconWheelchair from "@/components/CustomIcon/Wheelchair";
 
-import { nextTick } from 'vue'
+import { nextTick, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const modeSpeciality = ref('less');
 const selectedSpecialities = reactive([]);
@@ -315,15 +316,57 @@ const handleToggleModeSpeciality = async () => {
 
 const viewMode = ref('list');
 const config = useRuntimeConfig()
-const { data: apiResponse, pending, error } = await useAsyncData('artists', () => $fetch(config.public.baseURL+'/api/artist/artistsFinder', {
-  method: 'POST',
-  body: {}
-}))
+const route = useRoute()
+const router = useRouter()
+
+// Reactive computed query params
+const searchQuery = computed(() => {
+  const q = route.query.q
+  return q == null ? '' : String(q)
+})
+const searchType = computed(() => {
+  const t = route.query.type
+  return t == null ? '' : String(t)
+})
+const mapViewParam = computed(() => {
+  const m = route.query.mapView
+  return m == null ? '' : String(m)
+})
+
+// Set initial view mode based on mapView parameter
+if (mapViewParam.value === 'true') {
+  viewMode.value = 'map'
+}
+
+// Compute API endpoint and provide a fetcher that chooses the correct backend
+const apiEndpoint = computed(() => {
+  if (searchQuery.value && searchType.value) {
+    return `${config.public.baseURL}/api/search?q=${encodeURIComponent(searchQuery.value)}&type=${encodeURIComponent(searchType.value)}`
+  }
+  return `${config.public.baseURL}/api/artist/artistsFinder`
+})
+
+const fetchArtists = () => {
+  if (searchQuery.value && searchType.value) {
+    // search endpoint expects GET with query params
+    return $fetch(apiEndpoint.value)
+  }
+  // default artists finder uses POST with empty body
+  return $fetch(apiEndpoint.value, { method: 'POST', body: {} })
+}
+
+// Reactive key so Nuxt can cache per-query; also returns refresh
+const { data: apiResponse, pending, error, refresh } = await useAsyncData(
+  computed(() => `artists-${searchQuery.value}-${searchType.value}`),
+  fetchArtists
+)
 
 const artists = computed(() => {
-  if (!apiResponse || !apiResponse.value || !apiResponse.value.data ) return []
-  return apiResponse.value.data
+  if (!apiResponse || !apiResponse.value) return []
+  return apiResponse.value.data || []
 })
+
+const isSearch = computed(() => !!(searchQuery.value && searchType.value))
 
 const filterIsOpen = ref(false);
 const budgets = ['Small', 'Medium', 'Large'];
@@ -340,8 +383,57 @@ const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
+const switchToMapView = () => {
+  viewMode.value = 'map'
+  scrollToTop()
+  // Update URL with mapView parameter
+  const newQuery = { ...route.query, mapView: 'true' }
+  router.replace({ query: newQuery })
+}
+
+const switchToListView = () => {
+  viewMode.value = 'list'
+  scrollToTop()
+  // Remove mapView parameter from URL
+  const newQuery = { ...route.query }
+  delete newQuery.mapView
+  router.replace({ query: newQuery })
+}
+
+watch(() => route.query, (newQuery) => {
+  // Update local state based on query parameter changes
+  if (newQuery.mapView === 'true') {
+    viewMode.value = 'map'
+  } else {
+    viewMode.value = 'list'
+  }
+})
+
 useHead({
-  title: 'Home | tattooMii',
+  title: computed(() => {
+    if (searchQuery && searchType) {
+      return `Search: ${searchQuery} (${searchType}) | tattooMii`
+    }
+    return 'Home | tattooMii'
+  })
+})
+
+// Watch for query parameter changes to update view mode
+watch(() => route.query.mapView, (newMapView) => {
+  if (newMapView === 'true') {
+    viewMode.value = 'map'
+  } else {
+    viewMode.value = 'list'
+  }
+})
+
+// Watch for search parameter changes and refresh data
+watch([searchQuery, searchType], async () => {
+  try {
+    await refresh()
+  } catch (e) {
+    // ignore - error will be handled by `error` from useAsyncData
+  }
 })
 </script>
 
