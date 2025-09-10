@@ -107,10 +107,10 @@ export const useMyAuthStore = defineStore('auth', {
       }
     },
     async registerArtist(email, password, phoneNumber) {
-      throw "Not Implemented"
+      // throw "Not Implemented"
       try {
         const config = useRuntimeConfig()
-        const response = await $fetch(config.public.baseURL + '/api/artist/registerArtist', {
+        const response = await $fetch(config.public.baseURL + '/api/user/registerUser', {
           method: 'POST',
           body: { email, password, phoneNumber }
         })
@@ -124,6 +124,58 @@ export const useMyAuthStore = defineStore('auth', {
         return response
       } catch (error) {
         this.isAuthenticated = false
+        throw error
+      }
+    },
+    async sendVerificationCode() {
+      try {
+        const config = useRuntimeConfig()
+        const response = await $fetch(config.public.baseURL + '/api/user/sendVerificationCode', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.token}`
+          }
+        })
+        return response
+      } catch (error) {
+        throw error
+      }
+    },
+    async verifyEmail(verificationCode) {
+      try {
+        const config = useRuntimeConfig()
+        const response = await $fetch(config.public.baseURL + '/api/user/verifyEmail', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.token}`
+          },
+          body: { code: verificationCode }
+        })
+        if (response && response.token) {
+          this.token = response.token
+          await this.fetchUser()
+        }
+        return response
+      } catch (error) {
+        throw error
+      }
+    },
+    async authenticateArtist(artistData) {
+      try {
+        const config = useRuntimeConfig()
+        const response = await $fetch(config.public.baseURL + '/api/artist/authenticateArtist', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.token}`
+          },
+          body: artistData
+        })
+        if (response && response.token) {
+          this.token = response.token
+          await this.fetchUser()
+        }
+        return response
+      } catch (error) {
         throw error
       }
     },

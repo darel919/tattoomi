@@ -135,8 +135,12 @@ import IconsCoins from '@/components/Icons/Coins.vue';
 import IconsCurrency from '@/components/Icons/Currency.vue';
 import IconsCalculator from '@/components/Icons/Calculator.vue';
 import { useRouter } from 'vue-router';
+import { useMyAuthStore } from '@/stores/auth';
+import { useToast } from '@/composables/useToast';
 
 const router = useRouter();
+const authStore = useMyAuthStore();
+const { toast } = useToast();
 
 definePageMeta({
   layout: 'auth',
@@ -158,6 +162,55 @@ function handleBack() {
 }
 
 function handleSubmit() {
-  router.push('/register/verify-profile');
+  // Get basic info from session storage
+  let basicInfo = {};
+  if (process.client) {
+    const storedBasicInfo = sessionStorage.getItem('artistBasicInfo');
+    if (storedBasicInfo) {
+      basicInfo = JSON.parse(storedBasicInfo);
+    }
+  }
+
+  // Combine all artist data
+  const artistData = {
+    bio: 'Artist biography will be added in profile setup', // Placeholder - can be updated later
+    specialties: [], // Will be added in profile setup
+    workSamples: [], // Will be added in profile setup
+    diplomas: [], // Will be added in profile setup
+    // Basic info
+    fullName: basicInfo.fullName || '',
+    displayName: basicInfo.displayName || '',
+    instagram: basicInfo.instagram || '',
+    facebook: basicInfo.facebook || '',
+    // Professional info
+    websiteLink: form.websiteLink,
+    location: form.location,
+    languages: Array.isArray(form.language) ? form.language : [form.language].filter(Boolean),
+    sex: form.sex,
+    birthday: form.birthday,
+    rate: parseFloat(form.rate) || 0,
+    currency: form.currency,
+    budget: form.budget
+  };
+
+  // Submit artist data
+  submitArtistData(artistData);
+}
+
+async function submitArtistData(artistData) {
+  try {
+    const response = await authStore.authenticateArtist(artistData);
+    toast('success', 'Artist profile created successfully!');
+
+    // Clear stored data
+    if (process.client) {
+      sessionStorage.removeItem('artistBasicInfo');
+    }
+
+    router.push('/register/verify-profile');
+  } catch (error) {
+    const message = error.response?.data?.message || 'Failed to create artist profile. Please try again.';
+    toast('error', message);
+  }
 }
 </script>

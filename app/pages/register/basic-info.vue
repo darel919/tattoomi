@@ -65,6 +65,20 @@ function handleBack() {
 }
 
 function handleSubmit() {
+  // Store basic info for later submission
+  const basicInfo = {
+    fullName: form.fullName,
+    displayName: form.displayName,
+    instagram: form.instagram,
+    facebook: form.facebook,
+    avatar: avatarFile.value
+  };
+
+  // Store in session storage for use in professional info page
+  if (process.client) {
+    sessionStorage.setItem('artistBasicInfo', JSON.stringify(basicInfo));
+  }
+
   router.push('/register/professional-information');
 }
 </script>
