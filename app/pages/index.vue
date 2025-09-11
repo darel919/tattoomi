@@ -421,8 +421,8 @@ watch(() => route.query, (newQuery) => {
 
 useHead({
   title: computed(() => {
-    if (searchQuery && searchType) {
-      return `Search: ${searchQuery} (${searchType}) | tattooMii`
+    if (searchQuery.value && searchType.value) {
+      return `Search: ${searchQuery.value} (${searchType.value}) | tattooMii`
     }
     return 'Home | tattooMii'
   })
