@@ -81,15 +81,23 @@ const artistInfoFlat = computed(() => {
 
   // normalize spokenLanguage to an array when possible
   let spokenLanguage = []
-  if (Array.isArray(artist.spokenLanguage)) spokenLanguage = artist.spokenLanguage
-  else if (typeof artist.spokenLanguage === 'string' && artist.spokenLanguage) spokenLanguage = [artist.spokenLanguage]
+  if (Array.isArray(artist.spokenLanguage)) {
+    // convert array of objects to array of labels when needed
+    spokenLanguage = artist.spokenLanguage.map(l => {
+      if (!l && l !== 0) return null
+      if (typeof l === 'string') return l
+      if (typeof l === 'object') return l.label || l.value || null
+      return String(l)
+    }).filter(Boolean)
+  } else if (typeof artist.spokenLanguage === 'string' && artist.spokenLanguage) spokenLanguage = [artist.spokenLanguage]
 
   return {
     profileImage: artist.profileImage,
     fullName: user.fullName,
     isVerified: artist.isVerified,
     studio: studio,
-    startYear: artist.startYear,
+  // normalize startYear: accept number or parseable string, else null
+  startYear: (artist.startYear || artist.startYear === 0) ? (Number.isNaN(Number(artist.startYear)) ? null : Number(artist.startYear)) : null,
     phoneNumber: user.phoneNumber || null,
     bio: artist.bio,
     specialties: artist.specialties || [],
@@ -101,7 +109,7 @@ const artistInfoFlat = computed(() => {
     worksCount: parseInt(statistics.worksCount) || 0,
     favoritesCount: parseInt(statistics.favoritesCount) || 0,
     recentWorks: recentWorks || [],
-    yearsOfExperience: artist.startYear ? currentYear - artist.startYear : 0,
+  yearsOfExperience: (artist.startYear || artist.startYear === 0) && !Number.isNaN(Number(artist.startYear)) ? currentYear - Number(artist.startYear) : 0,
     artistId: artist.artistId
   }
 })

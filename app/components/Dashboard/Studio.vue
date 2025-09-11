@@ -8,7 +8,7 @@
           <Pencil :size="20" />
         </button>
       </div>
-      <div class="min-h-[13.75rem]">
+      <div class="">
         <div v-if="props.studio.name" class="space-y-4">
           <h5 class="text-xl font-semibold">{{ props.studio.name }}</h5>
           <p class="text-secondary-100">{{ props.studio.address }}</p>

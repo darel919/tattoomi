@@ -25,20 +25,21 @@
                     <div class="divider before:bg-secondary-400 after:bg-secondary-400"></div>
                     <DashboardCertificateDiploma :readonly="true" :diplomas="diplomasData" />
                 </div>
+                <ClientOnly>
                 <div class="max-w-[25rem]">
-                    <div class="card bg-secondary-500 border-secondary-400 shadow-md w-full mb-8">
+                    <div class="card shadow-2xl w-full mb-8">
                         <div class="card-body items-center text-center">
                             <div class="flex items-center gap-2">
                                 <Calculator class="text-primary-yellow" />
                                 <h2 class="card-title text-2xl font-semibold">Price Calculator</h2>
                             </div>
-                            <p class="text-sm text-secondary-100">
+                            <p class="text-sm">
                                 Calculate your price . You don’t have to pay yet.
                             </p>
 
                             <div class="card-actions flex flex-col w-full gap-4 mt-3">
                                 <button onclick="modal_calculator.show()" type="button"
-                                    class="w-full btn border border-primary-yellow text-secondary-100 rounded-full flex-grow font-semibold">
+                                    class="w-full btn border border-primary-yellow rounded-full flex-grow font-semibold">
                                     Try our Price Calculator
                                 </button>
                                 <button type="button"
@@ -48,11 +49,11 @@
                             </div>
                             <div class="divider before:bg-secondary-400 after:bg-secondary-400 py-4"></div>
                             <div class="grid grid-cols-2 gap-6 w-full">
-                                <div class="bg-secondary-400 rounded-md p-3">
+                                <div class="rounded-md p-3">
                                     <p class="text-sm text-secondary-100">Hourly Rate</p>
                                     <p class="text-sm font-bold">On Request</p>
                                 </div>
-                                <div class="bg-secondary-400 rounded-md p-3">
+                                <div class="rounded-md p-3">
                                     <p class="text-sm text-secondary-100">Daily Rate</p>
                                     <p class="text-sm font-bold">On Request</p>
                                 </div>
@@ -64,6 +65,7 @@
                         Edit your profile
                     </NuxtLink>
                 </div>
+                </ClientOnly>
             </div>
             <div class="divider before:bg-secondary-400 after:bg-secondary-400 py-10"></div>
             <div class="flex flex-col gap-10">
@@ -110,13 +112,13 @@ const artistInfo = computed(() => {
 });
 
 // Other data mappings
-const portfolioData = computed(() => artistData.value?.works || []);
-const bioData = computed(() => artistData.value?.bio || '');
-const specialityData = computed(() => artistData.value?.specialties || []);
-const studioData = computed(() => artistData.value?.studio || {});
-const wontDoData = computed(() => artistData.value?.bannedPlacement || []);
-const diplomasData = computed(() => artistData.value?.diplomas || []);
-const introductionVideoData = computed(() => artistData.value?.introductionVideo || '');
+const portfolioData = computed(() => artistData.value?.data?.works || []);
+const bioData = computed(() => artistData.value?.data?.bio || '');
+const specialityData = computed(() => artistData.value?.data?.specialties || []);
+const studioData = computed(() => artistData.value?.data?.studio || {});
+const wontDoData = computed(() => artistData.value?.data?.bannedPlacement || []);
+const diplomasData = computed(() => artistData.value?.data?.diplomas || []);
+const introductionVideoData = computed(() => artistData.value?.data?.introductionVideo || '');
 
 // Ownership check: only show "Edit your profile" when the viewed artist id matches the current logged-in artist id
 import { useMyAuthStore } from '~/stores/auth';

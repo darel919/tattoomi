@@ -58,8 +58,20 @@ const props = defineProps({
 const artist = props.data || {}
 
 function joinLangs(langArr) {
-    if (!Array.isArray(langArr) || langArr.length === 0) return '-'
-    return langArr.join(', ')
+    if (!langArr) return '-'
+    if (!Array.isArray(langArr)) {
+        if (typeof langArr === 'string') return langArr
+        return String(langArr)
+    }
+    return langArr
+        .map(l => {
+            if (!l && l !== 0) return null
+            if (typeof l === 'string') return l
+            if (typeof l === 'object') return l.label || l.value || String(l)
+            return String(l)
+        })
+        .filter(Boolean)
+        .join(', ') || '-'
 }
 
 function joinStyles(catArr) {
@@ -67,7 +79,18 @@ function joinStyles(catArr) {
     return catArr.slice(0, 2).join(', ')
 }
 
-const yearsText = artist.startYear ? `${new Date().getFullYear() - artist.startYear} Years` : '—'
+function computeYears(startYear) {
+    if (startYear == null) return null
+    const n = Number(startYear)
+    if (Number.isNaN(n) || n <= 0) return null
+    const diff = new Date().getFullYear() - Math.floor(n)
+    return diff >= 0 ? diff : null
+}
+
+const yearsText = (() => {
+    const y = computeYears(artist.startYear)
+    return y != null ? `${y} Years` : '—'
+})()
 const languagesText = joinLangs(artist.spokenLanguage)
 const priceText = (() => {
     const p = Number(artist.rate || 0)
@@ -75,15 +98,18 @@ const priceText = (() => {
     return '$'.repeat(Math.min(4, Math.floor(p / 50)))
 })()
 
-const waitingText = (() => {
-    const days = Number(artist.waitTime || 0)
-    if (!days) return '-'
-    if (days <= 7) return '1 Week'
-    if (days <= 14) return '2 Weeks'
-    if (days <= 21) return '2-3 Weeks'
-    if (days <= 30) return '3-4 Weeks'
-    return `${Math.round(days/7)}+ Weeks`
-})()
+function formatWaiting(days) {
+    if (days == null) return 'No waiting time'
+    const n = Number(days)
+    if (Number.isNaN(n) || n <= 0) return 'No waiting time'
+    if (n === 1) return '1 day'
+    if (n <= 7) return `${n} days`
+    const weeks = Math.floor(n / 7)
+    const rem = n % 7
+    return rem === 0 ? `${weeks} week${weeks > 1 ? 's' : ''}` : `${weeks} week${weeks > 1 ? 's' : ''} ${rem} day${rem > 1 ? 's' : ''}`
+}
+
+const waitingText = formatWaiting(artist.waitTime)
 
 const stylesText = joinStyles(artist.specialties)
 </script>

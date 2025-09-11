@@ -25,7 +25,7 @@
               </button>
             </div>
 
-            <div class="tooltip ml-2" data-tip="This artist has uploaded a hygiene certificate">
+            <div v-if="hasHygieneCertificate(props.data)" class="tooltip ml-2" data-tip="This artist has uploaded a hygiene certificate">
               <button type="button" class="btn btn-ghost p-0 w-5 h-5 flex items-center justify-center"
                 aria-label="Hygiene certificate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2"
@@ -61,18 +61,24 @@
         </section>
       </section>
     </section>
-    <!-- ARTIST FOLLOWER COUNT -->
-    <section class="flex flex-row items-center gap-3 mt-4 mb-6">
-      <div class="stat">
-        <div class="stat-title">Years of Experience</div>
-        <div class="stat-value text-2xl">{{ props.data.startYear ? new Date().getFullYear() - props.data.startYear : 'N/A' }}</div>
-      </div>
-    </section>
+   
     <!-- ARTIST CONTACT -->
-    <section class="flex gap-3 pb-4">
+    <section class="flex gap-3 py-4 pb-4">
       <a v-if="props.data.phoneNumber" :href="`tel:${props.data.phoneNumber}`" target="_blank"
         class="btn btn-circle btn-outline border-primary-yellow hover:bg-primary-yellow">
-        <Phone :size="20" />
+        <Phone :size="16" />
+      </a>
+      <a v-if="props.data.instagram" :href="`https://instagram.com/${props.data.instagram}`" target="_blank"
+        class="btn btn-circle btn-outline border-primary-yellow hover:bg-primary-yellow">
+        <Instagram :size="16"/>
+      </a>
+      <a v-if="props.data.facebook" :href="`https://facebook.com/${props.data.facebook}`" target="_blank"
+        class="btn btn-circle btn-outline border-primary-yellow hover:bg-primary-yellow">
+        <Facebook :size="16"/>
+      </a>
+      <a v-if="props.data.websiteLink" :href="`${props.data.websiteLink}`" target="_blank"
+        class="btn btn-circle btn-outline border-primary-yellow hover:bg-primary-yellow">
+        <<Globe :size="16"/>
       </a>
     </section>
     <!-- ARTIST ACTION -->
@@ -103,7 +109,7 @@
               <div class="text-sm font-medium">Years' experiences</div>
               <div class="h-px bg-base-200 mt-2"></div>
             </div>
-            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ new Date().getFullYear() - props.data.startYear }} years
+              <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ computeYears(props.data.startYear) }} years
             </div>
             <button v-if="!props.readonly" onclick="modal_edit_profile_experience.show()"
               class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
@@ -124,7 +130,7 @@
               <div class="text-sm font-medium">Language</div>
               <div class="h-px bg-base-200 mt-2"></div>
             </div>
-            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{props.data.spokenLanguage?.join(', ') || 'Not specified'}}</div>
+            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ formatSpokenLanguage(props.data.spokenLanguage) }}</div>
             <button v-if="!props.readonly" onclick="modal_edit_profile_language.show()"
               class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
               <Pencil :size="20" />
@@ -163,8 +169,7 @@
               <div class="text-sm font-medium">Avg. Waiting Time</div>
               <div class="h-px bg-base-200 mt-2"></div>
             </div>
-            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ props.data.waitTime }}
-              days</div>
+            <div class="ml-4 text-sm text-gray-500 whitespace-nowrap flex items-center">{{ formatWaiting(props.data.waitTime) }}</div>
             <button v-if="!props.readonly" onclick="modal_edit_profile_waiting_time.show()"
               class="ml-2.5 btn btn-outline border-primary-yellow rounded-full btn-circle hover:bg-primary-yellow">
               <Pencil :size="20" />
@@ -205,7 +210,7 @@
 </template>
 
 <script setup>
-import { Pencil, Phone } from 'lucide-vue-next';
+import { Pencil, Phone, Instagram, Facebook, Globe } from 'lucide-vue-next';
 
 /**
  * @typedef {Object} ArtistData
@@ -273,4 +278,53 @@ const props = defineProps({
 onMounted(() => {
   if (!props.data) return console.warn('[DashboardArtistInfo] ArtistInfo component mounted but has invalid data prop. We require data prop!');
 });
+
+function formatSpokenLanguage(lang) {
+  if (!lang) return 'Not specified'
+  if (!Array.isArray(lang)) {
+    // maybe it's a comma separated string
+    if (typeof lang === 'string') return lang
+    return String(lang)
+  }
+  return lang
+    .map(l => {
+      if (!l && l !== 0) return null
+      if (typeof l === 'string') return l
+      if (typeof l === 'object') return l.label || l.value || String(l)
+      return String(l)
+    })
+    .filter(Boolean)
+    .join(', ') || 'Not specified'
+}
+
+function computeYears(startYear) {
+  if (!startYear && startYear !== 0) return 'N/A'
+  const yearNum = Number(startYear)
+  if (Number.isNaN(yearNum) || yearNum <= 0) return 'N/A'
+  const diff = new Date().getFullYear() - Math.floor(yearNum)
+  return diff >= 0 ? diff : 'N/A'
+}
+
+function formatWaiting(days) {
+  if (days == null) return 'No waiting time'
+  const n = Number(days)
+  if (Number.isNaN(n) || n <= 0) return 'No waiting time'
+  if (n === 1) return '1 day'
+  if (n <= 7) return `${n} days`
+  const weeks = Math.floor(n / 7)
+  const rem = n % 7
+  return rem === 0 ? `${weeks} week${weeks > 1 ? 's' : ''}` : `${weeks} week${weeks > 1 ? 's' : ''} ${rem} day${rem > 1 ? 's' : ''}`
+}
+
+function hasHygieneCertificate(data) {
+  if (!data) return false
+  // Some APIs provide hygiene certificate as a boolean or provide a diploma/certificate with certificateUrl
+  if (data.hygiene_cert === true) return true
+  // check diplomas for hygiene or certificateUrl presence
+  if (Array.isArray(data.diplomas) && data.diplomas.some(d => d && (d.certificateUrl || (d.title && d.title.toLowerCase().includes('hygiene'))))) return true
+  // also check for a top level certificateUrl field
+  if (data.certificateUrl) return true
+  return false
+}
+
 </script>

@@ -15,7 +15,7 @@
                             : `&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors`" layer-type="base"
                         :name="isDark ? 'Dark Map' : 'Light Map'">
                     </LTileLayer>
-                    <LMarker :lat-lng="[location.lat, location.lng]">
+                    <LMarker :key="`${location.lat}-${location.lng}`" :lat-lng="[location.lat, location.lng]">
                         <LPopup>The location is here!</LPopup>
                     </LMarker>
                 </LMap>
@@ -115,6 +115,32 @@ const onMapReady = (mapInstance) => {
     )
     updateTheme()
 }
+
+// Watch for location changes and update map accordingly
+watch(() => props.location, (newLocation, oldLocation) => {
+    if (!newLocation) return
+    
+    // Update map view to new location
+    const updateMap = () => {
+        const mapInstance = map.value?.leafletObject || map.value
+        if (mapInstance && typeof mapInstance.setView === 'function') {
+            mapInstance.setView([newLocation.lat, newLocation.lng], 17)
+        }
+    }
+    
+    // If map is already ready, update immediately
+    if (map.value) {
+        updateMap()
+    } else {
+        // Wait for map to be ready
+        nextTick(updateMap)
+    }
+    
+    // Fetch new address for the updated location
+    if (newLocation.lat !== oldLocation?.lat || newLocation.lng !== oldLocation?.lng) {
+        getAddress(newLocation.lat, newLocation.lng)
+    }
+}, { deep: true })
 </script>
 
 <style scoped>

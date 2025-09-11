@@ -59,9 +59,9 @@
                                 <div v-else class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
                                     <UserRound class="w-6 h-6 text-gray-600" />
                                 </div>
-                                <div>
-                                    <h3 class="font-semibold text-lg">{{ artist.userFullName || 'Unknown Artist' }}</h3>
-                                    <p class="text-sm text-gray-600">{{ artist.studioName || 'No Studio' }}</p>
+                                <div class="m-0 p-0 gap-0 flex flex-col">
+                                    <h3 class="font-bold text-lg">{{ artist.userFullName || 'Unknown Artist' }}</h3>
+                                    <h3 class="text-xs">{{ artist.studioName || 'No Studio' }}</h3>
                                 </div>
                             </div>
 
@@ -86,9 +86,9 @@
                                             <Coins class="w-4 h-4 text-green-600" />
                                             <span class="font-medium">${{ artist.rate }}</span>
                                         </div>
-                                        <div v-if="artist.waitTime" class="flex items-center space-x-1">
+                                        <div v-if="artist.waitTime != null" class="flex items-center space-x-1">
                                             <Clock class="w-4 h-4 text-orange-600" />
-                                            <span>{{ artist.waitTime }} days</span>
+                                            <span>{{ formatWaiting(artist.waitTime) }}</span>
                                         </div>
                                     </div>
                                     <div v-if="artist.isVerified" class="flex items-center space-x-1">
@@ -190,6 +190,17 @@ const onMapReady = (mapInstance) => {
     nextTick(() => {
         fitMapToMarkers(mapInstance)
     })
+}
+
+function formatWaiting(days) {
+    if (days == null) return 'No waiting time'
+    const n = Number(days)
+    if (Number.isNaN(n) || n <= 0) return 'No waiting time'
+    if (n === 1) return '1 day'
+    if (n <= 7) return `${n} days`
+    const weeks = Math.floor(n / 7)
+    const rem = n % 7
+    return rem === 0 ? `${weeks} week${weeks > 1 ? 's' : ''}` : `${weeks} week${weeks > 1 ? 's' : ''} ${rem} day${rem > 1 ? 's' : ''}`
 }
 
 // Watch for artists data changes and refit map

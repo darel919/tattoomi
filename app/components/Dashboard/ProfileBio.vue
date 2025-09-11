@@ -8,7 +8,7 @@
           <Pencil :size="20" />
         </button>
       </div>
-      <p class="text-secondary-100">{{ props.bio || 'Write down your professional description here...' }}</p>
+      <p class="">{{ props.bio || 'Write down your professional description here...' }}</p>
     </div>
     <ModalEditProfileBio />
   </div>
@@ -19,5 +19,10 @@ import { Pencil } from 'lucide-vue-next';
 const props = defineProps({
   bio: { type: String, default: '' },
   readonly: { type: Boolean, default: false },
+})
+onMounted(() => {
+  // if (!props.readonly) {
+   console.log(props.bio)
+  // }
 })
 </script>

@@ -11,7 +11,7 @@
       <div v-if="props.diplomas.length > 0" class="space-y-4">
         <div v-for="diploma in props.diplomas" :key="diploma.diplomaId"
           class="border border-secondary-300 rounded-2xl px-4 py-4 flex justify-between items-center">
-          <div class="flex items-center gap-3 text-secondary-100">
+          <div class="flex items-center gap-3">
             <BookPlus :size="32" />
             <div>
               <p class="font-semibold">{{ diploma.title }}</p>
