@@ -133,6 +133,7 @@ const error = computed(() => props.error || fetchError.value)
 // Filter artists with valid coordinates
 const validArtists = computed(() => {
     return artists.value.filter(artist =>
+        artist &&
         artist.studioLatitude &&
         artist.studioLongitude &&
         !isNaN(parseFloat(artist.studioLatitude)) &&
@@ -143,31 +144,39 @@ const validArtists = computed(() => {
 const updateTheme = () => {
     isDark.value = colorMode.value === 'dark'
     if (map.value) {
-        const mapEl = map.value.getContainer()
-        if (colorMode.value === 'dark') {
-            mapEl.style.backgroundColor = '#242424'
-            mapEl.style.color = '#fff'
-        } else {
-            mapEl.style.backgroundColor = '#fff'
-            mapEl.style.color = '#222'
+        try {
+            const mapEl = map.value.getContainer()
+            if (colorMode.value === 'dark') {
+                mapEl.style.backgroundColor = '#242424'
+                mapEl.style.color = '#fff'
+            } else {
+                mapEl.style.backgroundColor = '#fff'
+                mapEl.style.color = '#222'
+            }
+        } catch (error) {
+            console.warn('[ArtistMapView] Error updating theme:', error)
         }
     }
 }
 
 const fitMapToMarkers = (mapInstance) => {
-    if (validArtists.value.length === 0) return
+    if (!mapInstance || validArtists.value.length === 0) return
 
-    const bounds = validArtists.value.map(artist => [
-        parseFloat(artist.studioLatitude),
-        parseFloat(artist.studioLongitude)
-    ])
+    try {
+        const bounds = validArtists.value.map(artist => [
+            parseFloat(artist.studioLatitude),
+            parseFloat(artist.studioLongitude)
+        ])
 
-    if (bounds.length === 1) {
-        // Single marker - center on it
-        mapInstance.setView(bounds[0], 13)
-    } else {
-        // Multiple markers - fit bounds
-        mapInstance.fitBounds(bounds, { padding: [20, 20] })
+        if (bounds.length === 1) {
+            // Single marker - center on it
+            mapInstance.setView(bounds[0], 13)
+        } else {
+            // Multiple markers - fit bounds
+            mapInstance.fitBounds(bounds, { padding: [20, 20] })
+        }
+    } catch (error) {
+        console.warn('[ArtistMapView] Error fitting map to markers:', error)
     }
 }
 
@@ -182,14 +191,20 @@ onMounted(async () => {
 })
 
 const onMapReady = (mapInstance) => {
-    map.value = mapInstance
-    mapInstance.getContainer().style.zIndex = '0'
-    updateTheme()
+    if (!mapInstance) return
 
-    // Fit map to markers once they're loaded
-    nextTick(() => {
-        fitMapToMarkers(mapInstance)
-    })
+    try {
+        map.value = mapInstance
+        mapInstance.getContainer().style.zIndex = '0'
+        updateTheme()
+
+        // Fit map to markers once they're loaded
+        nextTick(() => {
+            fitMapToMarkers(mapInstance)
+        })
+    } catch (error) {
+        console.warn('[ArtistMapView] Error in onMapReady:', error)
+    }
 }
 
 function formatWaiting(days) {
@@ -206,7 +221,11 @@ function formatWaiting(days) {
 // Watch for artists data changes and refit map
 watch(validArtists, (newArtists) => {
     if (map.value && newArtists.length > 0) {
-        fitMapToMarkers(map.value)
+        try {
+            fitMapToMarkers(map.value)
+        } catch (error) {
+            console.warn('[ArtistMapView] Error updating map with new artists:', error)
+        }
     }
 }, { immediate: true })
 </script>

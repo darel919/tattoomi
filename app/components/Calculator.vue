@@ -1,6 +1,6 @@
 <template>
   <ClientOnly>
-    <div class="bg-white border border-secondary-400 rounded-4xl px-20 py-12 shadow-sm flex flex-col justify-center">
+    <div class="bg-white text-black border border-secondary-400 rounded-4xl px-20 py-12 shadow-sm flex flex-col justify-center">
       <h2 class="text-4xl text-dark-100 font-bold mb-3 text-center">Tattoo Price Calculator</h2>
       <p class="text-secondary-100 mb-8 text-center">Get an instant estimate for your customized tattoo</p>
       <div class="flex justify-center items-center gap-3 mb-8" v-if="currentStep != 8">

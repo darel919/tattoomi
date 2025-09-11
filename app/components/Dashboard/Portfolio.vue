@@ -54,7 +54,7 @@
         </button>
       </div>
     </div>
-    <ModalViewAllPortfolio />
+  <ModalViewAllPortfolio :portfolios="portfolioData" />
     <ModalEditPortfolio />
   </div>
 </template>

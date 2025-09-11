@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex justify-center items-center bg-secondary-500">
+  <div class="min-h-screen flex justify-center items-center">
     <Calculator />
   </div>
 </template>

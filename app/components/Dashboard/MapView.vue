@@ -15,7 +15,10 @@
                             : `&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors`" layer-type="base"
                         :name="isDark ? 'Dark Map' : 'Light Map'">
                     </LTileLayer>
-                    <LMarker :key="`${location.lat}-${location.lng}`" :lat-lng="[location.lat, location.lng]">
+                    <LMarker
+                        v-if="isValidLocation"
+                        :key="`${location.lat}-${location.lng}`"
+                        :lat-lng="[location.lat, location.lng]">
                         <LPopup>The location is here!</LPopup>
                     </LMarker>
                 </LMap>
@@ -59,31 +62,57 @@ const map = ref(null)
 const colorMode = useColorMode()
 const isDark = ref(false)
 
+// Validate location coordinates
+const isValidLocation = computed(() => {
+    return props.location &&
+           typeof props.location.lat === 'number' &&
+           typeof props.location.lng === 'number' &&
+           !isNaN(props.location.lat) &&
+           !isNaN(props.location.lng)
+})
+
 const updateTheme = () => {
     isDark.value = colorMode.value === 'dark'
     if (!map.value) return;
-    let mapInstance = map.value;
-    if (map.value.leafletObject) {
-        mapInstance = map.value.leafletObject;
-    }
-    if (mapInstance && typeof mapInstance.getContainer === 'function') {
-        const mapEl = mapInstance.getContainer()
-        if (colorMode.value === 'dark') {
-            mapEl.style.backgroundColor = '#242424'
-            mapEl.style.color = '#fff'
-        } else {
-            mapEl.style.backgroundColor = '#fff'
-            mapEl.style.color = '#222'
+    try {
+        let mapInstance = map.value;
+        if (map.value.leafletObject) {
+            mapInstance = map.value.leafletObject;
         }
+        if (mapInstance && typeof mapInstance.getContainer === 'function') {
+            const mapEl = mapInstance.getContainer()
+            if (colorMode.value === 'dark') {
+                mapEl.style.backgroundColor = '#242424'
+                mapEl.style.color = '#fff'
+            } else {
+                mapEl.style.backgroundColor = '#fff'
+                mapEl.style.color = '#222'
+            }
+        }
+    } catch (error) {
+        console.warn('[DashboardMapView] Error updating theme:', error)
     }
 }
 
 watch(colorMode, updateTheme, { immediate: true })
 
 onMounted(() => {
-    if (!props.location) return console.warn('[DashboardMapView] Component is mounted, but "location" prop data is not defined. "location" is required for DashboardMapView!')
+    if (!isValidLocation.value) return console.warn('[DashboardMapView] Component is mounted, but "location" prop data is not valid. Valid location is required for DashboardMapView!')
     updateTheme()
     getAddress(props.location.lat, props.location.lng)
+})
+
+// Cleanup on unmount to prevent memory leaks
+onBeforeUnmount(() => {
+    if (map.value) {
+        try {
+            // Clear the map reference to prevent memory leaks
+            // Vue-Leaflet handles the actual map cleanup internally
+            map.value = null
+        } catch (error) {
+            console.warn('[DashboardMapView] Error during cleanup:', error)
+        }
+    }
 })
 
 const address = ref('')
@@ -108,26 +137,38 @@ const getAddress = async (lat, lng) => {
 }
 
 const onMapReady = (mapInstance) => {
-    map.value = mapInstance
-    mapInstance.setView(
-        [props.location.lat, props.location.lng],
-        17
-    )
-    updateTheme()
+    if (!mapInstance) return
+
+    try {
+        map.value = mapInstance
+        if (isValidLocation.value) {
+            mapInstance.setView(
+                [props.location.lat, props.location.lng],
+                17
+            )
+        }
+        updateTheme()
+    } catch (error) {
+        console.warn('[DashboardMapView] Error in onMapReady:', error)
+    }
 }
 
 // Watch for location changes and update map accordingly
 watch(() => props.location, (newLocation, oldLocation) => {
-    if (!newLocation) return
-    
+    if (!isValidLocation.value) return
+
     // Update map view to new location
     const updateMap = () => {
-        const mapInstance = map.value?.leafletObject || map.value
-        if (mapInstance && typeof mapInstance.setView === 'function') {
-            mapInstance.setView([newLocation.lat, newLocation.lng], 17)
+        try {
+            const mapInstance = map.value?.leafletObject || map.value
+            if (mapInstance && typeof mapInstance.setView === 'function') {
+                mapInstance.setView([newLocation.lat, newLocation.lng], 17)
+            }
+        } catch (error) {
+            console.warn('[DashboardMapView] Error updating map view:', error)
         }
     }
-    
+
     // If map is already ready, update immediately
     if (map.value) {
         updateMap()
@@ -135,7 +176,7 @@ watch(() => props.location, (newLocation, oldLocation) => {
         // Wait for map to be ready
         nextTick(updateMap)
     }
-    
+
     // Fetch new address for the updated location
     if (newLocation.lat !== oldLocation?.lat || newLocation.lng !== oldLocation?.lng) {
         getAddress(newLocation.lat, newLocation.lng)

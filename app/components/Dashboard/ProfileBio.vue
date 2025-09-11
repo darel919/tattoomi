@@ -20,9 +20,4 @@ const props = defineProps({
   bio: { type: String, default: '' },
   readonly: { type: Boolean, default: false },
 })
-onMounted(() => {
-  // if (!props.readonly) {
-   console.log(props.bio)
-  // }
-})
 </script>

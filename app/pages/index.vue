@@ -153,7 +153,17 @@
         </div>
       </div>
     </div>
-    <ArtistMapView v-if="viewMode === 'map'" :artists="artists" :is-loading="pending" :error="error?.message" />
+    <ArtistMapView v-if="viewMode === 'map' && artists.length > 0" :artists="artists" :is-loading="pending" :error="error?.message" />
+    <div v-if="viewMode === 'map' && !pending && artists.length === 0" class="h-[70vh] w-full -mt-10 mb-8 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-xl">
+      <div class="text-center">
+        <div class="text-gray-600 dark:text-gray-400 mb-4">
+          <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+          </svg>
+        </div>
+        <p class="text-lg text-gray-600 dark:text-gray-400">There are no locations found with your query</p>
+      </div>
+    </div>
     <section class="my-4">
       <button v-if="viewMode === 'list'" @click="switchToMapView"
         class="flex flex-row items-center gap-1 bg-hero text-black rounded-full px-6 py-4 mx-auto">
