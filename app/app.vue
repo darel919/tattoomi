@@ -3,6 +3,7 @@
     <ClientOnly>
       <ThemeInit />
     </ClientOnly>
+    <NuxtLoadingIndicator color="#FBBF13"/>
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
