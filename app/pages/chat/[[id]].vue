@@ -43,8 +43,8 @@ const id = computed(() => route.params.id)
 const fetchChatRooms = async () => {
   try {
     loading.value = true
-    const response = await $fetch(config.public.baseURL + '/api/user/chatRooms', {
-      method: 'GET',
+    const response = await $fetch(config.public.baseURL + '/api/user/chatRoom/getAllChatRoom', {
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${authStore.token}`
       }

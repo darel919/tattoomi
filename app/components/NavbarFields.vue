@@ -75,7 +75,7 @@
 
 <script setup>
 import {Map, PenTool} from 'lucide-vue-next'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 
@@ -145,10 +145,28 @@ const onEnter = () => {
     const q = String(searchQuery.value || '').trim()
     if (!q) return
     const type = String(selected.value || 'Location').toLowerCase()
+    if (type === 'location') {
+        const query = { city: q, mapView: 'true' }
+        router.push({ path: '/', query })
+        return
+    }
+
     const query = { q, type }
-    if (type === 'location') query['mapView'] = 'true'
     router.push({ path: '/', query })
 }
+const route = useRoute()
+
+watch(
+    () => route.query && route.query.city,
+    (val) => {
+        if (val == null) return
+        const city = Array.isArray(val) ? val[0] : val
+        if (String(city || '').trim()) {
+            searchQuery.value = String(city)
+        }
+    },
+    { immediate: true }
+)
 
 onMounted(() => {
     document.addEventListener('click', onClickOutside)

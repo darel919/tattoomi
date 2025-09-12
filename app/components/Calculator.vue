@@ -37,9 +37,9 @@
               Choose Whether You Want Your Tattoo in Color or Black-Grey
             </h4>
             <div class="flex flex-col gap-4">
-              <div class="flex gap-2 items-center" v-for="item in colours">
-                <input type="radio" name="colour" class="radio checked:bg-dark-100 checked:text-white" />
-                <p class="text-sm font-medium text-secondary-200">{{ item }}</p>
+              <div class="flex gap-2 items-center" v-for="item in colours" :key="item.value">
+                <input type="radio" name="colour" v-model="form.color" :value="item.value" class="radio checked:bg-dark-100 checked:text-white" />
+                <p class="text-sm font-medium text-secondary-200">{{ item.label }}</p>
               </div>
             </div>
           </div>
@@ -49,8 +49,7 @@
             <h4 class="text-secondary-100 text-lg font-bold">
               Choose the Placement for Your Tattoo.
             </h4>
-            <InputOutline v-model="form.placement" placeholder="Choose your body part" type="select"
-              :options="bodyParts.map((bodyPart) => ({ label: bodyPart, value: bodyPart }))" />
+            <InputOutline v-model="form.placement" placeholder="Choose your body part" type="select" :options="bodyParts" />
           </div>
         </div>
         <div v-if="currentStep == 4">
@@ -69,14 +68,21 @@
                     <NuxtLink to="/styleguide" class="font-bold"> Style Guide</NuxtLink>
                   </p>
                 </div>
-                <InputOutline v-model="form.style" placeholder="Choose a style" type="select" :options="styles" />
+                <div>
+                  <InputOutline
+                    v-model="form.style"
+                    :placeholder="stylesLoading ? 'Loading styles...' : 'Choose a style'"
+                    type="select"
+                    :options="styles"
+                  />
+                  <p v-if="stylesError" class="text-xs text-red-500 mt-2">Failed to load styles</p>
+                </div>
               </div>
             </div>
             <h4 class="text-secondary-100 text-lg font-bold">
               Set the Level of Detail
             </h4>
-            <InputOutline v-model="form.levelDetail" placeholder="Choose a level detail" type="select"
-              :options="levels" />
+            <InputOutline v-model="form.detailLevel" placeholder="Choose a level detail" type="select" :options="levels" />
           </div>
         </div>
         <div v-if="currentStep == 5">
@@ -86,18 +92,18 @@
             </h4>
             <div>
               <label class="text-secondary-90">
-                Length in cm
+                Length in inches
               </label>
               <div class="mt-3">
-                <InputSlider :max="20" labelValue="cm" />
+                <InputSlider v-model="form.length" :max="20" labelValue="in" />
               </div>
             </div>
             <div>
               <label class="text-secondary-90">
-                Width (cm)
+                Width in inches
               </label>
               <div class="mt-3">
-                <InputSlider :max="20" labelValue="cm" />
+                <InputSlider v-model="form.width" :max="20" labelValue="in" />
               </div>
             </div>
           </div>
@@ -118,8 +124,7 @@
             <h4 class="text-secondary-100 text-lg font-bold">
               Select a budget range
             </h4>
-            <InputOutline v-model="form.budget" placeholder="Choose your budget" type="select"
-              :options="budgets.map((item) => ({ label: item, value: item }))" />
+            <InputOutline v-model="form.budget" placeholder="Choose your budget" type="select" :options="budgets" />
           </div>
         </div>
         <div v-if="currentStep == 7">
@@ -136,9 +141,9 @@
               Estimated Price Range
             </h4>
             <div class="bg-secondary-400/50 rounded-2xl p-4 text-center min-w-[25.75rem]">
-              <p class="text-2xl font-semibold text-dark-100 mb-3">400 - 500 <span class="text-lg font-bold">CHF</span>
+              <p class="text-2xl font-semibold text-dark-100 mb-3">{{ calculatedPrice}} <span class="text-lg font-bold">CHF</span>
               </p>
-              <p class="text-sm text-secondary-90">For a flower tattoo on the arm, fineline style</p>
+              <p class="text-sm text-secondary-90">For your customized tattoo</p>
             </div>
           </div>
         </div>
@@ -150,9 +155,9 @@
           <span v-else>re-calculate</span>
         </button>
         <button @click="handleChangeStep(1)" type="button"
-          class="btn bg-primary-yellow text-black rounded-full flex-grow font-semibold border-0">
+          class="btn bg-primary-yellow text-black rounded-full flex-grow font-semibold border-0" :disabled="isCalculating">
           <span v-if="currentStep < 7">Next</span>
-          <span v-else-if="currentStep == 7">Calculate</span>
+          <span v-else-if="currentStep == 7">{{ isCalculating ? 'Calculating...' : 'Calculate' }}</span>
           <span v-else>Find suitable artist</span>
         </button>
       </div>
@@ -164,228 +169,239 @@
 import { CircleHelp, SquareUserRound } from 'lucide-vue-next';
 
 const router = useRouter();
-const colours = ['Colour', 'Blank-Grey', 'Blank-Grey with Color accents'];
+const colours = [
+  {
+    label: 'Black and Grey',
+    value: 'black_and_grey',
+  },
+  {
+    label: 'Color',
+    value: 'color',
+  },
+  {
+    label: 'Neon',
+    value: 'neon',
+  },
+];
 const levels = [
   {
-    label: 'Low',
-    value: 'Low',
+    label: 'Simple',
+    value: 'simple',
   },
   {
     label: 'Medium',
-    value: 'Medium',
+    value: 'medium',
   },
   {
-    label: 'High',
-    value: 'High',
+    label: 'Complex',
+    value: 'complex',
+  },
+  {
+    label: 'Very Complex',
+    value: 'very_complex',
   },
 ];
-const styles = [
-  {
-    label: 'Comic',
-    value: 'Comic',
-  },
-  {
-    label: 'Oldschool',
-    value: 'Oldschool',
-  },
-  {
-    label: 'Tribal',
-    value: 'Tribal',
-  },
-  {
-    label: 'Watercolour',
-    value: 'Watercolour',
-  },
-  {
-    label: 'Linework',
-    value: 'Linework',
-  },
-  {
-    label: 'Neotraditional',
-    value: 'Neotraditional',
-  },
-  {
-    label: 'Anime',
-    value: 'Anime',
-  },
-  {
-    label: 'Japanase',
-    value: 'Japanase',
-  },
-  {
-    label: 'Geometric',
-    value: 'Geometric',
-  },
-  {
-    label: 'Maori',
-    value: 'Maori',
-  },
-  {
-    label: 'Heavy Blackwork',
-    value: 'Heavy Blackwork',
-  },
-  {
-    label: 'Realistic',
-    value: 'Realistic',
-  },
-  {
-    label: 'Blackwork',
-    value: 'Blackwork',
-  },
-  {
-    label: 'Botanical / Floral',
-    value: 'Botanical / Floral',
-  },
-  {
-    label: 'Fineline',
-    value: 'Fineline',
-  },
-  {
-    label: 'Surreal Blackwork',
-    value: 'Surreal Blackwork',
-  },
-  {
-    label: 'Conceptual Tattoos',
-    value: 'Conceptual Tattoos',
-  },
-  {
-    label: 'Dotwork',
-    value: 'Dotwork',
-  },
-  {
-    label: 'Etching (Engraving)',
-    value: 'Etching (Engraving)',
-  },
-  {
-    label: 'Ignorant',
-    value: 'Ignorant',
-  },
-  {
-    label: 'Cosmetic',
-    value: 'Cosmetic',
-  },
-  {
-    label: 'Bold Lettering',
-    value: 'Bold Lettering',
-  },
-  {
-    label: 'Cyber Sigilism',
-    value: 'Cyber Sigilism',
-  },
-  {
-    label: 'Ornamental',
-    value: 'Ornamental',
-  },
-  {
-    label: 'Small Lettering',
-    value: 'Small Lettering',
-  },
-  {
-    label: 'Portait',
-    value: 'Portait',
-  },
-  {
-    label: 'Microrealistic',
-    value: 'Microrealistic',
-  },
-  {
-    label: 'Chicano',
-    value: 'Chicano',
-  },
-  {
-    label: 'Small Lettering',
-    value: 'Small Lettering',
-  },
-  {
-    label: 'Mandala',
-    value: 'Mandala',
-  },
-  {
-    label: 'Abstract',
-    value: 'Abstract',
-  },
-  {
-    label: 'Coverup',
-    value: 'Coverup',
-  },
-];
+const styles = ref([]);
+const stylesLoading = ref(false);
+const stylesError = ref(null);
+
+const fetchStyles = async () => {
+  try {
+    stylesLoading.value = true;
+    stylesError.value = null;
+    const config = useRuntimeConfig();
+      const res = await $fetch(config.public.baseURL + '/api/user/styleGuide', {
+        method: 'POST',
+      });
+    if (res && Array.isArray(res.styleGuide)) {
+  styles.value = res.styleGuide.map((s) => ({ label: s.styleName, value: s.styleName }));
+    } else {
+      styles.value = [];
+      stylesError.value = 'Unexpected response shape';
+    }
+  } catch (err) {
+    styles.value = [];
+    stylesError.value = err?.message || String(err) || 'Failed to load styles';
+    console.error('Failed to fetch style guide:', err);
+  } finally {
+    stylesLoading.value = false;
+  }
+};
 const cities = [
   {
-    label: 'Zurich',
-    value: 'Zurich',
+    label: 'New York',
+    value: 'new york',
   },
   {
-    label: 'Bern',
-    value: 'Bern',
+    label: 'Los Angeles',
+    value: 'los angeles',
   },
   {
-    label: 'Basel',
-    value: 'Basel',
+    label: 'Chicago',
+    value: 'chicago',
   },
   {
-    label: 'Luzern',
-    value: 'Luzern',
+    label: 'Houston',
+    value: 'houston',
   },
   {
-    label: 'Winterthur',
-    value: 'Winterthur',
+    label: 'Phoenix',
+    value: 'phoenix',
   },
 ];
 const bodyParts = [
-  "Arm",
-  "Chest",
-  "Hip",
-  "Back",
-  "Ribs",
-  "Underboob",
-  "Belly",
-  "Leg",
-  "Hand",
-  "Finger",
-  "Palm",
-  "Back of knee",
-  "Foot",
-  "Toe",
-  "Head",
-  "Face",
-  "Intim",
-  "Neck",
-  "Ear",
-  "Behind the ear",
-  "Eyes",
-  "Eyelids",
-  "Tongue",
-  "Lips",
-  "Foot sole",
-  "Armpit",
-  "Inner tip"
+  {
+    label: 'Arm',
+    value: 'arm',
+  },
+  {
+    label: 'Leg',
+    value: 'leg',
+  },
+  {
+    label: 'Back',
+    value: 'back',
+  },
+  {
+    label: 'Chest',
+    value: 'chest',
+  },
+  {
+    label: 'Ribs',
+    value: 'ribs',
+  },
+  {
+    label: 'Hand',
+    value: 'hand',
+  },
+  {
+    label: 'Foot',
+    value: 'foot',
+  },
+  {
+    label: 'Neck',
+    value: 'neck',
+  },
+  {
+    label: 'Face',
+    value: 'face',
+  },
 ];
 const budgets = [
-  'SmallLow Budget',
-  'Normal Budget',
-  'Large Budget',
+  {
+    label: 'Basic',
+    value: 'basic',
+  },
+  {
+    label: 'Standard',
+    value: 'standard',
+  },
+  {
+    label: 'Premium',
+    value: 'premium',
+  },
 ];
 const steps = [1, 2, 3, 4, 5, 6, 7];
 const currentStep = ref(1);
+const calculatedPrice = ref(null);
+const isCalculating = ref(false);
 const form = reactive({
+  color: '',
+  placement: '',
   style: '',
-  levelDetail: '',
+  length: 4,
+  width: 4,
+  detailLevel: '',
   budget: '',
   city: '',
 });
 
-const handleChangeStep = (step) => {
+const handleChangeStep = async (step) => {
   // step 8 finish
   if (currentStep.value == 8) {
     if (step == -1) {
       // re-calculate
       currentStep.value = 1;
+      calculatedPrice.value = null;
     } else {
-      // find suitiable artist
-      router.push('/');
+      
+  const buildQuery = () => {
+  const q = {};
+
+        const maybeValue = (val) => {
+          if (val == null) return null;
+          if (typeof val === 'object' && 'value' in val) return val.value;
+          return val;
+        };
+        const fields = ['color', 'placement', 'style', 'budget', 'city'];
+        fields.forEach((f) => {
+          const v = maybeValue(form[f]);
+          if (v !== null && v !== undefined && v !== '') {
+            q[f] = String(v);
+          }
+        });
+
+        return q;
+      };
+
+      const query = buildQuery();
+      router.push({ path: '/', query });
     }
     return;
   }
+
+  // Calculate price when moving from step 7 to 8
+  if (currentStep.value == 7 && step == 1) {
+    await calculatePrice();
+    return;
+  }
+
   currentStep.value = Math.min(Math.max(currentStep.value + step, 1), 8);
 }
+
+const calculatePrice = async () => {
+  try {
+    isCalculating.value = true;
+    localStorage.setItem('tattooCalculatorForm', JSON.stringify(form));
+    const apiData = {
+      color: form.color,
+      placement: form.placement?.value || form.placement,
+      style: form.style?.value || form.style,
+      length: form.length.toString(),
+      width: form.width.toString(),
+      detailLevel: form.detailLevel?.value || form.detailLevel,
+      budget: form.budget?.value || form.budget,
+      city: form.city?.value || form.city,
+    };
+    const config = useRuntimeConfig();
+    const response = await $fetch(config.public.baseURL+ '/api/user/priceCalculator', {
+      method: 'POST',
+      body: apiData,
+    });
+
+    // localStorage.removeItem('tattooCalculatorForm');
+    calculatedPrice.value = response.tattooPrice;
+    currentStep.value = 8;
+
+  } catch (error) {
+  console.error('Price calculation failed:', error);
+  } finally {
+    isCalculating.value = false;
+  }
+}
+
+onMounted(() => {
+  localStorage.removeItem('tattooCalculatorForm');
+  const savedForm = localStorage.getItem('tattooCalculatorForm');
+  if (savedForm) {
+    try {
+      const parsedForm = JSON.parse(savedForm);
+      Object.assign(form, parsedForm);
+    } catch (error) {
+      console.error('Failed to parse saved form data:', error);
+    }
+  }
+  fetchStyles();
+});
+
 </script>

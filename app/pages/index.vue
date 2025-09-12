@@ -4,26 +4,24 @@
       <p v-if="!isSearch">{{ isSearch ? `Search results for "${searchQuery}" (${searchType})` : 'All Artists' }}</p>
       <h1 class="text-3xl font-bold">{{ searchQuery ? `Find the perfect Tattoo Artist for your idea` : 'Find the perfect Tattoo Artist for your idea' }}</h1>
     </section>
-    <section class="mt-7 mb-16 relative">
+    <section v-if="styles.length > 0"  class="mt-7 mb-16 relative">
       <div class="border border-secondary-400 rounded-2xl px-5 py-2 shadow-md flex gap-4 justify-between items-center">
         <div class="flex flex-col justify-center items-center gap-4">
           <div class="grow bg-base-200 rounded-2xl px-2 py-2">
-            <div ref="specialityGrid" class="grid grid-cols-8 w-full gap-4 overflow-hidden speciality-grid"
-              :class="{ 'collapsed': modeSpeciality == 'less' }">
-              <button @click="handleToggleSelectedSpesiciality(speciality)"
+            <div ref="styleGrid" class="grid grid-cols-8 w-full gap-4 overflow-hidden style-grid"
+              :class="{ 'collapsed': modeStyle == 'less' }">
+              <button @click="handleToggleSelectedStyle(style)"
                 class="flex flex-col items-center gap-1 text-secondary-90 dark:text-white px-2 py-1.5 cursor-pointer"
-                :class="{ 'border border-primary-yellow rounded-2xl bg-primary-yellow/10': selectedSpecialities.includes(speciality.id) }"
-                v-for="(speciality, index) in specialities" :key="index">
-                <component v-if="speciality.icon" :is="speciality.icon" :size="28" />
-                <p class="text-xs text-center">{{ speciality.text }}</p>
+                :class="{ 'border border-primary-yellow rounded-2xl bg-primary-yellow/10': selectedStyles.includes(style) }"
+                v-for="(style, index) in styles" :key="style">
+                <p class="text-xs text-center">{{ style }}</p>
               </button>
             </div>
           </div>
-          <!-- removed duplicate button; single toggle below -->
         </div>
-        <button @click="handleToggleModeSpeciality" type="button"
+        <button v-if="styles.length > 0" @click="handleToggleModeStyle" type="button"
           class="btn border border-secondary-90 rounded-full font-medium px-2.5 py-1.5 text-sm flex justify-center items-center gap-1.5">
-          <template v-if="modeSpeciality === 'more'">
+          <template v-if="modeStyle === 'more'">
             <ArrowUp :size="20" />
             view less
           </template>
@@ -194,142 +192,64 @@
 </template>
 
 <script setup>
-import { ArrowDown, ArrowUp, CircleParking, CirclePlus, CloudLightning, Hand, Heart, ListFilter, LockKeyhole, Pin, Rainbow, Star, TrainFront } from 'lucide-vue-next';
-import CustomIconVeganColours from "@/components/CustomIcon/VeganColours";
-import CustomIconSavespace from "@/components/CustomIcon/Savespace";
-import CustomIconCoverups from "@/components/CustomIcon/Coverups";
-import CustomIconWheelchair from "@/components/CustomIcon/Wheelchair";
-
-import { nextTick, computed, watch } from 'vue'
+import { ArrowDown, ArrowUp, ListFilter } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router'
 
-const modeSpeciality = ref('less');
-const selectedSpecialities = reactive([]);
-const specialities = [
-  {
-    id: 1,
-    icon: CustomIconVeganColours,
-    text: 'Vegan Colours',
-  },
-  {
-    id: 2,
-    icon: CustomIconSavespace,
-    text: 'Savespace',
-  },
-  {
-    id: 3,
-    icon: Rainbow,
-    text: 'LGBTQ+ friendly',
-  },
-  {
-    id: 4,
-    icon: CustomIconCoverups,
-    text: 'Coverups',
-  },
-  {
-    id: 5,
-    icon: LockKeyhole,
-    text: 'High Privacy',
-  },
-  {
-    id: 6,
-    icon: CircleParking,
-    text: 'Client Parking',
-  },
-  {
-    id: 7,
-    icon: Heart,
-    text: 'Sacred Tattooing',
-  },
-  {
-    id: 8,
-    icon: Star,
-    text: 'Luxury experience',
-  },
-  {
-    id: 9,
-    icon: Hand,
-    text: 'Handpoke',
-  },
-  {
-    id: 10,
-    icon: CustomIconWheelchair,
-    text: 'Wheelchair accessible',
-  },
-  {
-    id: 11,
-    icon: CloudLightning,
-    text: 'Scar Coverups',
-  },
-  {
-    id: 12,
-    icon: Pin,
-    text: 'Unique location',
-  },
-  {
-    id: 13,
-    icon: CirclePlus,
-    text: 'Regular Customers Advantages',
-  },
-  {
-    id: 14,
-    icon: TrainFront,
-    text: 'Well-Served by Public Transport',
-  },
-];
+const modeStyle = ref('less');
+const selectedStyles = reactive([]);
+const config = useRuntimeConfig()
+const stylesEndpoint = `${config.public.baseURL}/api/user/styleGuide`
+const { data: stylesData } = await useAsyncData('styles', () => $fetch(stylesEndpoint, { method: 'POST', body: {} }))
+const styles = computed(() => stylesData.value?.styleGuide?.map(item => item.styleName) || [])
 
-const handleToggleSelectedSpesiciality = (speciality) => {
-  if (selectedSpecialities.includes(speciality.id)) {
-    selectedSpecialities.splice(selectedSpecialities.indexOf(speciality.id), 1);
+const handleToggleSelectedStyle = (style) => {
+  if (selectedStyles.includes(style)) {
+    selectedStyles.splice(selectedStyles.indexOf(style), 1);
   } else {
-    selectedSpecialities.push(speciality.id);
+    selectedStyles.push(style);
   }
+  const newQuery = { ...route.query }
+  if (selectedStyles.length > 0) {
+    newQuery.style = selectedStyles.join(',')
+  } else {
+    delete newQuery.style
+  }
+  delete newQuery.filter
+  delete newQuery.styles
+  router.replace({ query: newQuery })
 }
 
-const specialityGrid = ref(null)
+const styleGrid = ref(null)
 
-const handleToggleModeSpeciality = async () => {
-  const el = specialityGrid.value
+const handleToggleModeStyle = async () => {
+  const el = styleGrid.value
   const collapsedHeight = 70
   if (!el) {
-    modeSpeciality.value = modeSpeciality.value === 'less' ? 'more' : 'less'
+    modeStyle.value = modeStyle.value === 'less' ? 'more' : 'less'
     return
   }
-
-  // Ensure DOM updated
   await nextTick()
-
-  // Measure full height
   const fullHeight = el.scrollHeight
-
-  // Prepare transition
   el.style.transition = 'height 350ms ease-in-out'
 
-  if (modeSpeciality.value === 'less') {
-    // expand from collapsed to full
+  if (modeStyle.value === 'less') {
     el.style.height = `${collapsedHeight}px`
-    // force reflow
     el.getBoundingClientRect()
     el.style.height = `${fullHeight}px`
-    modeSpeciality.value = 'more'
-    // clear inline height after transition so content can flow naturally
+    modeStyle.value = 'more'
     setTimeout(() => { el.style.height = '' }, 360)
   } else {
-    // collapse from full to collapsed
     el.style.height = `${el.scrollHeight}px`
     el.getBoundingClientRect()
     el.style.height = `${collapsedHeight}px`
-    modeSpeciality.value = 'less'
+    modeStyle.value = 'less'
     setTimeout(() => { el.style.height = '' }, 360)
   }
 }
 
 const viewMode = ref('list');
-const config = useRuntimeConfig()
 const route = useRoute()
 const router = useRouter()
-
-// Reactive computed query params
 const searchQuery = computed(() => {
   const q = route.query.q
   return q == null ? '' : String(q)
@@ -343,12 +263,16 @@ const mapViewParam = computed(() => {
   return m == null ? '' : String(m)
 })
 
-// Set initial view mode based on mapView parameter
 if (mapViewParam.value === 'true') {
   viewMode.value = 'map'
 }
-
-// Compute API endpoint and provide a fetcher that chooses the correct backend
+if (route.query.style) {
+  const s = String(route.query.style)
+  selectedStyles.splice(0, selectedStyles.length, ...s.split(',').filter(Boolean))
+} else if (route.query.styles) {
+  const s = String(route.query.styles)
+  selectedStyles.splice(0, selectedStyles.length, ...s.split(',').filter(Boolean))
+}
 const apiEndpoint = computed(() => {
   if (searchQuery.value && searchType.value) {
     return `${config.public.baseURL}/api/search?q=${encodeURIComponent(searchQuery.value)}&type=${encodeURIComponent(searchType.value)}`
@@ -358,16 +282,59 @@ const apiEndpoint = computed(() => {
 
 const fetchArtists = () => {
   if (searchQuery.value && searchType.value) {
-    // search endpoint expects GET with query params
     return $fetch(apiEndpoint.value)
   }
-  // default artists finder uses POST with empty body
-  return $fetch(apiEndpoint.value, { method: 'POST', body: {} })
+  const q = route.query || {}
+  const budgetMapping = {
+    basic: { min: 0, max: 100 },
+    standard: { min: 100, max: 400 },
+    premium: { min: 400, max: 99999 }
+  }
+
+  const body = {
+    description: q.q ? String(q.q) : '',
+    styles: [],
+    color: q.color ? String(q.color) : undefined,
+    placement: q.placement ? String(q.placement) : undefined
+  }
+  if (q.city || q.location) {
+    body.location = q.city ? String(q.city) : String(q.location)
+  }
+  if (q.radius) {
+    body.radius = Number(q.radius)
+  }
+
+  if (q.minPrice) {
+    const min = Number(q.minPrice) || 1
+    body.budget = { min, max: Math.max(min, min * 4) }
+  }
+  if (selectedStyles.length > 0) {
+    body.styles = selectedStyles.slice()
+  } else if (q.styles) {
+    body.styles = String(q.styles).split(',').filter(Boolean)
+  } else if (q.style) {
+    body.styles = [String(q.style)]
+  }
+
+  return $fetch(apiEndpoint.value, { method: 'POST', body })
 }
 
-// Reactive key so Nuxt can cache per-query; also returns refresh
 const { data: apiResponse, pending, error, refresh } = await useAsyncData(
-  computed(() => `artists-${searchQuery.value}-${searchType.value}`),
+  computed(() => {
+    const q = route.query || {}
+    const keyParts = [
+      searchQuery.value,
+      searchType.value,
+      selectedStyles.join(','),
+      q.style || q.styles || '',
+      q.minPrice || '',
+      q.city || '',
+      q.color || '',
+      q.placement || '',
+      q.budget || ''
+    ]
+    return `artists-${keyParts.join('-')}`
+  }),
   fetchArtists
 )
 
@@ -396,7 +363,6 @@ const scrollToTop = () => {
 const switchToMapView = () => {
   viewMode.value = 'map'
   scrollToTop()
-  // Update URL with mapView parameter
   const newQuery = { ...route.query, mapView: 'true' }
   router.replace({ query: newQuery })
 }
@@ -404,18 +370,23 @@ const switchToMapView = () => {
 const switchToListView = () => {
   viewMode.value = 'list'
   scrollToTop()
-  // Remove mapView parameter from URL
   const newQuery = { ...route.query }
   delete newQuery.mapView
   router.replace({ query: newQuery })
 }
 
 watch(() => route.query, (newQuery) => {
-  // Update local state based on query parameter changes
   if (newQuery.mapView === 'true') {
     viewMode.value = 'map'
   } else {
     viewMode.value = 'list'
+  }
+  if (newQuery.style) {
+    selectedStyles.splice(0, selectedStyles.length, ...String(newQuery.style).split(',').filter(Boolean))
+  } else if (newQuery.styles) {
+    selectedStyles.splice(0, selectedStyles.length, ...String(newQuery.styles).split(',').filter(Boolean))
+  } else {
+    selectedStyles.splice(0)
   }
 })
 
@@ -428,7 +399,6 @@ useHead({
   })
 })
 
-// Watch for query parameter changes to update view mode
 watch(() => route.query.mapView, (newMapView) => {
   if (newMapView === 'true') {
     viewMode.value = 'map'
@@ -437,8 +407,7 @@ watch(() => route.query.mapView, (newMapView) => {
   }
 })
 
-// Watch for search parameter changes and refresh data
-watch([searchQuery, searchType], async () => {
+watch([searchQuery, searchType, selectedStyles], async () => {
   try {
     await refresh()
   } catch (e) {
@@ -457,14 +426,14 @@ watch([searchQuery, searchType], async () => {
 .v-leave-to {
   opacity: 0;
 }
-/* Smooth expand/collapse for specialties */
-.speciality-grid {
+/* Smooth expand/collapse for styles */
+.style-grid {
   transition: height 350ms ease-in-out, opacity 200ms ease-in-out;
   height: auto;
   opacity: 1;
   overflow: hidden;
 }
-.speciality-grid.collapsed {
+.style-grid.collapsed {
   opacity: 0.95;
   height: 70px;
 }

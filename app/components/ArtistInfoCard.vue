@@ -46,9 +46,24 @@
                 </div>
               </div>
             </div>
-            <div class="mb-3 flex flex-wrap gap-2 items-center" ref="categoriesContainer">
-              <template v-for="(spec, idx) in person.specialties || []" :key="idx">
-                <span class="text-xs px-4 py-1 bg-base-200 text-base-content rounded-full">{{ spec }}</span>
+            <div class="mb-3 flex flex-nowrap gap-2 items-center overflow-hidden" ref="categoriesContainer">
+              <template v-for="(spec, idx) in getVisibleStyles(person.styles || []).visible" :key="idx">
+                <span class="text-xs px-4 py-1 bg-base-200 text-base-content rounded-full flex-shrink-0">{{ spec }}</span>
+              </template>
+              <template v-if="getVisibleStyles(person.styles || []).hidden.length > 0">
+                <div>
+                  <button
+                    type="button"
+                    class="text-xs px-4 py-1 bg-base-200 text-base-content rounded-full flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-accent"
+                    :aria-label="`Show ${getVisibleStyles(person.styles || []).hidden.length} more styles: ${getVisibleStyles(person.styles || []).hidden.join(', ')}`"
+                    @mouseenter="openTooltip($event, getVisibleStyles(person.styles || []).hidden.join(', '))"
+                    @mouseleave="closeTooltip"
+                    @focus="openTooltip($event, getVisibleStyles(person.styles || []).hidden.join(', '))"
+                    @blur="closeTooltip"
+                  >
+                    +{{ getVisibleStyles(person.styles || []).hidden.length }}
+                  </button>
+                </div>
               </template>
             </div>
             <ul class="text-sm text-base-content/70 space-y-1">
@@ -133,6 +148,63 @@ const tooltip = ref({
   style: {}
 })
 
+const categoriesContainer = ref(null)
+const categoriesWidth = ref(0)
+
+function updateCategoriesWidth() {
+  if (!categoriesContainer.value) return
+  categoriesWidth.value = categoriesContainer.value.clientWidth || 0
+}
+
+let resizeTimer = null
+function onResize() {
+  clearTimeout(resizeTimer)
+  resizeTimer = setTimeout(() => {
+    updateCategoriesWidth()
+  }, 120)
+}
+
+onMounted(() => {
+  nextTick(() => {
+    updateCategoriesWidth()
+  })
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', onResize)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('resize', onResize)
+  }
+  clearTimeout(resizeTimer)
+})
+
+function measureText(text) {
+  return Math.max(20, text.length * 7)
+}
+
+function getVisibleStyles(styles) {
+  if (!styles || styles.length === 0) return { visible: [], hidden: [] }
+  const badgePadding = 32
+  const gap = 8 
+  let totalWidth = 0
+  let visibleCount = 0
+  const available = categoriesWidth.value || 318
+  for (let i = 0; i < styles.length; i++) {
+    const textWidth = measureText(styles[i])
+    const badgeWidth = textWidth + badgePadding
+    if (i > 0) totalWidth += gap
+    if (totalWidth + badgeWidth > available) break
+    totalWidth += badgeWidth
+    visibleCount++
+  }
+  return {
+    visible: styles.slice(0, visibleCount),
+    hidden: styles.slice(visibleCount)
+  }
+}
+
 function initials(name = '') {
   return String(name).split(' ').map(s => s[0] || '').slice(0, 2).join('').toUpperCase()
 }
@@ -141,8 +213,16 @@ function openTooltip(ev, text) {
   const target = ev.currentTarget
   if (!target) return
   const rect = target.getBoundingClientRect()
-  const x = rect.left + rect.width / 2
-  const y = rect.bottom + 8
+  let x = rect.left + rect.width / 2
+  let y = rect.bottom + 8
+  const padding = 8
+  const viewportWidth = (typeof window !== 'undefined') ? window.innerWidth : 1024
+  x = Math.min(Math.max(x, padding + 40), viewportWidth - padding - 40)
+  const viewportHeight = (typeof window !== 'undefined') ? window.innerHeight : 800
+  const preferAbove = rect.bottom + 8 + 40 > viewportHeight
+  if (preferAbove) {
+    y = rect.top - 8 - 40
+  }
   tooltip.value = {
     show: true,
     x,
