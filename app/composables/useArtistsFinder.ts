@@ -18,6 +18,8 @@ interface Artist {
   studioLatitude: string | null
   studioLongitude: string | null
   styles: string[]
+  spoken_lang: string[]
+  years_experience: string
   works: {
     workId: string
     artistId: string
