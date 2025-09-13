@@ -43,6 +43,8 @@
  * @property {number} lng - Longitude coordinate
  */
 
+import { useToast } from '~/composables/useToast'
+
 const props = defineProps({
     /**
      * The geographic location to display on the map
@@ -129,7 +131,8 @@ const getAddress = async (lat, lng) => {
         address.value = data.display_name
         lastCoordinates.value = { lat, lng }
     } catch (error) {
-        console.error('Error fetching address:', error)
+        const { toast } = useToast();
+        toast('error', 'Failed to fetch address. Please try again.');
         address.value = 'Unable to fetch address'
     } finally {
         isLoadingAddress.value = false

@@ -63,14 +63,21 @@ async function handleSubmit(e) {
     // await navigateTo('/artist/dashboard')
     await navigateTo('/')
   } catch (error) {
-    // Prefer the Error message thrown by the auth store (which uses backend `message`).
-    // Fallback to inspecting response body if available, otherwise use a generic message.
-    let message = 'An error occurred. Please try again.'
-    if (error && typeof error.message === 'string' && error.message.length > 0) {
-      message = 'Failed to login: '+ error.message
-    } else if (error && error.response && error.response._data && error.response._data.message) {
-      message = 'Failed to login: '+ error.response._data.message
+    const extractReason = (err) => {
+      if (err && err.response && err.response._data && err.response._data.message) {
+        return String(err.response._data.message)
+      }
+      if (err && typeof err.message === 'string' && err.message.length > 0) {
+        const m = err.message
+        if (m.includes('Failed to fetch')) return 'Network error'
+        const parts = m.split(': ')
+        return parts[parts.length - 1]
+      }
+      return 'An error occurred. Please try again.'
     }
+
+    const reason = extractReason(error)
+    const message = `Failed to login: ${reason}`
     errorMessage.value = message
     toast('error', message)
   }

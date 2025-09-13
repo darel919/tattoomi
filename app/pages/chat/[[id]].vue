@@ -24,6 +24,7 @@
 
 <script setup>
 import { useMyAuthStore } from '~/stores/auth'
+import { useToast } from '~/composables/useToast'
 
 const route = useRoute()
 const router = useRouter()
@@ -63,7 +64,8 @@ const fetchChatRooms = async () => {
     }
   } catch (err) {
     error.value = err.message
-    console.error('Failed to fetch chat rooms:', err)
+    const { toast } = useToast();
+    toast('error', 'Failed to fetch chat rooms. Please try again.');
   } finally {
     loading.value = false
   }
@@ -120,7 +122,8 @@ const fetchMessages = async (chatRoomId) => {
     // Force reactivity update
     await nextTick()
   } catch (err) {
-    console.error('Failed to fetch messages:', err)
+    const { toast } = useToast();
+    toast('error', 'Failed to fetch messages. Please try again.');
     // Set empty array on error to prevent undefined issues
     const roomIdStr = String(chatRoomId && chatRoomId.value ? chatRoomId.value : chatRoomId)
     messages.value = {
@@ -148,7 +151,8 @@ const sendMessage = async (chatRoomId, content) => {
     // Refresh messages after sending
   await fetchMessages(roomIdStr)
   } catch (err) {
-    console.error('Failed to send message:', err)
+    const { toast } = useToast();
+    toast('error', 'Failed to send message. Please try again.');
   }
 }
 

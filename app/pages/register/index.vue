@@ -82,15 +82,23 @@ async function handleSubmit() {
       await authStore.register(form.email, form.password, form.fullName)
       await navigateTo('/')
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        const message = error.response._data?.message || 'Registration failed'
-        errorMessage.value = message
-        toast('error', message)
-      } else {
-        const message = 'An error occurred. Please try again.'
-        errorMessage.value = message
-        toast('error', message)
+      const extractReason = (err) => {
+        if (err && err.response && err.response._data && err.response._data.message) {
+          return String(err.response._data.message)
+        }
+        if (err && typeof err.message === 'string' && err.message.length > 0) {
+          const m = err.message
+          if (m.includes('Failed to fetch')) return 'Network error'
+          const parts = m.split(': ')
+          return parts[parts.length - 1]
+        }
+        return 'An error occurred. Please try again.'
       }
+
+      const reason = extractReason(error)
+      const message = `Failed to register: ${reason}`
+      errorMessage.value = reason
+      toast('error', message)
     }
   } else if (form.role === 'artist') {
     errorMessage.value = ''
@@ -98,15 +106,23 @@ async function handleSubmit() {
       await authStore.registerArtist(form.email, form.password, form.phoneNumber)
       router.push('/register/email-verification');
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        const message = error.response._data?.message || 'Registration failed'
-        errorMessage.value = message
-        toast('error', message)
-      } else {
-        const message = 'An error occurred. Please try again.'
-        errorMessage.value = message
-        toast('error', message)
+      const extractReason = (err) => {
+        if (err && err.response && err.response._data && err.response._data.message) {
+          return String(err.response._data.message)
+        }
+        if (err && typeof err.message === 'string' && err.message.length > 0) {
+          const m = err.message
+          if (m.includes('Failed to fetch')) return 'Network error'
+          const parts = m.split(': ')
+          return parts[parts.length - 1]
+        }
+        return 'An error occurred. Please try again.'
       }
+
+      const reason = extractReason(error)
+      const message = `Failed to register: ${reason}`
+      errorMessage.value = reason
+      toast('error', message)
     }
   }
 }

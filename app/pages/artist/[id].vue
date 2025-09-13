@@ -7,6 +7,11 @@
             @retry="retryFetch"
         />
     </div>
+    <div v-else-if="pending" class="mx-12 my-8 min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <p class="text-lg">Loading artist information...</p>
+        </div>
+    </div>
     <div v-else class="mx-12 my-8 min-h-screen">
             <DashboardPortfolio :readonly="true" :data="portfolioData" />
             <div class="flex gap-10">
@@ -83,7 +88,7 @@ import ErrorState from '~/components/ErrorState.vue';
 
 const route = useRoute();
 const config = useRuntimeConfig();
-const { data: artistData, error, refresh } = useAsyncData(
+const { data: artistData, error, pending, refresh } = useAsyncData(
     () => `artist-${route.params.id}`,
     () => $fetch(`${config.public.baseURL}/api/artist/${route.params.id}`)
 );

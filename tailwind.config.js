@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./app/**/*.{js,vue,ts}", "./nuxt.config.{js,ts}"],
+  safelist: ['z-[99999]'],
   darkMode: "class",
   theme: {
     extend: {

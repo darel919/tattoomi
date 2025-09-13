@@ -167,6 +167,7 @@
 
 <script setup>
 import { CircleHelp, SquareUserRound } from 'lucide-vue-next';
+import { useToast } from '~/composables/useToast';
 
 const router = useRouter();
 const colours = [
@@ -222,7 +223,8 @@ const fetchStyles = async () => {
   } catch (err) {
     styles.value = [];
     stylesError.value = err?.message || String(err) || 'Failed to load styles';
-    console.error('Failed to fetch style guide:', err);
+    const { toast } = useToast();
+    toast('error', 'Failed to load styles. Please try again.');
   } finally {
     stylesLoading.value = false;
   }
@@ -384,7 +386,9 @@ const calculatePrice = async () => {
     currentStep.value = 8;
 
   } catch (error) {
-  console.error('Price calculation failed:', error);
+    console.error('Price calculation failed:', error);
+    const { toast } = useToast();
+    toast('error', 'Failed to calculate price. Please try again.');
   } finally {
     isCalculating.value = false;
   }
@@ -398,7 +402,8 @@ onMounted(() => {
       const parsedForm = JSON.parse(savedForm);
       Object.assign(form, parsedForm);
     } catch (error) {
-      console.error('Failed to parse saved form data:', error);
+      const { toast } = useToast();
+      toast('error', 'Failed to load saved form data.');
     }
   }
   fetchStyles();

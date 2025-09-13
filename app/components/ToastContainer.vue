@@ -1,5 +1,5 @@
 <template>
-  <div class="toast toast-top toast-end">
+  <div class="toast toast-top toast-end z-[99999]">
     <div
       v-for="toast in toasts"
       :key="toast.id"

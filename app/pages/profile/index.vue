@@ -107,6 +107,7 @@
 import { useRouter, useRoute } from 'vue-router';
 import { MapPin } from 'lucide-vue-next';
 import { useMyAuthStore } from '~/stores/auth';
+import { useToast } from '~/composables/useToast';
 
 const router = useRouter();
 const route = useRoute();
@@ -145,7 +146,8 @@ const refetchFavoriteArtists = async () => {
       favoriteArtists.value = []
     }
   } catch (err) {
-    console.error('Error fetching favorite artists:', err)
+    const { toast } = useToast();
+    toast('error', 'Failed to fetch favorite artists. Please try again.');
     favoriteArtistsError.value = err?.message || 'Failed to fetch favorite artists'
     favoriteArtists.value = []
   } finally {

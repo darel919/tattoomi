@@ -21,8 +21,8 @@
         </template>
         <!-- Error State -->
         <template v-else-if="fetchError">
-          <div class="col-span-4 text-center py-12">
-            <span class="text-lg text-error">We're sorry, but we can't fetch style guides at the moment. Please try again in a while.</span>
+          <div class="col-span-4">
+            <ErrorState @retry="retryFetch" title="Failed to Load Style Guides" details="We couldn't fetch the tattoo style guides right now." recommendations="Please try again in a while." />
           </div>
         </template>
         <!-- Empty State -->
@@ -97,7 +97,7 @@ const tattooStyles = ref([])
 const loading = ref(true)
 const fetchError = ref(false)
 
-onMounted(async () => {
+const fetchStyles = async () => {
   loading.value = true
   fetchError.value = false
   try {
@@ -118,11 +118,18 @@ onMounted(async () => {
     }
   } catch (e) {
     fetchError.value = true
-    console.error('[styleguide] failed to fetch style guide', e)
   } finally {
     loading.value = false
   }
+}
+
+onMounted(() => {
+  fetchStyles()
 })
+
+const retryFetch = () => {
+  fetchStyles()
+}
 
 const modalVisible = ref(false)
 const selectedStyle = ref({})
