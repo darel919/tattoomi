@@ -141,7 +141,7 @@
               Estimated Price Range
             </h4>
             <div class="bg-secondary-400/50 rounded-2xl p-4 text-center min-w-[25.75rem]">
-              <p class="text-2xl font-semibold text-dark-100 mb-3">{{ calculatedPrice}} <span class="text-lg font-bold">CHF</span>
+              <p class="text-2xl font-semibold text-dark-100 mb-3">{{ priceRange.min }} - {{ priceRange.max }} <span class="text-lg font-bold">{{ priceRange.currency }}</span>
               </p>
               <p class="text-sm text-secondary-90">For your customized tattoo</p>
             </div>
@@ -171,16 +171,16 @@ import { CircleHelp, SquareUserRound } from 'lucide-vue-next';
 const router = useRouter();
 const colours = [
   {
-    label: 'Black and Grey',
-    value: 'black_and_grey',
-  },
-  {
-    label: 'Color',
+    label: 'Colour',
     value: 'color',
   },
   {
-    label: 'Neon',
-    value: 'neon',
+    label: 'black - grey',
+    value: 'black_and_grey',
+  },
+  {
+    label: 'black-grey with color accents',
+    value: 'black_and_grey_with_color',
   },
 ];
 const levels = [
@@ -303,7 +303,7 @@ const budgets = [
 ];
 const steps = [1, 2, 3, 4, 5, 6, 7];
 const currentStep = ref(1);
-const calculatedPrice = ref(null);
+const priceRange = ref({ min: 0, max: 0, currency: 'CHF' });
 const isCalculating = ref(false);
 const form = reactive({
   color: '',
@@ -322,7 +322,7 @@ const handleChangeStep = async (step) => {
     if (step == -1) {
       // re-calculate
       currentStep.value = 1;
-      calculatedPrice.value = null;
+      priceRange.value = { min: 0, max: 0, currency: 'CHF' };
     } else {
       
   const buildQuery = () => {
@@ -380,7 +380,7 @@ const calculatePrice = async () => {
     });
 
     // localStorage.removeItem('tattooCalculatorForm');
-    calculatedPrice.value = response.tattooPrice;
+    priceRange.value = response.priceRange;
     currentStep.value = 8;
 
   } catch (error) {
