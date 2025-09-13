@@ -16,10 +16,10 @@
             <progress class="progress progress-primary w-full" :value="r.count" max="100" />
           </div>
         </div>
-        <button
+        <!-- <button
           class="btn btn-outline border-primary-yellow rounded-full btn-sm font-medium mt-2 hover:bg-primary-yellow">
           See all ratings
-        </button>
+        </button> -->
       </div>
     </div>
     <div class="grid grid-cols-2 gap-x-10 gap-y-8">

@@ -46,6 +46,7 @@
                     v-for="artist in validArtists"
                     :key="artist.artistId"
                     :lat-lng="[parseFloat(artist.studioLatitude), parseFloat(artist.studioLongitude)]"
+                    :icon="customIcon"
                 >
                     <LPopup>
                         <div class="max-w-sm">
@@ -122,6 +123,7 @@ const props = defineProps({
 const map = ref(null)
 const colorMode = useColorMode()
 const isDark = ref(false)
+const customIcon = ref(null)
 
 const { artists: fetchedArtists, isLoading: fetchLoading, error: fetchError, fetchArtists } = useArtistsFinder()
 
@@ -188,6 +190,17 @@ onMounted(async () => {
     if (!props.artists) {
         await fetchArtists()
     }
+    const { default: L } = await import('leaflet')
+    const svg = encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#FBBF13" stroke="black" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+    `)
+    const iconUrl = `data:image/svg+xml;charset=UTF-8,${svg}`
+    customIcon.value = L.icon({
+        iconUrl,
+        iconSize: [36, 36],
+        iconAnchor: [18, 36],
+        popupAnchor: [0, -36]
+    })
 })
 
 const onMapReady = (mapInstance) => {
