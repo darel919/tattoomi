@@ -196,57 +196,26 @@
 
 <script setup>
 import { ArrowDown, ArrowUp, ListFilter } from 'lucide-vue-next';
-import { useRoute, useRouter } from 'vue-router'
 
 const modeStyle = ref('less');
+const { selectedStyles, selectedStylesState, handleToggleSelectedStyle, initializeWatcher } = useSelectedStyles()
+let stopWatcher = null
+onMounted(() => {
+  stopWatcher = initializeWatcher()
+})
+
+onBeforeUnmount(() => {
+  if (stopWatcher) {
+    stopWatcher()
+  }
+})
+
 const route = useRoute()
 const router = useRouter()
-const selectedStylesState = useState('selectedStyles', () => {
-  const s = route.query?.style ?? route.query?.styles
-  if (!s) return []
-  return String(s).split(',').filter(Boolean)
-})
-const selectedStyles = computed({
-  get: () => selectedStylesState.value,
-  set: (v) => { selectedStylesState.value = v }
-})
-
-onMounted(() => {
-  const q = route.query || {}
-  const s = q?.style ?? q?.styles
-  selectedStylesState.value = s ? String(s).split(',').filter(Boolean) : []
-  const stop = watch(() => route.query, (q) => {
-    const s2 = q?.style ?? q?.styles
-    selectedStylesState.value = s2 ? String(s2).split(',').filter(Boolean) : []
-  })
-
-  onBeforeUnmount(() => {
-    stop()
-  })
-})
 const config = useRuntimeConfig()
 const stylesEndpoint = `${config.public.baseURL}/api/user/styleGuide`
 const { data: stylesData } = await useAsyncData('styles', () => $fetch(stylesEndpoint, { method: 'POST', body: {} }))
 const styles = computed(() => stylesData.value?.styleGuide || [])
-
-const handleToggleSelectedStyle = (style) => {
-  const styleName = style.styleName
-  const current = selectedStyles.value.slice()
-  const newStyles = current.includes(styleName)
-    ? current.filter(s => s !== styleName)
-    : [...current, styleName]
-
-  const newQuery = { ...route.query }
-  if (newStyles.length > 0) {
-    newQuery.style = newStyles.join(',')
-  } else {
-    delete newQuery.style
-  }
-  delete newQuery.filter
-  delete newQuery.styles
-  selectedStylesState.value = newStyles
-  router.replace({ query: newQuery })
-}
 
 const styleGrid = ref(null)
 
