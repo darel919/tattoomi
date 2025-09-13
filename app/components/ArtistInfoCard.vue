@@ -8,7 +8,7 @@
     </div>
     <div v-else class="artist-grid gap-6">
       <ClientOnly>
-        <div v-for="person in item" :key="person.artistId" class="bg-base-100 rounded-2xl shadow-lg overflow-hidden">
+        <div v-for="person in item" :key="person.artistId" class="bg-base-100 rounded-2xl shadow-xl overflow-hidden">
           <div class="h-44 bg-base-200 relative group rounded-t-2xl overflow-hidden" tabindex="0">
             <img v-if="person.profileImage" :src="person.profileImage" alt="photo" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 group-focus-within:scale-105 block transform-gpu will-change-transform" />
             <img v-else src="~/assets/images/sample_card.png" title="This is a sample photo." alt="photo" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 group-focus-within:scale-105 block transform-gpu will-change-transform" />

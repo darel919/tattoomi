@@ -4,141 +4,143 @@
       <p v-if="!isSearch">{{ isSearch ? `Search results for "${searchQuery}" (${searchType})` : 'All Artists' }}</p>
       <h1 class="text-3xl font-bold">{{ searchQuery ? `Find the perfect Tattoo Artist for your idea` : 'Find the perfect Tattoo Artist for your idea' }}</h1>
     </section>
-    <section v-if="styles.length > 0"  class="mt-7 mb-16 relative">
-      <div class="border border-secondary-400 dark:border-secondary-100 rounded-2xl px-5 py-2 shadow-md flex gap-4 justify-between items-center">
-        <div class="flex flex-col justify-center items-center gap-4">
-          <div class="grow bg-base-200 rounded-2xl px-2 py-2">
-            <div ref="styleGrid" class="grid grid-cols-8 w-full gap-4 overflow-hidden style-grid"
-              :class="{ 'collapsed': modeStyle == 'less' }">
-              <button @click="handleToggleSelectedStyle(style)"
-                class="flex flex-col items-center gap-1 text-secondary-90 dark:text-white px-2 py-1.5 cursor-pointer"
-                :class="{ 'border border-primary-yellow rounded-2xl bg-primary-yellow/10': selectedStyles.includes(style.styleName) }"
-                v-for="(style, index) in styles" :key="style.styleName">
-                <span v-html="style.styleIcon" class="w-6 h-6"></span>
-                <p class="text-xs text-center">{{ style.styleName }}</p>
-              </button>
-            </div>
-          </div>
-        </div>
-        <button v-if="styles.length > 0" @click="handleToggleModeStyle" type="button"
-          class="btn border border-secondary-90 rounded-full font-medium px-2.5 py-1.5 text-sm flex justify-center items-center gap-1.5">
-          <template v-if="modeStyle === 'more'">
-            <ArrowUp :size="20" />
-            view less
-          </template>
-          <template v-else>
-            <ArrowDown :size="20" />
-            view more
-          </template>
-        </button>
-        <button @click="handleToggleFilter" type="button"
-          class="btn border border-secondary-90 rounded-full font-medium px-2.5 py-1.5 text-sm flex justify-center items-center gap-1.5">
-          <ListFilter :size="20" />
-          filters
-        </button>
-      </div>
-      <Transition>
-        <div v-if="filterIsOpen"
-          class="z-[999] absolute bg-white p-4 bottom-0 right-0 translate-y-full rounded-2xl shadow-md ">
-          <h3 class="text-dark-100 font-bold text-xl">Filters</h3>
-          <div class="divider before:bg-secondary-400 after:bg-secondary-400 py-4"></div>
-          <div class="flex gap-6">
-            <div class="flex flex-col gap-4 w-[14.625rem]">
-              <div class="px-3 py-2">
-                <label class="text-secondary-90 text-sm font-bold">
-                  Budget
-                </label>
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                  <div class="flex gap-2 items-center" v-for="item in budgets">
-                    <input type="radio" class="radio checked:bg-dark-100 checked:text-white" />
-                    <p class="text-sm font-medium text-secondary-200">{{ item }}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="px-3 py-2">
-                <label class="text-secondary-90 text-sm font-bold">
-                  Sex
-                </label>
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                  <div class="flex gap-2 items-center" v-for="item in sexs">
-                    <input type="radio" class="radio checked:bg-dark-100 checked:text-white" />
-                    <p class="text-sm font-medium text-secondary-200">{{ item }}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="px-3 py-2">
-                <label class="text-secondary-90 text-sm font-bold">
-                  Language
-                </label>
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                  <div class="flex gap-2 items-center" v-for="item in languages">
-                    <input type="radio" class="radio checked:bg-dark-100 checked:text-white" />
-                    <p class="text-sm font-medium text-secondary-200">{{ item }}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="px-3 py-2">
-                <label class="text-secondary-90 text-sm font-bold">
-                  Colours
-                </label>
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                  <div class="flex gap-2 items-center" v-for="item in colours">
-                    <input type="radio" class="radio checked:bg-dark-100 checked:text-white" />
-                    <p class="text-sm font-medium text-secondary-200">{{ item }}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="px-3 py-2">
-                <label class="text-secondary-90 text-sm font-bold">
-                  Hygiene Certificate
-                </label>
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                  <div class="flex gap-2 items-center" v-for="item in hygieneCertificate">
-                    <input type="radio" class="radio checked:bg-dark-100 checked:text-white" />
-                    <p class="text-sm font-medium text-secondary-200">{{ item }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="divider lg:divider-horizontal before:bg-secondary-400 after:bg-secondary-400"></div>
-            <div class="flex flex-col gap-4 w-[14.625rem]">
-              <div class="px-3 py-2">
-                <label class="text-secondary-90 text-sm font-bold">
-                  Min. Rating
-                </label>
-                <div class="mt-2">
-                  <InputSlider />
-                </div>
-              </div>
-              <div class="px-3 py-2">
-                <label class="text-secondary-90 text-sm font-bold">
-                  Min. Price
-                </label>
-                <div class="mt-2">
-                  <InputSlider />
-                </div>
-              </div>
-              <div class="px-3 py-2">
-                <label class="text-secondary-90 text-sm font-bold">
-                  Min. Experience
-                </label>
-                <div class="mt-2">
-                  <InputStep />
-                </div>
-              </div>
-              <div class="px-3 py-2">
-                <label class="text-secondary-90 text-sm font-bold">
-                  Avg. waiting time (weeks)
-                </label>
-                <div class="mt-2">
-                  <InputSlider />
-                </div>
+    <ClientOnly>
+      <section v-if="styles.length > 0"  class="mt-7 mb-16 relative">
+        <div class="border border-secondary-400 dark:border-secondary-100 rounded-2xl px-5 py-2 shadow-md flex gap-4 justify-between items-center">
+          <div class="flex flex-col justify-center items-center gap-4">
+            <div class="grow bg-base-200 rounded-2xl px-2 py-2">
+              <div ref="styleGrid" class="grid grid-cols-8 w-full gap-4 overflow-hidden style-grid"
+                :class="{ 'collapsed': modeStyle == 'less' }">
+                <button @click="handleToggleSelectedStyle(style)"
+                  class="flex flex-col items-center gap-1 text-secondary-90 dark:text-white px-2 py-1.5 cursor-pointer"
+                  :class="{ 'border border-primary-yellow rounded-2xl bg-primary-yellow/10': selectedStyles.includes(style.styleName) }"
+                  v-for="(style, index) in styles" :key="style.styleName">
+                  <span v-html="style.styleIcon" class="w-6 h-6"></span>
+                  <p class="text-xs text-center">{{ style.styleName }}</p>
+                </button>
               </div>
             </div>
           </div>
+          <button v-if="styles.length > 0" @click="handleToggleModeStyle" type="button"
+            class="btn border border-secondary-90 rounded-full font-medium px-2.5 py-1.5 text-sm flex justify-center items-center gap-1.5">
+            <template v-if="modeStyle === 'more'">
+              <ArrowUp :size="20" />
+              view less
+            </template>
+            <template v-else>
+              <ArrowDown :size="20" />
+              view more
+            </template>
+          </button>
+          <button @click="handleToggleFilter" type="button"
+            class="btn border border-secondary-90 rounded-full font-medium px-2.5 py-1.5 text-sm flex justify-center items-center gap-1.5">
+            <ListFilter :size="20" />
+            filters
+          </button>
         </div>
-      </Transition>
-    </section>
+        <Transition>
+          <div v-if="filterIsOpen"
+            class="z-[999] absolute bg-white p-4 bottom-0 right-0 translate-y-full rounded-2xl shadow-md ">
+            <h3 class="text-dark-100 font-bold text-xl">Filters</h3>
+            <div class="divider before:bg-secondary-400 after:bg-secondary-400 py-4"></div>
+            <div class="flex gap-6">
+              <div class="flex flex-col gap-4 w-[14.625rem]">
+                <div class="px-3 py-2">
+                  <label class="text-secondary-90 text-sm font-bold">
+                    Budget
+                  </label>
+                  <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div class="flex gap-2 items-center" v-for="item in budgets">
+                      <input type="radio" class="radio checked:bg-dark-100 checked:text-white" />
+                      <p class="text-sm font-medium text-secondary-200">{{ item }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="px-3 py-2">
+                  <label class="text-secondary-90 text-sm font-bold">
+                    Sex
+                  </label>
+                  <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div class="flex gap-2 items-center" v-for="item in sexs">
+                      <input type="radio" class="radio checked:bg-dark-100 checked:text-white" />
+                      <p class="text-sm font-medium text-secondary-200">{{ item }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="px-3 py-2">
+                  <label class="text-secondary-90 text-sm font-bold">
+                    Language
+                  </label>
+                  <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div class="flex gap-2 items-center" v-for="item in languages">
+                      <input type="radio" class="radio checked:bg-dark-100 checked:text-white" />
+                      <p class="text-sm font-medium text-secondary-200">{{ item }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="px-3 py-2">
+                  <label class="text-secondary-90 text-sm font-bold">
+                    Colours
+                  </label>
+                  <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div class="flex gap-2 items-center" v-for="item in colours">
+                      <input type="radio" class="radio checked:bg-dark-100 checked:text-white" />
+                      <p class="text-sm font-medium text-secondary-200">{{ item }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="px-3 py-2">
+                  <label class="text-secondary-90 text-sm font-bold">
+                    Hygiene Certificate
+                  </label>
+                  <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div class="flex gap-2 items-center" v-for="item in hygieneCertificate">
+                      <input type="radio" class="radio checked:bg-dark-100 checked:text-white" />
+                      <p class="text-sm font-medium text-secondary-200">{{ item }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="divider lg:divider-horizontal before:bg-secondary-400 after:bg-secondary-400"></div>
+              <div class="flex flex-col gap-4 w-[14.625rem]">
+                <div class="px-3 py-2">
+                  <label class="text-secondary-90 text-sm font-bold">
+                    Min. Rating
+                  </label>
+                  <div class="mt-2">
+                    <InputSlider />
+                  </div>
+                </div>
+                <div class="px-3 py-2">
+                  <label class="text-secondary-90 text-sm font-bold">
+                    Min. Price
+                  </label>
+                  <div class="mt-2">
+                    <InputSlider />
+                  </div>
+                </div>
+                <div class="px-3 py-2">
+                  <label class="text-secondary-90 text-sm font-bold">
+                    Min. Experience
+                  </label>
+                  <div class="mt-2">
+                    <InputStep />
+                  </div>
+                </div>
+                <div class="px-3 py-2">
+                  <label class="text-secondary-90 text-sm font-bold">
+                    Avg. waiting time (weeks)
+                  </label>
+                  <div class="mt-2">
+                    <InputSlider />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </section>
+    </ClientOnly>
     <ArtistInfoCard v-if="!pending && viewMode === 'list'" :item="artists" :error="!!error" />
     <div v-if="pending" class="artist-grid gap-6">
       <div v-for="n in 4" :key="n" class="bg-base-100 rounded-2xl shadow-lg overflow-hidden animate-pulse">
@@ -197,7 +199,31 @@ import { ArrowDown, ArrowUp, ListFilter } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router'
 
 const modeStyle = ref('less');
-const selectedStyles = reactive([]);
+const route = useRoute()
+const router = useRouter()
+const selectedStylesState = useState('selectedStyles', () => {
+  const s = route.query?.style ?? route.query?.styles
+  if (!s) return []
+  return String(s).split(',').filter(Boolean)
+})
+const selectedStyles = computed({
+  get: () => selectedStylesState.value,
+  set: (v) => { selectedStylesState.value = v }
+})
+
+onMounted(() => {
+  const q = route.query || {}
+  const s = q?.style ?? q?.styles
+  selectedStylesState.value = s ? String(s).split(',').filter(Boolean) : []
+  const stop = watch(() => route.query, (q) => {
+    const s2 = q?.style ?? q?.styles
+    selectedStylesState.value = s2 ? String(s2).split(',').filter(Boolean) : []
+  })
+
+  onBeforeUnmount(() => {
+    stop()
+  })
+})
 const config = useRuntimeConfig()
 const stylesEndpoint = `${config.public.baseURL}/api/user/styleGuide`
 const { data: stylesData } = await useAsyncData('styles', () => $fetch(stylesEndpoint, { method: 'POST', body: {} }))
@@ -205,19 +231,20 @@ const styles = computed(() => stylesData.value?.styleGuide || [])
 
 const handleToggleSelectedStyle = (style) => {
   const styleName = style.styleName
-  if (selectedStyles.includes(styleName)) {
-    selectedStyles.splice(selectedStyles.indexOf(styleName), 1);
-  } else {
-    selectedStyles.push(styleName);
-  }
+  const current = selectedStyles.value.slice()
+  const newStyles = current.includes(styleName)
+    ? current.filter(s => s !== styleName)
+    : [...current, styleName]
+
   const newQuery = { ...route.query }
-  if (selectedStyles.length > 0) {
-    newQuery.style = selectedStyles.join(',')
+  if (newStyles.length > 0) {
+    newQuery.style = newStyles.join(',')
   } else {
     delete newQuery.style
   }
   delete newQuery.filter
   delete newQuery.styles
+  selectedStylesState.value = newStyles
   router.replace({ query: newQuery })
 }
 
@@ -250,8 +277,6 @@ const handleToggleModeStyle = async () => {
 }
 
 const viewMode = ref('list');
-const route = useRoute()
-const router = useRouter()
 const searchQuery = computed(() => {
   const q = route.query.q
   return q == null ? '' : String(q)
@@ -267,13 +292,6 @@ const mapViewParam = computed(() => {
 
 if (mapViewParam.value === 'true') {
   viewMode.value = 'map'
-}
-if (route.query.style) {
-  const s = String(route.query.style)
-  selectedStyles.splice(0, selectedStyles.length, ...s.split(',').filter(Boolean))
-} else if (route.query.styles) {
-  const s = String(route.query.styles)
-  selectedStyles.splice(0, selectedStyles.length, ...s.split(',').filter(Boolean))
 }
 const apiEndpoint = computed(() => {
   if (searchQuery.value && searchType.value) {
@@ -310,8 +328,8 @@ const fetchArtists = () => {
     const min = Number(q.minPrice) || 1
     body.budget = { min, max: Math.max(min, min * 4) }
   }
-  if (selectedStyles.length > 0) {
-    body.styles = selectedStyles.slice()
+  if (selectedStyles.value.length > 0) {
+    body.styles = selectedStyles.value.slice()
   } else if (q.styles) {
     body.styles = String(q.styles).split(',').filter(Boolean)
   } else if (q.style) {
@@ -321,24 +339,23 @@ const fetchArtists = () => {
   return $fetch(apiEndpoint.value, { method: 'POST', body })
 }
 
-const { data: apiResponse, pending, error, refresh } = await useAsyncData(
-  computed(() => {
-    const q = route.query || {}
-    const keyParts = [
-      searchQuery.value,
-      searchType.value,
-      selectedStyles.join(','),
-      q.style || q.styles || '',
-      q.minPrice || '',
-      q.city || '',
-      q.color || '',
-      q.placement || '',
-      q.budget || ''
-    ]
-    return `artists-${keyParts.join('-')}`
-  }),
-  fetchArtists
-)
+  const { data: apiResponse, pending, error, refresh } = await useAsyncData(
+    computed(() => {
+      const q = route.query || {}
+      const keyParts = [
+        searchQuery.value,
+        searchType.value,
+        q.style || q.styles || '',
+        q.minPrice || '',
+        q.city || '',
+        q.color || '',
+        q.placement || '',
+        q.budget || ''
+      ]
+      return `artists-${keyParts.join('-')}`
+    }),
+    fetchArtists
+  )
 
 const artists = computed(() => {
   if (!apiResponse || !apiResponse.value) return []
@@ -383,13 +400,6 @@ watch(() => route.query, (newQuery) => {
   } else {
     viewMode.value = 'list'
   }
-  if (newQuery.style) {
-    selectedStyles.splice(0, selectedStyles.length, ...String(newQuery.style).split(',').filter(Boolean))
-  } else if (newQuery.styles) {
-    selectedStyles.splice(0, selectedStyles.length, ...String(newQuery.styles).split(',').filter(Boolean))
-  } else {
-    selectedStyles.splice(0)
-  }
 })
 
 useHead({
@@ -406,14 +416,6 @@ watch(() => route.query.mapView, (newMapView) => {
     viewMode.value = 'map'
   } else {
     viewMode.value = 'list'
-  }
-})
-
-watch([searchQuery, searchType, selectedStyles], async () => {
-  try {
-    await refresh()
-  } catch (e) {
-    // ignore - error will be handled by `error` from useAsyncData
   }
 })
 </script>

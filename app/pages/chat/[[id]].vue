@@ -49,8 +49,17 @@ const fetchChatRooms = async () => {
         Authorization: `Bearer ${authStore.token}`
       }
     })
-    if (response.message === "Chat rooms retrieved successfully") {
-      roomDatas.value = response.data
+    if (response.message === "Successfully") {
+      roomDatas.value = response.chatRoomList.map(room => ({
+        ...room,
+        participant: {
+          id: room.artistId,
+          name: room.artistName,
+          email: room.artistEmail,
+          avatar: room.artistProfileImage,
+          role: 'artist'
+        }
+      }))
     }
   } catch (err) {
     error.value = err.message
@@ -156,10 +165,11 @@ const currentRoomData = computed(() => {
     projectTitle: room.projectTitle,
     projectStatus: room.projectStatus,
     recipient: {
-      recipient_id: room.participant.id,
-      name: room.participant.name,
-      email: room.participant.email,
-      role: room.participant.role
+      recipient_id: room.artistId,
+      name: room.artistName,
+      email: room.artistEmail,
+      role: 'artist',
+      avatar: room.artistProfileImage
     },
     lastMessage: room.lastMessage,
     unreadCount: room.unreadCount,
@@ -174,7 +184,7 @@ const currentArtistData = computed(() => {
   return {
     artist_id: recipient.recipient_id,
     name: recipient.name,
-    avatar: '', // Need to add avatar if available
+    avatar: recipient.avatar,
     years_experience: 5, // Placeholder
     price: 3, // Placeholder
     lang: [], // Placeholder

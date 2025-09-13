@@ -44,8 +44,15 @@ export const useArtistsFinder = () => {
   const artists = ref<Artist[]>([])
   const isLoading = ref(false)
   const error = ref<string | null>(null)
+  let currentFetchPromise: Promise<ArtistsFinderResponse> | null = null
+  let lastFiltersKey: string | null = null
 
   const fetchArtists = async (filters?: any) => {
+    const filtersKey = filters ? JSON.stringify(filters) : '{}'
+    if (currentFetchPromise && lastFiltersKey === filtersKey) {
+      return currentFetchPromise
+    }
+
     isLoading.value = true
     error.value = null
 
@@ -57,12 +64,13 @@ export const useArtistsFinder = () => {
       if (authStore.token) {
         headers.Authorization = `Bearer ${authStore.token}`
       }
-
-      const response = await $fetch<ArtistsFinderResponse>(`${config.public.baseURL}/api/artist/artistsFinder`, {
+      currentFetchPromise = $fetch<ArtistsFinderResponse>(`${config.public.baseURL}/api/artist/artistsFinder`, {
         method: 'POST',
         headers,
         body: filters || {}
       })
+      lastFiltersKey = filtersKey
+      const response = await currentFetchPromise
 
       if (response && response.data) {
         artists.value = response.data
@@ -75,6 +83,7 @@ export const useArtistsFinder = () => {
       console.error('Artists fetch error:', err)
     } finally {
       isLoading.value = false
+      currentFetchPromise = null
     }
   }
 
