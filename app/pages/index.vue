@@ -5,16 +5,17 @@
       <h1 class="text-3xl font-bold">{{ searchQuery ? `Find the perfect Tattoo Artist for your idea` : 'Find the perfect Tattoo Artist for your idea' }}</h1>
     </section>
     <section v-if="styles.length > 0"  class="mt-7 mb-16 relative">
-      <div class="border border-secondary-400 rounded-2xl px-5 py-2 shadow-md flex gap-4 justify-between items-center">
+      <div class="border border-secondary-400 dark:border-secondary-100 rounded-2xl px-5 py-2 shadow-md flex gap-4 justify-between items-center">
         <div class="flex flex-col justify-center items-center gap-4">
           <div class="grow bg-base-200 rounded-2xl px-2 py-2">
             <div ref="styleGrid" class="grid grid-cols-8 w-full gap-4 overflow-hidden style-grid"
               :class="{ 'collapsed': modeStyle == 'less' }">
               <button @click="handleToggleSelectedStyle(style)"
                 class="flex flex-col items-center gap-1 text-secondary-90 dark:text-white px-2 py-1.5 cursor-pointer"
-                :class="{ 'border border-primary-yellow rounded-2xl bg-primary-yellow/10': selectedStyles.includes(style) }"
-                v-for="(style, index) in styles" :key="style">
-                <p class="text-xs text-center">{{ style }}</p>
+                :class="{ 'border border-primary-yellow rounded-2xl bg-primary-yellow/10': selectedStyles.includes(style.styleName) }"
+                v-for="(style, index) in styles" :key="style.styleName">
+                <span v-html="style.styleIcon" class="w-6 h-6"></span>
+                <p class="text-xs text-center">{{ style.styleName }}</p>
               </button>
             </div>
           </div>
@@ -200,13 +201,14 @@ const selectedStyles = reactive([]);
 const config = useRuntimeConfig()
 const stylesEndpoint = `${config.public.baseURL}/api/user/styleGuide`
 const { data: stylesData } = await useAsyncData('styles', () => $fetch(stylesEndpoint, { method: 'POST', body: {} }))
-const styles = computed(() => stylesData.value?.styleGuide?.map(item => item.styleName) || [])
+const styles = computed(() => stylesData.value?.styleGuide || [])
 
 const handleToggleSelectedStyle = (style) => {
-  if (selectedStyles.includes(style)) {
-    selectedStyles.splice(selectedStyles.indexOf(style), 1);
+  const styleName = style.styleName
+  if (selectedStyles.includes(styleName)) {
+    selectedStyles.splice(selectedStyles.indexOf(styleName), 1);
   } else {
-    selectedStyles.push(style);
+    selectedStyles.push(styleName);
   }
   const newQuery = { ...route.query }
   if (selectedStyles.length > 0) {
